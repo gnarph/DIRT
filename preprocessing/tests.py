@@ -4,6 +4,7 @@ import unittest
 from models.document import Document
 from preprocessing.preprocessor import Preprocessor
 
+
 class PreprocessorTest(unittest.TestCase):
 
     file_name = 'lorem.txt'

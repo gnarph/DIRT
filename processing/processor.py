@@ -38,7 +38,6 @@ class Processor(object):
     def process(self):
         """
         Process input files
-        :return:
         """
         alpha = self.document_from_input(self.alpha_name)
         beta = self.document_from_input(self.beta_name)

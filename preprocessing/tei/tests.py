@@ -4,7 +4,9 @@ import unittest
 
 import cjson
 
-import preprocessing.tei.document as document
+import models.document as global_document
+import preprocessing.tei.reader as reader
+import preprocessing.tei.document as tei_document
 
 TEI_ZHI = 'test_data/zhi_tei.xml'
 TEI_ENG = 'test_data/eng_tei.xml'
@@ -13,7 +15,7 @@ JSON_ZHI = 'test_data/zhi_parsed.json'
 JSON_ENG = 'test_data/eng_parsed.json'
 
 
-class TEIDocumentTest(unittest.TestCase):
+class TEITest(unittest.TestCase):
 
     # TODO: move three methods to superclass
     #       they are copied from language prep test
@@ -40,7 +42,7 @@ class TEIDocumentTest(unittest.TestCase):
         :param parsed_json_file: uft8 json file of correct segmentation
         """
         real_data_file = self._get_test_file_name(data_file)
-        doc = document.TEIDocument(real_data_file)
+        doc = tei_document.TEIDocument(real_data_file)
         output = doc.get_data()
         desired = self._read_json_file(parsed_json_file)
         self.assertEquals(output, desired)
@@ -48,3 +50,14 @@ class TEIDocumentTest(unittest.TestCase):
     def test_get_data(self):
         self._test_get_data(TEI_ZHI, JSON_ZHI)
         self._test_get_data(TEI_ENG, JSON_ENG)
+
+    def test_read(self):
+        real_data_file = self._get_test_file_name(TEI_ZHI)
+        tei_doc = tei_document.TEIDocument(real_data_file)
+        tei_data = tei_doc.get_data()
+        tei_body = tei_data['body']
+        r = reader.TEIReader(real_data_file)
+        read_doc = r.read()
+        self.assertEqual(tei_body, read_doc.body)
+        global_doc = global_document.Document.from_file(real_data_file)
+        self.assertEqual(read_doc, global_doc)

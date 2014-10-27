@@ -39,12 +39,12 @@ class TEIDocument(object):
         ns_index = root_tag.rfind('}') + 1
         self.namespace = root_tag[:ns_index]
 
-    def get_body(self):
+    def _get_body(self):
         """
         Get document body
         :return: body of the tei document (no tags)
         """
-        raw_body = self.get_element_text(TAG_BODY)
+        raw_body = self._get_element_text(TAG_BODY)
         stripped_body = ' '.join(raw_body.split())
         return stripped_body
 
@@ -55,37 +55,37 @@ class TEIDocument(object):
         """
         self._setup_parse_tree()
 
-        stripped_body = self.get_body()
+        stripped_body = self._get_body()
         # TODO: consider making this it's own class
-        return {'title': self.get_element_text(TAG_TITLE),
-                'edition': self.get_element_text(TAG_EDITION_STATEMENT),
-                'date': self.get_element_text(TAG_DATE),
-                'availability': self.get_element_text(TAG_LICENSE),
+        return {'title': self._get_element_text(TAG_TITLE),
+                'edition': self._get_element_text(TAG_EDITION_STATEMENT),
+                'date': self._get_element_text(TAG_DATE),
+                'availability': self._get_element_text(TAG_LICENSE),
                 'body': stripped_body,
                 }
 
-    def get_element_text(self, tag):
+    def _get_element_text(self, tag):
         """
         Get text from element in document
         :param tag: name of tag
         :return: text within tag
         """
-        element = self.get_element(tag)
+        element = self._get_element(tag)
         if element is not None:
             return element.xpath('string()')
         else:
             return self.no_tag_error_template.format(tag=tag)
 
-    def get_element(self, tag):
+    def _get_element(self, tag):
         """
         Get a single element from the xml document
         :param tag: tag of the element in the document
         :return: element node
         """
-        query = self.get_tag_query(tag)
+        query = self._get_tag_query(tag)
         return self.tree.find(query)
 
-    def get_tag_query(self, tag):
+    def _get_tag_query(self, tag):
         """
         Get xpath query for tag
         """
