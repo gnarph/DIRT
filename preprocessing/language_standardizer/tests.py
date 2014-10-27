@@ -50,3 +50,12 @@ class ZhiTest(unittest.TestCase):
         self._check_data_vs_segmented(NEWS_DATA_FILE, NEWS_SEG_FILE)
         self._check_data_vs_segmented(NEWS_2_DATA_FILE, NEWS_2_SEG_FILE)
         self._check_data_vs_segmented(NEWS_TRAD_DATA_FILE, NEWS_TRAD_SEG_FILE)
+
+    def test_standardization(self):
+        """
+        Test standardization
+        NOTE: Currently just segments, does nothing else
+        """
+        self._check_data_vs_segmented(NEWS_DATA_FILE, NEWS_SEG_FILE)
+        self._check_data_vs_segmented(NEWS_2_DATA_FILE, NEWS_2_SEG_FILE)
+        self._check_data_vs_segmented(NEWS_TRAD_DATA_FILE, NEWS_TRAD_SEG_FILE)
