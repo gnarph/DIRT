@@ -51,11 +51,26 @@ class ZhiTest(unittest.TestCase):
         self._check_data_vs_segmented(NEWS_2_DATA_FILE, NEWS_2_SEG_FILE)
         self._check_data_vs_segmented(NEWS_TRAD_DATA_FILE, NEWS_TRAD_SEG_FILE)
 
+    def _check_data_vs_std(self, data_file, seg_file):
+        """
+        Check that an input file is correctly standardized
+        :param data_file: utf8 chinese input file
+        :param seg_file: uft8 json file of correct standardization
+        """
+        # TODO: make desired json file instead of computing
+        news_passage = self._read_file(data_file)
+        news_output = zhi.standardize(news_passage)
+        news_desired = self._read_json_file(seg_file)
+        not_allowed = [u' ', u'\n']
+        news_filtered = [n for n in news_desired if n not in not_allowed]
+        desired_body = ' '.join(news_filtered)
+        self.assertEquals(news_output, desired_body)
+
     def test_standardization(self):
         """
         Test standardization
         NOTE: Currently just segments, does nothing else
         """
-        self._check_data_vs_segmented(NEWS_DATA_FILE, NEWS_SEG_FILE)
-        self._check_data_vs_segmented(NEWS_2_DATA_FILE, NEWS_2_SEG_FILE)
-        self._check_data_vs_segmented(NEWS_TRAD_DATA_FILE, NEWS_TRAD_SEG_FILE)
+        self._check_data_vs_std(NEWS_DATA_FILE, NEWS_SEG_FILE)
+        self._check_data_vs_std(NEWS_2_DATA_FILE, NEWS_2_SEG_FILE)
+        self._check_data_vs_std(NEWS_TRAD_DATA_FILE, NEWS_TRAD_SEG_FILE)
