@@ -9,11 +9,14 @@ from models.match_singlet import MatchSinglet
 class DocumentTest(unittest.TestCase):
     file_name = 'this_is_a_file.txt'
     meta = {'title': 'test yeah',
-            'author': 'gord'
-           }
+            'author': 'gorden'
+            }
     body = 'In id tristique orci. Aenean.'
 
     def test_clone(self):
+        """
+        Test cloning a document
+        """
         doc = Document(file_name=self.file_name,
                        body=self.body,
                        metadata=self.meta)
@@ -48,7 +51,10 @@ class MatchSingletTest(unittest.TestCase):
         self.doc.body = fmt.format(self.with_context)
 
     def test_get_context(self):
-        singlet = MatchSinglet(filename=self.file_name,
+        """
+        Test that get_context returns the match and appropriate context
+        """
+        singlet = MatchSinglet(file_name=self.file_name,
                                passage=self.match,
                                document=self.doc)
         pad_chars = len(self.context_pad)

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from models.document import Document
+import models.document_factory as document_factory
 from preprocessing.preprocessor import Preprocessor
 
 
@@ -20,5 +20,5 @@ class PreprocessorTest(unittest.TestCase):
         for file_name in out_dir_files:
             if self.file_name in file_name:
                 file_path = os.path.join(self.output_dir, file_name)
-                doc = Document.from_file(file_path)
+                doc = document_factory.from_file(file_path)
                 break

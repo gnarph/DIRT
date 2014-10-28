@@ -6,21 +6,26 @@ class MatchSinglet(object):
     Class for representing half of a match
     """
 
-    def __init__(self, filename, passage, document=None):
+    def __init__(self, file_name, passage, document=None):
         """
-        :param filename: name of source file
+        :param file_name: name of source file
         :param passage: matching passage, non-preprocessed
         :param document: models.document.Document, optional
         """
-        self.filename = filename
+        self.file_name = file_name
         self.passage = passage
         self._document = document
 
     @property
     def document(self):
         if self._document is None:
-            self._document = Document.from_file(self.filename)
+            self._document = Document.from_file(self.file_name)
         return self._document
+
+    def to_dict(self):
+        return {'file_name': self.file_name,
+                'passage': self.passage,
+                }
 
     def get_context(self, context_chars=10):
         """

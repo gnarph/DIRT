@@ -4,7 +4,7 @@ import unittest
 
 import cjson
 
-import models.document as global_document
+import models.document_factory as document_factory
 import preprocessing.tei.reader as reader
 import preprocessing.tei.document as tei_document
 
@@ -59,5 +59,5 @@ class TEITest(unittest.TestCase):
         r = reader.TEIReader(real_data_file)
         read_doc = r.read()
         self.assertEqual(tei_body, read_doc.body)
-        global_doc = global_document.Document.from_file(real_data_file)
+        global_doc = document_factory.from_file(real_data_file)
         self.assertEqual(read_doc, global_doc)
