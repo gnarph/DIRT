@@ -10,7 +10,6 @@ import importlib
 
 import preprocessing.preprocessor as preprocessor
 import processing.processor as processor
-import postprocessing.postprocessor as postprocessor
 
 STANDARDIZER_PATH = 'preprocessing.language_standardizer.{}'
 COMPARATOR_PATH = 'processing.comparators.{}'

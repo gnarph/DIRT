@@ -21,4 +21,4 @@ class PreprocessorTest(unittest.TestCase):
             if self.file_name in file_name:
                 file_path = os.path.join(self.output_dir, file_name)
                 doc = document_factory.from_file(file_path)
-                break
+                self.assertNotEqual(doc.file_name, self.file_name)

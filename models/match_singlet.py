@@ -1,4 +1,4 @@
-from models.document import Document
+import models.document_factory as document_factory
 
 
 class MatchSinglet(object):
@@ -19,7 +19,7 @@ class MatchSinglet(object):
     @property
     def document(self):
         if self._document is None:
-            self._document = Document.from_file(self.file_name)
+            self._document = document_factory.from_file(self.file_name)
         return self._document
 
     def to_dict(self):
