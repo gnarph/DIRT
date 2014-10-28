@@ -1,6 +1,8 @@
 import difflib
 
 import processing.comparators.base_comparator as base_comparator
+from models.match_singlet import MatchSinglet
+from models.match import Match
 
 
 CLASS_NAME = 'SimpleComparator'
@@ -13,11 +15,24 @@ def double_iter(iterable):
 
 class Comparator(base_comparator.BaseComparator):
     def compare(self):
-        matcher = difflib.SequenceMatcher(a=self.alpha, b=self.beta)
+        matcher = difflib.SequenceMatcher(a=self.file_name_a, b=self.file_name_a)
         matching_blocks = matcher.get_matching_blocks()
         combined_blocks = self._combine_blocks(matching_blocks)
         filtered_blocks = self._filter_blocks(combined_blocks)
-        return self._tuples_to_passages(filtered_blocks)
+        passage_blocks = self._tuples_to_passages(filtered_blocks)
+
+        singlet_pairs = []
+        for p_a, p_b in passage_blocks:
+            s_a = MatchSinglet(file_name=self.file_name_a,
+                               passage=p_a)
+            s_b = MatchSinglet(file_name=self.file_name_b,
+                               passage=p_b)
+            singlet_pairs.append((s_a, s_b))
+        matches = []
+        for s_a, s_b in singlet_pairs:
+            match = Match(s_a, s_b)
+            matches.append(match)
+        return matches
 
     def _combine_blocks(self, matching_blocks):
         """
@@ -49,7 +64,7 @@ class Comparator(base_comparator.BaseComparator):
     def _tuples_to_passages(self, filtered_blocks):
         passages = []
         for tup in filtered_blocks:
-            a = self.alpha[tup[0]:tup[0]+tup[2]]
-            b = self.beta[tup[1]:tup[1]+tup[2]]
+            a = self.file_name_a[tup[0]:tup[0]+tup[2]]
+            b = self.file_name_a[tup[1]:tup[1]+tup[2]]
             passages.append((a, b))
         return passages

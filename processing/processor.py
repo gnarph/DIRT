@@ -1,7 +1,9 @@
 import codecs
 import os
 
-from models.document import Document
+import cjson
+
+import models.document_factory as document_factory
 from processing.comparators import simple
 
 REPORT_NAME = '{}__{}__CMP.json'
@@ -33,7 +35,7 @@ class Processor(object):
         :return: document model representation of the file
         """
         real_name = os.path.join(self.input_dir, file_name)
-        return Document.from_file(real_name)
+        return document_factory.from_file(real_name)
 
     def process(self):
         """
@@ -41,13 +43,14 @@ class Processor(object):
         """
         alpha = self.document_from_input(self.alpha_name)
         beta = self.document_from_input(self.beta_name)
-        comparator = self.comparator.Comparator(alpha=alpha.body,
-                                                beta=beta.body)
+        comparator = self.comparator.Comparator(alpha.body,
+                                                beta.body)
         out_name = REPORT_NAME.format(self.alpha_name,
                                       self.beta_name)
-        compared = comparator.compare()
-        str_compared = str(compared)
-        uni_compared = str_compared.encode('utf8')
+        matches = comparator.compare()
+        match_dicts = [match.to_dict() for match in matches]
+        json_match = cjson.encode(match_dicts)
+        unicode_json_match = json_match.encode('utf8')
         out_file = os.path.join(self.output_dir, out_name)
         with codecs.open(out_file, 'w+', 'UTF-8') as o:
-            o.write(uni_compared)
+            o.write(unicode_json_match)

@@ -12,3 +12,8 @@ class Match(object):
         """
         self.alpha = alpha
         self.beta = beta
+
+    def to_dict(self):
+        return {'alpha': self.alpha.to_dict(),
+                'beta': self.beta.to_dict(),
+                }
