@@ -4,3 +4,4 @@ nose==1.3.4
 python-cjson==1.1.0
 jieba==0.34
 lxml==3.4.0
+mock==1.0.1

@@ -6,5 +6,9 @@ class Match(object):
     """
 
     def __init__(self, alpha, beta):
+        """
+        :param alpha: MatchSinglet
+        :param beta: MatchSinglet
+        """
         self.alpha = alpha
         self.beta = beta
