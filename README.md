@@ -2,4 +2,25 @@ DIRT
 ====
 [![Build Status](https://travis-ci.org/gnarph/DIRT.svg?branch=master)](https://travis-ci.org/gnarph/DIRT) [![Coverage Status](https://coveralls.io/repos/gnarph/DIRT/badge.png?branch=develop)](https://coveralls.io/r/gnarph/DIRT?branch=develop)
 
-Dynamic Identification of Reused Text
+Install Dependecies
+-------------------
+Dependecies can be installed with
+```bash
+pip install -r requirements.txt
+```
+
+Running Tests
+-------------
+Tests can be run from the root directory with the following command:
+```bash
+nosetests
+```
+
+In order to do this you must have nose installed, this can be done with
+```bash
+pip install nose
+```
+
+Contrubuting
+------------
+Python code should follow PEP 8 and have tests before pull requesting or merging to develop.
