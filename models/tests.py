@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 
 import mock
@@ -8,46 +9,54 @@ from models.match_singlet import MatchSinglet
 
 class DocumentTest(unittest.TestCase):
     file_name = 'this_is_a_file.txt'
-    meta = {'title': 'test yeah',
-            'author': 'gorden'
+    meta = {'title': u'test 稢綌',
+            'author': u'gorden 胇赲'
             }
-    body = 'In id tristique orci. Aenean.'
+    body = u'In id tristique orci. 痵痽 犵艿邔 疿疶砳 齸圞趲.'
+
+    def setUp(self):
+        self.doc = Document(file_name=self.file_name,
+                            body=self.body,
+                            metadata=self.meta)
 
     def test_clone(self):
         """
         Test cloning a document
         """
-        doc = Document(file_name=self.file_name,
-                       body=self.body,
-                       metadata=self.meta)
-        doc_cloned = doc.clone()
-        self.assertEqual(doc_cloned.file_name, doc.file_name)
-        self.assertEqual(doc_cloned.metadata, doc.metadata)
-        self.assertEqual(doc_cloned.body, doc.body)
-        self.assertEqual(doc, doc_cloned)
+        doc_cloned = self.doc.clone()
+        self.assertEqual(doc_cloned.file_name, self.doc.file_name)
+        self.assertEqual(doc_cloned.metadata, self.doc.metadata)
+        self.assertEqual(doc_cloned.body, self.doc.body)
+        self.assertEqual(self.doc, doc_cloned)
 
         doc_cloned.file_name = 'nope'
-        self.assertNotEqual(doc, doc_cloned)
+        self.assertNotEqual(self.doc, doc_cloned)
 
-        doc_cloned.file_name = doc.file_name
+        doc_cloned.file_name = self.doc.file_name
         doc_cloned.metadata = None
-        self.assertNotEqual(doc, doc_cloned)
+        self.assertNotEqual(self.doc, doc_cloned)
 
-        doc_cloned.metadata = doc.metadata
+        doc_cloned.metadata = self.doc.metadata
         doc_cloned.body = ''
-        self.assertNotEqual(doc, doc_cloned)
+        self.assertNotEqual(self.doc, doc_cloned)
+
+    def test_to_dict(self):
+        doc_dict = self.doc.to_dict()
+        self.assertEqual(doc_dict['file_name'], self.doc.file_name)
+        self.assertEqual(doc_dict['metadata'], self.doc.metadata)
+        self.assertEqual(doc_dict['body'], self.doc.body)
 
 
 class MatchSingletTest(unittest.TestCase):
 
     def setUp(self):
-        self.file_name = 'name of file'
+        self.file_name = 'name 璸瓁'
         self.doc = mock.Mock
-        self.context_pad = ' context '
-        self.match = 'this is the match'
+        self.context_pad = ' context垥娀 '
+        self.match = 'this is 檦 the match'
         self.with_context = '{pad}{match}{pad}'.format(pad=self.context_pad,
                                                        match=self.match)
-        fmt = 'asdfalakjvlzx{}cvowvkjzoxijoidsjfq'
+        fmt = 'asdfalakjvlzx{}鬐鶤鶐膗,觾韄煔垥'
         self.doc.body = fmt.format(self.with_context)
 
     def test_get_context(self):
