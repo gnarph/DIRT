@@ -8,7 +8,7 @@ from models.match_singlet import MatchSinglet
 
 
 class DocumentTest(unittest.TestCase):
-    file_name = 'this_is_a_file.txt'
+    file_name = u'this_is_a_file.txt'
     meta = {'title': u'test 稢綌',
             'author': u'gorden 胇赲'
             }
@@ -29,7 +29,7 @@ class DocumentTest(unittest.TestCase):
         self.assertEqual(doc_cloned.body, self.doc.body)
         self.assertEqual(self.doc, doc_cloned)
 
-        doc_cloned.file_name = 'nope'
+        doc_cloned.file_name = u'nope'
         self.assertNotEqual(self.doc, doc_cloned)
 
         doc_cloned.file_name = self.doc.file_name
@@ -41,6 +41,9 @@ class DocumentTest(unittest.TestCase):
         self.assertNotEqual(self.doc, doc_cloned)
 
     def test_to_dict(self):
+        """
+        Test conversion to dictionary (for json serialization)
+        """
         doc_dict = self.doc.to_dict()
         self.assertEqual(doc_dict['file_name'], self.doc.file_name)
         self.assertEqual(doc_dict['metadata'], self.doc.metadata)
@@ -50,13 +53,13 @@ class DocumentTest(unittest.TestCase):
 class MatchSingletTest(unittest.TestCase):
 
     def setUp(self):
-        self.file_name = 'name 璸瓁'
+        self.file_name = u'name 璸瓁'
         self.doc = mock.Mock
-        self.context_pad = ' context垥娀 '
-        self.match = 'this is 檦 the match'
-        self.with_context = '{pad}{match}{pad}'.format(pad=self.context_pad,
-                                                       match=self.match)
-        fmt = 'asdfalakjvlzx{}鬐鶤鶐膗,觾韄煔垥'
+        self.context_pad = u' context垥娀 '
+        self.match = u'this is 檦 the match'
+        self.with_context = u'{pad}{match}{pad}'.format(pad=self.context_pad,
+                                                        match=self.match)
+        fmt = u'duck goose raccoon{}鬐鶤鶐膗,觾韄煔垥'
         self.doc.body = fmt.format(self.with_context)
 
     def test_get_context(self):
