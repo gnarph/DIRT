@@ -56,7 +56,7 @@ class DocumentTest(unittest.TestCase):
 class MatchSingletTest(unittest.TestCase):
 
     def setUp(self):
-        self.file_name = u'name 璸瓁'
+        self.file_name = u'lorem.json'
         self.doc = mock.Mock
         self.context_pad = u' context垥娀 '
         self.match = u'this is 檦 the match'
@@ -102,6 +102,19 @@ class MatchSingletTest(unittest.TestCase):
         sing_dict = self.singlet.to_dict()
         self.assertEqual(sing_dict['file_name'], self.file_name)
         self.assertEqual(sing_dict['passage'], self.match)
+
+    def test_document(self):
+        """
+        Test getting document
+        """
+        sing = MatchSinglet(file_name='models/test_data/lorem.json',
+                            passage=u'청춘의 피가 심장의 많이')
+        doc = sing.document
+        self.assertEqual(doc.file_name, 'lorem.json')
+        body = u'품에 원대하고, 무엇을 무한한 사막이다. 청춘의 피가 심장의 많이 열락의 무엇을 아니다.'
+        self.assertEqual(doc.body, body)
+        meta = {}
+        self.assertEqual(doc.metadata, meta)
 
 
 class TestMatch(unittest.TestCase):

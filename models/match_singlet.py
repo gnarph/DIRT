@@ -46,7 +46,9 @@ class MatchSinglet(object):
         len_passage = len(self.passage)
         desired_upper = loc + len_passage + context_chars
         lower_bound = desired_lower if desired_lower >= 0 else 0
-        upper_bound = desired_upper
-        if desired_upper < len_passage:
-            upper_bound = len_passage - 1
+        len_body = len(body)
+        if desired_upper >= len_body:
+            upper_bound = len_body
+        else:
+            upper_bound = desired_upper
         return body[lower_bound:upper_bound]
