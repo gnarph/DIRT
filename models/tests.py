@@ -30,16 +30,18 @@ class DocumentTest(unittest.TestCase):
         self.assertEqual(doc_cloned.body, self.doc.body)
         self.assertEqual(self.doc, doc_cloned)
 
+        # using assertFalse instead of assertNotEqual in order to
+        # test __eq__
         doc_cloned.file_name = u'nope'
-        self.assertNotEqual(self.doc, doc_cloned)
+        self.assertFalse(self.doc == doc_cloned)
 
         doc_cloned.file_name = self.doc.file_name
         doc_cloned.metadata = None
-        self.assertNotEqual(self.doc, doc_cloned)
+        self.assertFalse(self.doc == doc_cloned)
 
         doc_cloned.metadata = self.doc.metadata
         doc_cloned.body = ''
-        self.assertNotEqual(self.doc, doc_cloned)
+        self.assertFalse(self.doc == doc_cloned)
 
     def test_to_dict(self):
         """

@@ -18,7 +18,8 @@ class MatchSinglet(object):
 
     @property
     def document(self):
-        # TODO: consider searching JSON model over tei/txt
+        # TODO: consider searching JSON model over tei/txt,
+        # probably want preprocessed doc
         if self._document is None:
             self._document = document_factory.from_file(self.file_name)
         return self._document
