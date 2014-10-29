@@ -18,11 +18,16 @@ class MatchSinglet(object):
 
     @property
     def document(self):
+        # TODO: consider searching JSON model over tei/txt
         if self._document is None:
             self._document = document_factory.from_file(self.file_name)
         return self._document
 
     def to_dict(self):
+        """
+        Convert to dictionary representation
+        :return: dict representation of MatchSinglet
+        """
         return {'file_name': self.file_name,
                 'passage': self.passage,
                 }

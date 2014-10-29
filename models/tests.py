@@ -4,6 +4,7 @@ import unittest
 import mock
 
 from models.document import Document
+from models.match import Match
 from models.match_singlet import MatchSinglet
 
 
@@ -99,3 +100,29 @@ class MatchSingletTest(unittest.TestCase):
         sing_dict = self.singlet.to_dict()
         self.assertEqual(sing_dict['file_name'], self.file_name)
         self.assertEqual(sing_dict['passage'], self.match)
+
+
+class TestMatch(unittest.TestCase):
+
+    def setUp(self):
+        self.alpha_name = 'a_name'
+        self.alpha_passage = 'a_passage'
+        self.alpha = MatchSinglet(file_name=self.alpha_name,
+                                  passage=self.alpha_passage)
+        self.beta_name = 'b_name'
+        self.beta_passage = 'b_passage'
+        self.beta = MatchSinglet(file_name=self.beta_name,
+                                 passage=self.beta_passage)
+        self.match = Match(alpha=self.alpha,
+                           beta=self.beta)
+
+    def test_to_dict(self):
+        """
+        Test dict conversion for JSON serialization
+        """
+        match_dict = self.match.to_dict()
+        alpha_dict = match_dict['alpha']
+        beta_dict = match_dict['beta']
+        self.assertEqual(alpha_dict, self.alpha.to_dict())
+        self.assertEqual(beta_dict, self.beta.to_dict())
+

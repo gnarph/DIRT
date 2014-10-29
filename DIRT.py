@@ -20,8 +20,8 @@ class UnsupportedFunctionException(BaseException):
 
 
 def iter_files_in(directory):
+    # TODO: Consider os.walk for finding recursively
     for item_name in os.listdir(directory):
-        # Should this use os.walk?
         if not os.path.isdir(item_name):
             yield item_name
 

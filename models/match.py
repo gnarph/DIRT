@@ -14,6 +14,9 @@ class Match(object):
         self.beta = beta
 
     def to_dict(self):
+        """
+        Convert match to dictionary representation
+        """
         return {'alpha': self.alpha.to_dict(),
                 'beta': self.beta.to_dict(),
                 }
