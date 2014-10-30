@@ -1,4 +1,9 @@
+from operator import itemgetter
+
+from fuzzywuzzy import process as fuzzy_process
+
 import models.document_factory as document_factory
+from utilities.iteration import niter
 
 
 class MatchSinglet(object):
@@ -18,8 +23,10 @@ class MatchSinglet(object):
 
     @property
     def document(self):
-        # TODO: consider searching JSON model over tei/txt,
-        # probably want preprocessed doc
+        """
+        Plain input document... need to get context from it
+        :return:
+        """
         if self._document is None:
             # from_file is memoized
             return document_factory.from_file(self.file_name)
@@ -41,15 +48,29 @@ class MatchSinglet(object):
                               passage to make context
         :return: string of matching passage and surrounding context
         """
-        body = self.document.body
-        loc = body.index(self.passage)
+        loc, top = self.fuzzy_find_location()
         desired_lower = loc - context_chars
-        len_passage = len(self.passage)
-        desired_upper = loc + len_passage + context_chars
+        desired_upper = loc + context_chars
         lower_bound = desired_lower if desired_lower >= 0 else 0
-        len_body = len(body)
+        len_body = len(self.document.body)
         if desired_upper >= len_body:
             upper_bound = len_body
         else:
             upper_bound = desired_upper
-        return body[lower_bound:upper_bound]
+        return self.document.body[lower_bound:upper_bound]
+
+    def fuzzy_find_location(self):
+        body = self.document.body
+        len_passage = len(self.passage)
+        body_gen = niter(body, len_passage)
+        search_dict = dict(enumerate(body_gen))
+        # list of tuples (body str, score/100, index in body)
+        matches = fuzzy_process.extractBests(query=self.passage,
+                                             choices=search_dict,
+                                             score_cutoff=55,
+                                             limit=20)
+        indices = [tup[2] for tup in matches]
+        min_index = min(indices)
+        max_index = max(indices) + len_passage
+        return min_index, max_index
+

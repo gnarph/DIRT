@@ -5,3 +5,5 @@ python-cjson==1.1.0
 jieba==0.34
 lxml==3.4.0
 mock==1.0.1
+python-Levenshtein==0.11.2
+fuzzywuzzy==0.3.3
