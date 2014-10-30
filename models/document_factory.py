@@ -1,10 +1,7 @@
-import codecs
-
-import cjson
-
 from models.document import Document
 from preprocessing.tei.reader import TEIReader
 import utilities.decorators as decorators
+import utilities.file_reading as file_reading
 
 
 class InvalidDocumentException(BaseException):
@@ -26,6 +23,7 @@ def unicode_error_handler(fn):
     return wrapped
 
 
+# Possible problem with significant memory use of documents
 @decorators.memoize_single_arg
 def from_file(file_name):
     lowered_file_name = file_name.lower()
@@ -44,8 +42,7 @@ def from_file(file_name):
 
 @unicode_error_handler
 def from_txt(file_name):
-    with codecs.open(file_name, encoding='utf8') as f:
-        body = f.read()
+    body = file_reading.read_utf8(file_name)
     return Document(file_name, body)
 
 
@@ -57,9 +54,7 @@ def from_tei(file_name):
 
 @unicode_error_handler
 def from_json(file_name):
-    with codecs.open(file_name, encoding='utf8') as f:
-        raw_json = f.read()
-    data = cjson.decode(raw_json)
+    data = file_reading.read_json_utf8(file_name)
     return Document(file_name=data['file_name'],
                     body=data['body'],
                     metadata=data['metadata'])

@@ -21,7 +21,8 @@ class MatchSinglet(object):
         # TODO: consider searching JSON model over tei/txt,
         # probably want preprocessed doc
         if self._document is None:
-            self._document = document_factory.from_file(self.file_name)
+            # from_file is memoized
+            return document_factory.from_file(self.file_name)
         return self._document
 
     def to_dict(self):

@@ -1,12 +1,9 @@
-import codecs
-import os
 import unittest
-
-import cjson
 
 import models.document_factory as document_factory
 import preprocessing.tei.reader as reader
 import preprocessing.tei.document as tei_document
+import utilities.file_reading as file_reading
 
 TEI_ZHI = 'test_data/zhi_tei.xml'
 TEI_ENG = 'test_data/eng_tei.xml'
@@ -17,23 +14,16 @@ JSON_ENG = 'test_data/eng_parsed.json'
 
 class TEITest(unittest.TestCase):
 
-    # TODO: move three methods to superclass
-    #       they are copied from language prep test
     def _get_test_file_name(self, file_name):
-        raw_loc = os.path.realpath(__file__)
-        my_dir = os.path.dirname(raw_loc)
-        real_file_name = os.path.join(my_dir, file_name)
-        return real_file_name
+        return file_reading.get_full_file_name(file_name, __file__)
 
     def _read_file(self, file_name):
-        real_file_name = self._get_test_file_name(file_name)
-        with codecs.open(real_file_name, encoding='utf-8') as f:
-            raw_passage = f.read()
-        return raw_passage
+        full_name = self._get_test_file_name(file_name)
+        return file_reading.read_utf8(full_name)
 
     def _read_json_file(self, file_name):
-        raw = self._read_file(file_name)
-        return cjson.decode(raw, all_unicode=True)
+        full_name = self._get_test_file_name(file_name)
+        return file_reading.read_json_utf8(full_name)
 
     def _test_get_data(self, data_file, parsed_json_file):
         """

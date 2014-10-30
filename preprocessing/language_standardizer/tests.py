@@ -1,10 +1,7 @@
-import codecs
-import os
 import unittest
 
-import cjson
-
 import preprocessing.language_standardizer.zhi as zhi
+import utilities.file_reading as file_reading
 
 
 NEWS_DATA_FILE = 'test_data/zhi_news.txt'
@@ -23,15 +20,12 @@ NEWS_TRAD_STD_FILE = 'test_data/zhi_news_trad_std.json'
 class ZhiTest(unittest.TestCase):
 
     def _read_file(self, file_name):
-        raw_loc = os.path.realpath(__file__)
-        my_dir = os.path.dirname(raw_loc)
-        with codecs.open(os.path.join(my_dir, file_name), encoding='utf-8') as f:
-            raw_passage = f.read()
-        return raw_passage
+        full_name = file_reading.get_full_file_name(file_name, __file__)
+        return file_reading.read_utf8(full_name)
 
     def _read_json_file(self, file_name):
-        raw = self._read_file(file_name)
-        return cjson.decode(raw, all_unicode=True)
+        full_name = file_reading.get_full_file_name(file_name, __file__)
+        return file_reading.read_json_utf8(full_name)
 
     def _check_data_vs_segmented(self, data_file, seg_file):
         """
