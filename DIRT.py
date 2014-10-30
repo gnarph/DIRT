@@ -22,8 +22,20 @@ class UnsupportedFunctionException(BaseException):
 def iter_files_in(directory):
     # TODO: Consider os.walk for finding recursively
     for item_name in os.listdir(directory):
-        if not os.path.isdir(item_name):
+        if should_use_file(item_name):
             yield item_name
+
+
+def should_use_file(name):
+    if os.path.isdir(name):
+        return False
+    if is_hidden_file(name):
+        return False
+    return True
+
+
+def is_hidden_file(name):
+    return name[0] == '.'
 
 
 def preprocess(args):
