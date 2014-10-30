@@ -4,6 +4,7 @@ import cjson
 
 from models.document import Document
 from preprocessing.tei.reader import TEIReader
+import utilities.decorators as decorators
 
 
 class InvalidDocumentException(BaseException):
@@ -25,6 +26,7 @@ def unicode_error_handler(fn):
     return wrapped
 
 
+@decorators.memoize_single_arg
 def from_file(file_name):
     lowered_file_name = file_name.lower()
     if 'tei' in lowered_file_name:
