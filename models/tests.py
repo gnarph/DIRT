@@ -4,8 +4,29 @@ import unittest
 import mock
 
 from models.document import Document
+import models.document_factory as document_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
+
+
+class DocumentFactoryTest(unittest.TestCase):
+
+    def test_unicode_error_handle(self):
+        """
+        Test that a unicode decode error is captured and an
+        invalid document error is raised instead
+        """
+        with self.assertRaises(document_factory.InvalidDocumentException):
+            document_factory.from_file('models/test_data/invalid.txt')
+
+    def test_hidden_error_handle(self):
+        """
+        Test that a file without an extension raises and invalid
+        document error
+        """
+        with self.assertRaises(document_factory.InvalidDocumentException):
+            document_factory.from_file('models/test_data/invalid')
+
 
 
 class DocumentTest(unittest.TestCase):
