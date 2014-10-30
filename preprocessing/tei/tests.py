@@ -17,10 +17,6 @@ class TEITest(unittest.TestCase):
     def _get_test_file_name(self, file_name):
         return file_reading.get_full_file_name(file_name, __file__)
 
-    def _read_file(self, file_name):
-        full_name = self._get_test_file_name(file_name)
-        return file_reading.read_utf8(full_name)
-
     def _read_json_file(self, file_name):
         full_name = self._get_test_file_name(file_name)
         return file_reading.read_json_utf8(full_name)

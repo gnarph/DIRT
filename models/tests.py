@@ -28,7 +28,6 @@ class DocumentFactoryTest(unittest.TestCase):
             document_factory.from_file('models/test_data/invalid')
 
 
-
 class DocumentTest(unittest.TestCase):
     file_name = u'this_is_a_file.txt'
     meta = {'title': u'test 稢綌',
