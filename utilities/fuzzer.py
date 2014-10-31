@@ -22,5 +22,4 @@ def fuzzy_find_indices(a, b, match_limit=5, score_cutoff=SCORE_CUTOFF):
 
 
 def is_fuzzy_match(a, b, score_cutoff=SCORE_CUTOFF):
-    print fuzz.ratio(a,b)
     return fuzz.ratio(a, b) > score_cutoff
