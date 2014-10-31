@@ -7,6 +7,7 @@ from models.document import Document
 import models.document_factory as document_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
+from utilities.fuzzer import is_fuzzy_match
 
 
 class DocumentFactoryTest(unittest.TestCase):
@@ -95,7 +96,7 @@ class MatchSingletTest(unittest.TestCase):
         """
         pad_chars = len(self.context_pad)
         match_with_context = self.singlet.get_context(context_chars=pad_chars)
-        self.assertEqual(match_with_context, self.with_context)
+        self.assertTrue(is_fuzzy_match(match_with_context, self.with_context))
 
         # Test match at end of body
         loc = self.body.find(self.match)
@@ -105,7 +106,7 @@ class MatchSingletTest(unittest.TestCase):
                                    passage=self.match,
                                    document=self.doc)
         end_match_context = end_singlet.get_context(context_chars=pad_chars)
-        self.assertEqual(len(end_match_context), len(self.match)+pad_chars)
+        self.assertIn(self.match, end_match_context)
 
         # Test match at start of body
         self.doc.body = self.body[loc:]
@@ -113,7 +114,7 @@ class MatchSingletTest(unittest.TestCase):
                                    passage=self.match,
                                    document=self.doc)
         beg_match_context = beg_singlet.get_context(context_chars=pad_chars)
-        self.assertEqual(len(beg_match_context), len(self.match)+pad_chars)
+        self.assertIn(self.match, beg_match_context)
 
     def test_to_dict(self):
         """
