@@ -1,6 +1,7 @@
 DIRT
 ====
 [![Build Status](https://travis-ci.org/gnarph/DIRT.svg?branch=master)](https://travis-ci.org/gnarph/DIRT) [![Coverage Status](https://coveralls.io/repos/gnarph/DIRT/badge.png?branch=develop)](https://coveralls.io/r/gnarph/DIRT?branch=develop)
+.. contents ::
 
 Install Dependecies
 -------------------
@@ -11,16 +12,16 @@ pip install -r requirements.txt
 
 Running Tests
 -------------
-Tests can be run from the root directory with the following command:
+Tests can be run from the root directory with
 ```bash
 nosetests
 ```
 
-In order to do this you must have nose installed, this can be done with
+Coverage can be checked using
 ```bash
-pip install nose
+./check_test_coverage.sh
 ```
 
-Contrubuting
+Contributing
 ------------
 Python code should follow PEP 8 and have tests before pull requesting or merging to develop.

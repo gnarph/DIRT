@@ -1,7 +1,4 @@
-from fuzzywuzzy import process as fuzzy_process
-
 import models.document_factory as document_factory
-from utilities.iteration import niter
 from utilities.fuzzer import fuzzy_find_indices
 
 
