@@ -3,14 +3,14 @@ import difflib
 import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
 from models.match import Match
+from utilities.iteration import niter
 
 
 CLASS_NAME = 'SimpleComparator'
 
 
 def double_iter(iterable):
-    for i in xrange(len(iterable) - 1):
-        yield iterable[i], iterable[i+1]
+    return niter(iterable, 2)
 
 
 class Comparator(base_comparator.BaseComparator):
@@ -36,24 +36,32 @@ class Comparator(base_comparator.BaseComparator):
 
     def _combine_blocks(self, matching_blocks):
         """
-        Parameters
-            matching_blocks - list of tuples (i, j, n)
+        :param matching_blocks: list of tuples (i, j, n)
         """
         # this just combines nearby blocks in alpha
         combined_blocks = []
-        for block, next_block in double_iter(matching_blocks):
-            alpha_end = block[0] + block[2]
-            next_alpha_start = next_block[0]
-            if next_alpha_start - alpha_end < self.gap_length:
-                # combine
-                next_alpha_end = next_alpha_start + next_block[2]
-                new_length = next_alpha_end - block[0]
-                new_match = (block[0], block[1], new_length)
-                # TODO: lookahead to combine more blocks if applicable
+        i = 0
+        j = 1
+        while j < len(matching_blocks):
+            first = matching_blocks[i]
+            first_end = first[0] + first[2]
+            second = matching_blocks[j]
+            second_start = second[0]
+            if second_start - first_end < self.gap_length:
+                # Block continues
+                j += 1
+            elif i != j:
+                # Block terminates
+                new_length = end - second_start
+                new_match = (first[0], first[1], new_length)
                 combined_blocks.append(new_match)
+                i = j
             else:
-                combined_blocks.append(block)
-        return combined_blocks
+                # No change to block
+                combined_blocks.append(first)
+                j += 1
+                i = j
+            end = second_start + second[2]
 
     def _filter_blocks(self, combined_blocks):
         """

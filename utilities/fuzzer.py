@@ -1,3 +1,7 @@
+"""
+Fuzzy finding using fuzzywuzzy/Levenshtein distance
+"""
+
 from fuzzywuzzy import process as fuzzy_process
 from fuzzywuzzy import fuzz
 
@@ -6,12 +10,12 @@ from utilities.iteration import niter
 SCORE_CUTOFF = 90
 
 
-def fuzzy_find_indices(a, b, match_limit=5, score_cutoff=SCORE_CUTOFF):
-    len_passage = len(b)
-    body_gen = niter(a, len_passage)
+def find_in_body(body, passage, match_limit=5, score_cutoff=SCORE_CUTOFF):
+    len_passage = len(passage)
+    body_gen = niter(body, len_passage)
     search_dict = dict(enumerate(body_gen))
     # list of tuples (body str, score/100, index in body)
-    matches = fuzzy_process.extractBests(query=b,
+    matches = fuzzy_process.extractBests(query=passage,
                                          choices=search_dict,
                                          score_cutoff=score_cutoff,
                                          limit=match_limit)

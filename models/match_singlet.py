@@ -1,5 +1,6 @@
 import models.document_factory as document_factory
-from utilities.fuzzer import fuzzy_find_indices
+# from utilities.fuzzer import find_in_body
+from utilities.nwmatch import find_in_body
 
 
 class MatchSinglet(object):
@@ -44,8 +45,8 @@ class MatchSinglet(object):
                               passage to make context
         :return: string of matching passage and surrounding context
         """
-        loc, top = fuzzy_find_indices(a=self.document.body,
-                                      b=self.passage)
+        loc, top = find_in_body(body=self.document.body,
+                                      passage=self.passage)
         desired_lower = loc - context_chars
         desired_upper = top + context_chars
         lower_bound = desired_lower if desired_lower >= 0 else 0
