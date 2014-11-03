@@ -14,18 +14,22 @@ def double_iter(iterable):
 
 
 class Comparator(base_comparator.BaseComparator):
+
     def compare(self):
-        matcher = difflib.SequenceMatcher(a=self.file_name_a, b=self.file_name_a)
+        print self.a, self.b
+        matcher = difflib.SequenceMatcher(a=self.a,
+                                          b=self.b)
         matching_blocks = matcher.get_matching_blocks()
-        combined_blocks = self._combine_blocks(matching_blocks)
+        # Last block is a dummy
+        combined_blocks = self._combine_blocks(matching_blocks[:-1])
         filtered_blocks = self._filter_blocks(combined_blocks)
         passage_blocks = self._tuples_to_passages(filtered_blocks)
 
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
-            s_a = MatchSinglet(file_name=self.file_name_a,
+            s_a = MatchSinglet(file_name=self.a,
                                passage=p_a)
-            s_b = MatchSinglet(file_name=self.file_name_b,
+            s_b = MatchSinglet(file_name=self.b,
                                passage=p_b)
             singlet_pairs.append((s_a, s_b))
         matches = []
@@ -42,26 +46,36 @@ class Comparator(base_comparator.BaseComparator):
         combined_blocks = []
         i = 0
         j = 1
+        end = None
         while j < len(matching_blocks):
             first = matching_blocks[i]
-            first_end = first[0] + first[2]
+            print first
+            if end is None:
+                end = first[0] + first[2]
             second = matching_blocks[j]
             second_start = second[0]
-            if second_start - first_end < self.gap_length:
+            if second_start - end < self.gap_length:
                 # Block continues
+                print ' cont'
                 j += 1
             elif i != j:
                 # Block terminates
-                new_length = end - second_start
+                print 'term'
+                new_length = end - first[0]
                 new_match = (first[0], first[1], new_length)
+                print new_match
                 combined_blocks.append(new_match)
                 i = j
             else:
+                print 'noch'
                 # No change to block
+                print 'first'
                 combined_blocks.append(first)
                 j += 1
                 i = j
             end = second_start + second[2]
+        print 'done'
+        return combined_blocks
 
     def _filter_blocks(self, combined_blocks):
         """
@@ -72,7 +86,7 @@ class Comparator(base_comparator.BaseComparator):
     def _tuples_to_passages(self, filtered_blocks):
         passages = []
         for tup in filtered_blocks:
-            a = self.file_name_a[tup[0]:tup[0]+tup[2]]
-            b = self.file_name_a[tup[1]:tup[1]+tup[2]]
+            a = self.a[tup[0]:tup[0]+tup[2]]
+            b = self.a[tup[1]:tup[1]+tup[2]]
             passages.append((a, b))
         return passages

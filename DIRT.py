@@ -71,6 +71,12 @@ def postprocess(args):
         # TODO: actually postprocess
 
 
+def main(parsed_args):
+    preprocess(parsed_args)
+    process(parsed_args)
+    postprocess(parsed_args)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='DIRT.py',
                                      description='Find reused text in a corpus of text')
@@ -93,6 +99,4 @@ if __name__ == '__main__':
                         help='comparator for processor')
 
     parsed_args = parser.parse_args()
-    preprocess(parsed_args)
-    process(parsed_args)
-    postprocess(parsed_args)
+    main(parsed_args)
