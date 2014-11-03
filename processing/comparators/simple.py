@@ -6,32 +6,11 @@ from models.match import Match
 from utilities.iteration import niter
 
 
-CLASS_NAME = 'SimpleComparator'
-
-
 def double_iter(iterable):
     return niter(iterable, 2)
 
 
 class Comparator(base_comparator.BaseComparator):
-
-    def get_singlet_pairs(self, passage_blocks):
-        singlet_pairs = []
-        for p_a, p_b in passage_blocks:
-            s_a = MatchSinglet(file_name=self.a,
-                               passage=p_a)
-            s_b = MatchSinglet(file_name=self.b,
-                               passage=p_b)
-            singlet_pairs.append((s_a, s_b))
-        return singlet_pairs
-
-    def get_matches(self, passage_blocks):
-        singlet_pairs = self.get_singlet_pairs(passage_blocks)
-        matches = []
-        for s_a, s_b in singlet_pairs:
-            match = Match(s_a, s_b)
-            matches.append(match)
-        return matches
 
     def compare(self):
         matcher = difflib.SequenceMatcher(a=self.a,
@@ -42,7 +21,7 @@ class Comparator(base_comparator.BaseComparator):
         filtered_blocks = self._filter_blocks(combined_blocks)
         passage_blocks = self._tuples_to_passages(filtered_blocks)
 
-        matches = self.get_matches(passage_blocks)
+        matches = self._get_matches(passage_blocks)
         return matches
 
     def _combine_blocks(self, matching_blocks):
@@ -91,3 +70,21 @@ class Comparator(base_comparator.BaseComparator):
             b = self.a[tup[1]:tup[1]+tup[2]]
             passages.append((a, b))
         return passages
+
+    def _get_singlet_pairs(self, passage_blocks):
+        singlet_pairs = []
+        for p_a, p_b in passage_blocks:
+            s_a = MatchSinglet(file_name=self.a,
+                               passage=p_a)
+            s_b = MatchSinglet(file_name=self.b,
+                               passage=p_b)
+            singlet_pairs.append((s_a, s_b))
+        return singlet_pairs
+
+    def _get_matches(self, passage_blocks):
+        singlet_pairs = self._get_singlet_pairs(passage_blocks)
+        matches = []
+        for s_a, s_b in singlet_pairs:
+            match = Match(s_a, s_b)
+            matches.append(match)
+        return matches
