@@ -15,3 +15,4 @@ class SmokeTest(unittest.TestCase):
         args.language = 'eng'
         args.comparator = 'simple'
         DIRT.main(args)
+        # TODO: test the outputs
