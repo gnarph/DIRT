@@ -1,6 +1,6 @@
 import models.document_factory as document_factory
-# from utilities.fuzzer import find_in_body
-from utilities.nwmatch import find_in_body
+from utilities.fuzzer import find_in_body
+# from utilities.nwmatch import find_in_body
 
 
 class MatchSinglet(object):

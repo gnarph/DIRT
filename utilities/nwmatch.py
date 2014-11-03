@@ -21,9 +21,10 @@ def find_in_body(body, passage):
     start_match = re.search(RE_NOT_DASH, aligned_passage)
     # Starting index of passage in body, probably
     start = start_match.start()
-    reverse_aligned_passage = ''.join(reversed(aligned_passage))
+    reverse_aligned_passage = ''.join(reversed(aligned_passage.decode('utf8')))
     end_match = re.search(RE_NOT_DASH, reverse_aligned_passage)
     # Ending index of passage in body, probably
     end = len(s_body) - end_match.end()
-    print s_body[start:end]
+    # Need to account for expansion of unicode characters when converted to
+    # str
     return start, end
