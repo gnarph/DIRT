@@ -43,8 +43,10 @@ class Processor(object):
         """
         alpha = self.document_from_input(self.alpha_name)
         beta = self.document_from_input(self.beta_name)
-        comparator = self.comparator.Comparator(alpha.body,
-                                                beta.body)
+        comparator = self.comparator.Comparator(a=alpha.body,
+                                                b=beta.body,
+                                                name_a=self.alpha_name,
+                                                name_b=self.beta_name)
         out_name = REPORT_NAME.format(self.alpha_name,
                                       self.beta_name)
         matches = comparator.compare()

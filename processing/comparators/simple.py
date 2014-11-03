@@ -1,3 +1,4 @@
+from collections import namedtuple
 import difflib
 
 import processing.comparators.base_comparator as base_comparator
@@ -12,8 +13,11 @@ def double_iter(iterable):
 
 class Comparator(base_comparator.BaseComparator):
 
+    MatchTuple = namedtuple('MatchTuple', ['a', 'b', 'len_a', 'len_b'])
+
     def compare(self):
-        matcher = difflib.SequenceMatcher(a=self.a,
+        matcher = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
+                                          a=self.a,
                                           b=self.b)
         matching_blocks = matcher.get_matching_blocks()
         # Last block is a dummy
@@ -33,30 +37,39 @@ class Comparator(base_comparator.BaseComparator):
         i = 0
         j = 1
         end = None
+        g2 = 0
         while j < len(matching_blocks):
             first = matching_blocks[i]
+            # if first.size <= 3:
+            #     g2 = 0
+            #     i = j
+            #     j += 1
+            #     continue
             if end is None:
-                end = first[0] + first[2]
+                end = first.a + first.size
             second = matching_blocks[j]
-            second_start = second[0]
-            if second_start - end < self.gap_length:
+            second_start = second.a
+            gap = second_start - end
+            if gap < self.gap_length:
                 # Block continues
                 j += 1
-            elif i != j:
+                g2 += gap
+            else:
                 # Block terminates
-                new_length = end - first[0]
-                new_match = (first[0], first[1], new_length)
+                new_length = end - first.a
+                new_match = self.MatchTuple(a=first.a,
+                                            b=first.b,
+                                            len_a=new_length,
+                                            len_b=new_length+g2)
                 combined_blocks.append(new_match)
                 i = j
                 j += 1
-            else:
-                # No change to block
-                combined_blocks.append(first)
-                j += 1
-                i = j
-            end = second_start + second[2]
-        new_length = end - first[0]
-        new_match = (first[0], first[1], new_length)
+            end = second_start + second.size
+        new_length = end - first.a
+        new_match = self.MatchTuple(a=first.a,
+                                    b=first.b,
+                                    len_a=new_length,
+                                    len_b=new_length+g2)
         combined_blocks.append(new_match)
         return combined_blocks
 
@@ -69,8 +82,8 @@ class Comparator(base_comparator.BaseComparator):
     def _tuples_to_passages(self, filtered_blocks):
         passages = []
         for tup in filtered_blocks:
-            a = self.a[tup[0]:tup[0]+tup[2]]
-            b = self.a[tup[1]:tup[1]+tup[2]]
+            a = self.a[tup.a:tup.a+tup.len_a]
+            b = self.b[tup.b:tup.b+tup.len_b]
             passages.append((a, b))
         return passages
 
@@ -78,9 +91,9 @@ class Comparator(base_comparator.BaseComparator):
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
             # TODO: should actually have file names
-            s_a = MatchSinglet(file_name=self.a,
+            s_a = MatchSinglet(file_name=self.name_a,
                                passage=p_a)
-            s_b = MatchSinglet(file_name=self.b,
+            s_b = MatchSinglet(file_name=self.name_b,
                                passage=p_b)
             singlet_pairs.append((s_a, s_b))
         return singlet_pairs
