@@ -46,15 +46,18 @@ class Comparator(base_comparator.BaseComparator):
                 # Block terminates
                 new_length = end - first[0]
                 new_match = (first[0], first[1], new_length)
-                print new_match
                 combined_blocks.append(new_match)
                 i = j
+                j += 1
             else:
                 # No change to block
                 combined_blocks.append(first)
                 j += 1
                 i = j
             end = second_start + second[2]
+        new_length = end - first[0]
+        new_match = (first[0], first[1], new_length)
+        combined_blocks.append(new_match)
         return combined_blocks
 
     def _filter_blocks(self, combined_blocks):
@@ -74,6 +77,7 @@ class Comparator(base_comparator.BaseComparator):
     def _get_singlet_pairs(self, passage_blocks):
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
+            # TODO: should actually have file names
             s_a = MatchSinglet(file_name=self.a,
                                passage=p_a)
             s_b = MatchSinglet(file_name=self.b,
