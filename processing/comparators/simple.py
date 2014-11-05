@@ -49,7 +49,7 @@ class Comparator(base_comparator.BaseComparator):
             if gap < self.gap_length:
                 # Block continues
                 j += 1
-                g2 += gap
+                g2 += gap + 2
             else:
                 # Block terminates
                 new_length = end - first.a
@@ -86,7 +86,6 @@ class Comparator(base_comparator.BaseComparator):
     def _get_singlet_pairs(self, passage_blocks):
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
-            # TODO: should actually have file names
             s_a = MatchSinglet(file_name=self.name_a,
                                passage=p_a)
             s_b = MatchSinglet(file_name=self.name_b,
