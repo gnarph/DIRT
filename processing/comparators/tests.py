@@ -23,5 +23,5 @@ class SimpleComparatorTest(unittest.TestCase):
         match_2 = 'et, consectetur adipiscing elit.'
         self.assertEqual(matches[1].alpha.passage, match_2)
 
-        mb_2 = ' consectetur adipiscing sfelit.'
+        mb_2 = ' consectetur adipiscing a elit.'
         self.assertEqual(matches[1].beta.passage, mb_2)

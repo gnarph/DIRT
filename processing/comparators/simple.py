@@ -32,6 +32,7 @@ class Comparator(base_comparator.BaseComparator):
         """
         :param matching_blocks: list of tuples (i, j, n)
         """
+        # TODO: refactor this
         # this just combines nearby blocks in alpha
         combined_blocks = []
         i = 0
@@ -40,11 +41,6 @@ class Comparator(base_comparator.BaseComparator):
         g2 = 0
         while j < len(matching_blocks):
             first = matching_blocks[i]
-            # if first.size <= 3:
-            #     g2 = 0
-            #     i = j
-            #     j += 1
-            #     continue
             if end is None:
                 end = first.a + first.size
             second = matching_blocks[j]
