@@ -49,6 +49,7 @@ class Comparator(base_comparator.BaseComparator):
             if gap < self.gap_length:
                 # Block continues
                 j += 1
+                # why 2?
                 g2 += gap + 2
             else:
                 # Block terminates
