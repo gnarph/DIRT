@@ -40,6 +40,7 @@ class MatchConcatenator(object):
                     self.i = self.j
                 else:
                     # terminate
+                    # don't want first and second, only want first up to cursor
                     block = self.get_block(first, second)
                     combined.append(block)
                     self.j += 1

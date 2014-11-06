@@ -86,14 +86,14 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(match.beta.passage, b)
 
     def test_compare_gap(self):
-        a = 'Lorem xxipsum dolor xxxxxsit amet, xconsectetur xxxadipiscing xelit.'
+        a = 'Lorem xxipsum dolorxxxxxxsit amet, xconsectetur xxxadipiscing xelit.'
         b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         comparator = self.Comparator(a=a,
                                      b=b,
                                      name_a=self.name_a,
                                      name_b=self.name_b,
-                                     gap_length=5,
-                                     match_length=1)
+                                     gap_length=2,
+                                     match_length=2)
         matches = comparator.compare()
         self.assertEqual(len(matches), 2)
 
