@@ -16,6 +16,10 @@ class Comparator(base_comparator.BaseComparator):
     MatchTuple = namedtuple('MatchTuple', ['a', 'b', 'len_a', 'len_b'])
 
     def compare(self):
+        """
+        Compare texts
+        :return: list of Matches
+        """
         matcher = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
                                           a=self.a,
                                           b=self.b)
@@ -32,7 +36,6 @@ class Comparator(base_comparator.BaseComparator):
         """
         :param matching_blocks: list of tuples (i, j, n)
         """
-        # TODO: refactor this
         # this just combines nearby blocks in alpha
         combined_blocks = []
         i = 0
@@ -44,31 +47,27 @@ class Comparator(base_comparator.BaseComparator):
             if end is None:
                 end = first.a + first.size
             second = matching_blocks[j]
-            second_start = second.a
-            gap = second_start - end
+            gap = second.a - end
             if gap < self.gap_length:
                 # Block continues
-                j += 1
                 # why 2?
                 g2 += gap + 2
             else:
                 # Block terminates
-                new_length = end - first.a
-                new_match = self.MatchTuple(a=first.a,
-                                            b=first.b,
-                                            len_a=new_length,
-                                            len_b=new_length+g2)
-                combined_blocks.append(new_match)
+                self._terminate_block(combined_blocks, end, first, g2)
                 i = j
-                j += 1
-            end = second_start + second.size
+            j += 1
+            end = second.a + second.size
+        self._terminate_block(combined_blocks, end, first, g2)
+        return combined_blocks
+
+    def _terminate_block(self, combined_blocks, end, first, g2):
         new_length = end - first.a
         new_match = self.MatchTuple(a=first.a,
                                     b=first.b,
                                     len_a=new_length,
-                                    len_b=new_length+g2)
+                                    len_b=new_length + g2)
         combined_blocks.append(new_match)
-        return combined_blocks
 
     def _filter_blocks(self, combined_blocks):
         """
