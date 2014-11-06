@@ -5,6 +5,7 @@ import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
 from models.match import Match
 from utilities.iteration import niter
+import processing.comparators.match_concatenator as concatenator
 
 
 def double_iter(iterable):
@@ -12,8 +13,6 @@ def double_iter(iterable):
 
 
 class Comparator(base_comparator.BaseComparator):
-
-    MatchTuple = namedtuple('MatchTuple', ['a', 'b', 'len_a', 'len_b'])
 
     def compare(self):
         """
@@ -36,6 +35,10 @@ class Comparator(base_comparator.BaseComparator):
         """
         :param matching_blocks: list of tuples (i, j, n)
         """
+        blocks = concatenator.difflib_blocks_to_match_tuples(matching_blocks)
+        cat = concatenator.MatchConcatenator(blocks, self.gap_length)
+        return cat.concatenate()
+
         # this just combines nearby blocks in alpha
         combined_blocks = []
         i = 0
@@ -78,8 +81,8 @@ class Comparator(base_comparator.BaseComparator):
     def _tuples_to_passages(self, filtered_blocks):
         passages = []
         for tup in filtered_blocks:
-            a = self.a[tup.a:tup.a+tup.len_a]
-            b = self.b[tup.b:tup.b+tup.len_b]
+            a = self.a[tup.a:tup.a_end]
+            b = self.b[tup.b:tup.b_end]
             passages.append((a, b))
         return passages
 

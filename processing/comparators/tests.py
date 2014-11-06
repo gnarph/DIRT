@@ -16,13 +16,13 @@ class ComparatorTestCase(unittest.TestCase):
 
     def test_compare(self):
         a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        b = 'Lorem ipsum dolor derp derp consectetur adipiscing a elit.'
+        b = 'Lorem ipsum dolor xxxxxxxxx consectetur adipiscing a elit.'
         comparator = self.Comparator(a=a,
-                                            b=b,
-                                            name_a=self.name_a,
-                                            name_b=self.name_b,
-                                            gap_length=2,
-                                            match_length=1)
+                                     b=b,
+                                     name_a=self.name_a,
+                                     name_b=self.name_b,
+                                     gap_length=2,
+                                     match_length=3)
         matches = comparator.compare()
         self.assertEqual(len(matches), 2)
 
@@ -38,13 +38,13 @@ class ComparatorTestCase(unittest.TestCase):
 
     def test_compare_match_len(self):
         a = 'Lorem xxxxx dolor sit amet, consectetur adipiscing xxxx.'
-        b = 'Lorem ipsum dolor xxx xxxxx consectetur xxxxxxxxxx a.'
+        b = 'Lorem ipsum dolor xxxxxxxxx consectetur xxxxxxxxxx a.'
         comparator = self.Comparator(a=a,
-                                            b=b,
-                                            name_a=self.name_a,
-                                            name_b=self.name_b,
-                                            gap_length=0,
-                                            match_length=10)
+                                     b=b,
+                                     name_a=self.name_a,
+                                     name_b=self.name_b,
+                                     gap_length=0,
+                                     match_length=10)
         matches = comparator.compare()
         self.assertEqual(len(matches), 1)
 
@@ -55,7 +55,7 @@ class ComparatorTestCase(unittest.TestCase):
 
     def test_compare_gap_len_b(self):
         a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        b = 'Lorem xxipsum dolor xxxsit amet, xconsectetur xxxadipiscing xelit.'
+        b = 'Lorem xxipsum dolorxxxxsit amet, xconsectetur xxxadipiscing xelit.'
         simple_comparator = self.Comparator(a=a,
                                             b=b,
                                             name_a=self.name_a,
@@ -73,11 +73,11 @@ class ComparatorTestCase(unittest.TestCase):
         a = 'Lorem xxipsum dolor xxxsit amet, xconsectetur xxxadipiscing xelit.'
         b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         comparator = self.Comparator(a=a,
-                                            b=b,
-                                            name_a=self.name_a,
-                                            name_b=self.name_b,
-                                            gap_length=5,
-                                            match_length=1)
+                                     b=b,
+                                     name_a=self.name_a,
+                                     name_b=self.name_b,
+                                     gap_length=5,
+                                     match_length=1)
         matches = comparator.compare()
         self.assertEqual(len(matches), 1)
 
@@ -85,6 +85,30 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(match.alpha.passage, a)
         self.assertEqual(match.beta.passage, b)
 
+    def test_compare_gap(self):
+        a = 'Lorem xxipsum dolor xxxxxsit amet, xconsectetur xxxadipiscing xelit.'
+        b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        comparator = self.Comparator(a=a,
+                                     b=b,
+                                     name_a=self.name_a,
+                                     name_b=self.name_b,
+                                     gap_length=5,
+                                     match_length=1)
+        matches = comparator.compare()
+        self.assertEqual(len(matches), 2)
+
+        match = matches[0]
+        m1_a = 'Lorem xxipsum dolor '
+        # TODO: fix gap based size adjust when a is bigger
+        m1_b = 'Lorem ipsum dolor '
+        self.assertEqual(match.alpha.passage, m1_a)
+        self.assertEqual(match.beta.passage, m1_b)
+
+        m2 = matches[1]
+        m2_a = 'sit amet, xconsectetur xxxadipiscing xelit.'
+        m2_b = 'sit amet, consectetur adipiscing elit.'
+        self.assertEqual(m2.alpha.passage, m2_a)
+        self.assertEqual(m2.beta.passage, m2_b)
 
 # Example of how to make a test for another comparator
 # class SimpleComparatorTestCase(ComparatorTestCase):
