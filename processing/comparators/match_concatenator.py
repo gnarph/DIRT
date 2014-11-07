@@ -33,7 +33,8 @@ class MatchConcatenator(object):
 
     def concatenate(self):
         combined = []
-        while self.j < len(self.match_list):
+        match_count = len(self.match_list)
+        while True:
             first = self.match_list[self.i]
             second = self.match_list[self.j]
             a_gap = second.a - self.a_cursor
@@ -48,11 +49,34 @@ class MatchConcatenator(object):
                     combined.append(block)
                     self.i = self.j
             self.j += 1
-            self.move_cursors_to_end(second)
+            if self.j < match_count:
+                self.move_cursors_to_end(second)
+            else:
+                break
         # terminate last block
-        self.move_cursors_to_end(second)
-        block = self.get_block(first)
-        combined.append(block)
+        # need to combine if it's what is desired
+        # need to add separatey if that's what we need
+        # second is the final block
+        # cursor at very end of blocks
+        last = second
+        a_gap = last.a - self.a_cursor
+        b_gap = last.b - self.b_cursor
+        if not self.jump_gap(a_gap, b_gap):
+            if first.a_end == self.a_cursor:
+                # no combining
+                combined.append(first)
+                combined.append(second)
+            else:
+                # terminate
+                block = self.get_block(first)
+                combined.append(block)
+                combined.append(last)
+        else:
+            # combine and terminate
+            self.move_cursors_to_end(last)
+            block = self.get_block(first)
+            combined.append(block)
+
         return combined
 
     def is_valid_block(self, first):

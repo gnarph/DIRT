@@ -76,7 +76,15 @@ class Comparator(base_comparator.BaseComparator):
         """
         Filter match blocks based on length
         """
-        return [tup for tup in combined_blocks if tup[2] > self.match_length]
+        filtered = []
+        for block in combined_blocks:
+            a_len = block.a_end - block.a
+            b_len = block.b_end - block.b
+            if a_len >= self.match_length:
+                filtered.append(block)
+            elif b_len >= self.match_length:
+                filtered.append(block)
+        return filtered
 
     def _tuples_to_passages(self, filtered_blocks):
         passages = []

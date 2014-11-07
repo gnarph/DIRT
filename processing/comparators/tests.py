@@ -37,19 +37,21 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(matches[1].beta.passage, mb_2)
 
     def test_compare_match_len(self):
-        a = 'Lorem xxxxx dolor sit amet, consectetur adipiscing xxxx.'
+        a = 'Lorem xxxxx dolor sit amet, consectetur adipiscing ddd.'
         b = 'Lorem ipsum dolor xxxxxxxxx consectetur xxxxxxxxxx a.'
         comparator = self.Comparator(a=a,
                                      b=b,
                                      name_a=self.name_a,
                                      name_b=self.name_b,
                                      gap_length=0,
-                                     match_length=10)
+                                     match_length=9)
         matches = comparator.compare()
         self.assertEqual(len(matches), 1)
 
         m = ' consectetur '
         match = matches[0]
+        # print match.alpha.passage
+        # print match.beta.passage
         self.assertEqual(match.alpha.passage, m)
         self.assertEqual(match.beta.passage, m)
 
