@@ -1,0 +1,2 @@
+test_data/lorem.txt
+test_data/lorem2.txt

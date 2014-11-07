@@ -5,6 +5,7 @@ import cjson
 
 import models.document_factory as document_factory
 from processing.comparators import simple
+from utilities import path
 
 REPORT_NAME = '{}__{}__CMP.json'
 
@@ -28,27 +29,20 @@ class Processor(object):
         self.input_dir = input_dir
         self.output_dir = output_dir
 
-    def document_from_input(self, file_name):
-        """
-        Get Document model from file
-        :param file_name: file to read
-        :return: document model representation of the file
-        """
-        real_name = os.path.join(self.input_dir, file_name)
-        return document_factory.from_file(real_name)
-
     def process(self):
         """
         Process input files
         """
-        alpha = self.document_from_input(self.alpha_name)
-        beta = self.document_from_input(self.beta_name)
+        alpha = document_factory.from_file(self.alpha_name)
+        beta = document_factory.from_file(self.beta_name)
         comparator = self.comparator.Comparator(a=alpha.body,
                                                 b=beta.body,
                                                 name_a=self.alpha_name,
                                                 name_b=self.beta_name)
-        out_name = REPORT_NAME.format(self.alpha_name,
-                                      self.beta_name)
+        name_a = path.get_name(self.alpha_name)
+        name_b = path.get_name(self.beta_name)
+        out_name = REPORT_NAME.format(name_a,
+                                      name_b)
         matches = comparator.compare()
         match_dicts = [match.to_dict() for match in matches]
         json_match = cjson.encode(match_dicts)

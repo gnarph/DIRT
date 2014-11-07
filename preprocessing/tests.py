@@ -7,7 +7,7 @@ from preprocessing.preprocessor import Preprocessor
 
 class PreprocessorTest(unittest.TestCase):
 
-    file_name = 'lorem.txt'
+    file_name = 'test_data/lorem.txt'
     input_dir = 'test_data'
     output_dir = 'test_preprocessed'
 

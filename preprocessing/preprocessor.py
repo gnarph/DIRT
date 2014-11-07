@@ -1,11 +1,12 @@
 import codecs
-from os import path
+import os
 
 import cjson
 
 from models.document import Document
 import models.document_factory as document_factory
 from preprocessing.language_standardizer import eng
+from utilities import path
 
 PREPROCESS_SUFFIX = '_PRE.json'
 
@@ -28,9 +29,10 @@ class Preprocessor(object):
         self.output_dir = output_dir
 
     def process(self):
-        output_name = self.file_name + PREPROCESS_SUFFIX
-        in_file = path.join(self.input_dir, self.file_name)
-        out_file = path.join(self.output_dir, output_name)
+        name = path.get_name(self.file_name)
+        output_name = name + PREPROCESS_SUFFIX
+        in_file = self.file_name
+        out_file = os.path.join(self.output_dir, output_name)
 
         in_document = document_factory.from_file(in_file)
         processed = self.standardizer.standardize(in_document.body)
