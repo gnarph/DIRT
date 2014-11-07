@@ -92,15 +92,15 @@ class ComparatorTestCase(unittest.TestCase):
                                      b=b,
                                      name_a=self.name_a,
                                      name_b=self.name_b,
-                                     gap_length=2,
+                                     gap_length=3,
                                      match_length=2)
         matches = comparator.compare()
         self.assertEqual(len(matches), 2)
 
         match = matches[0]
-        m1_a = 'Lorem xxipsum dolor '
+        m1_a = 'Lorem xxipsum dolor'
         # TODO: fix gap based size adjust when a is bigger
-        m1_b = 'Lorem ipsum dolor '
+        m1_b = 'Lorem ipsum dolor'
         self.assertEqual(match.alpha.passage, m1_a)
         self.assertEqual(match.beta.passage, m1_b)
 

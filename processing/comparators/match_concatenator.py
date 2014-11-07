@@ -27,6 +27,10 @@ class MatchConcatenator(object):
         self.a_cursor = first.a_end
         self.b_cursor = first.b_end
 
+    def move_cursors_to_end(self, second):
+        self.a_cursor = second.a_end
+        self.b_cursor = second.b_end
+
     def concatenate(self):
         combined = []
         while self.j < len(self.match_list):
@@ -38,28 +42,28 @@ class MatchConcatenator(object):
                 if first.a_end == self.a_cursor:
                     combined.append(first)
                     self.i = self.j
-                else:
+                elif self.is_valid_block(first):
                     # terminate
-                    # don't want first and second, only want first up to cursor
-                    block = self.get_block(first, second)
+                    block = self.get_block(first)
                     combined.append(block)
-                    self.j += 1
                     self.i = self.j
             self.j += 1
-            self.a_cursor = second.a_end
-            self.b_cursor = second.b_end
-            # update end of current comb cursor
+            self.move_cursors_to_end(second)
         # terminate last block
-        block = self.get_block(first, second)
+        self.move_cursors_to_end(second)
+        block = self.get_block(first)
         combined.append(block)
         return combined
 
-    @staticmethod
-    def get_block(first, second):
+    def is_valid_block(self, first):
+        return (self.a_cursor > first.a and
+                self.b_cursor > first.b)
+
+    def get_block(self, first):
         return MatchTuple(a=first.a,
                           b=first.b,
-                          a_end=second.a_end,
-                          b_end=second.b_end)
+                          a_end=self.a_cursor,
+                          b_end=self.b_cursor)
 
     def jump_gap(self, a_gap, b_gap):
         return (a_gap <= self.gap_length and
