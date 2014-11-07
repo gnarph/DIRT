@@ -4,6 +4,10 @@ from collections import namedtuple
 MatchTuple = namedtuple('MatchTuple', ['a', 'b', 'a_end', 'b_end'])
 
 
+class DoneMainBlocks(BaseException):
+    pass
+
+
 def difflib_blocks_to_match_tuples(blocks):
     tuples = []
     for tup in blocks:
@@ -26,58 +30,57 @@ class MatchConcatenator(object):
         first = self.match_list[self.i]
         self.a_cursor = first.a_end
         self.b_cursor = first.b_end
+        self.combined = []
+        self.match_count = len(self.match_list)
 
     def move_cursors_to_end(self, second):
         self.a_cursor = second.a_end
         self.b_cursor = second.b_end
 
-    def concatenate(self):
-        combined = []
-        match_count = len(self.match_list)
-        while True:
-            first = self.match_list[self.i]
-            second = self.match_list[self.j]
-            a_gap = second.a - self.a_cursor
-            b_gap = second.b - self.b_cursor
-            if not self.jump_gap(a_gap, b_gap):
-                if first.a_end == self.a_cursor:
-                    combined.append(first)
-                    self.i = self.j
-                elif self.is_valid_block(first):
-                    # terminate
-                    block = self.get_block(first)
-                    combined.append(block)
-                    self.i = self.j
-            self.j += 1
-            if self.j < match_count:
-                self.move_cursors_to_end(second)
-            else:
-                break
-        # terminate last block
-        # need to combine if it's what is desired
-        # need to add separatey if that's what we need
-        # second is the final block
-        # cursor at very end of blocks
+    def _process_main(self):
+        first = self.match_list[self.i]
+        second = self.match_list[self.j]
+        if not self.jump_gap(second):
+            if first.a_end == self.a_cursor:
+                self.combined.append(first)
+                self.i = self.j
+            elif self.is_valid_block(first):
+                # terminate
+                self.combine_and_select_block(first)
+                self.i = self.j
+        self.j += 1
+        cont = self.j < self.match_count
+        if cont:
+            self.move_cursors_to_end(second)
+        return first, second, cont
+
+    def combine_and_select_block(self, first):
+        block = self.get_block(first)
+        self.combined.append(block)
+
+    def _process_last(self, first, second):
         last = second
-        a_gap = last.a - self.a_cursor
-        b_gap = last.b - self.b_cursor
-        if not self.jump_gap(a_gap, b_gap):
+        if not self.jump_gap(last):
             if first.a_end == self.a_cursor:
                 # no combining
-                combined.append(first)
-                combined.append(second)
+                self.combined.append(first)
+                self.combined.append(second)
             else:
                 # terminate
-                block = self.get_block(first)
-                combined.append(block)
-                combined.append(last)
+                self.combine_and_select_block(first)
+                self.combined.append(last)
         else:
             # combine and terminate
             self.move_cursors_to_end(last)
-            block = self.get_block(first)
-            combined.append(block)
+            self.combine_and_select_block(first)
 
-        return combined
+    def concatenate(self):
+        cont = True
+        while cont:
+            first, second, cont = self._process_main()
+
+        self._process_last(first, second)
+        return self.combined
 
     def is_valid_block(self, first):
         return (self.a_cursor > first.a and
@@ -89,6 +92,8 @@ class MatchConcatenator(object):
                           a_end=self.a_cursor,
                           b_end=self.b_cursor)
 
-    def jump_gap(self, a_gap, b_gap):
+    def jump_gap(self, last):
+        a_gap = last.a - self.a_cursor
+        b_gap = last.b - self.b_cursor
         return (a_gap <= self.gap_length and
                 b_gap <= self.gap_length)
