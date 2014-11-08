@@ -39,8 +39,8 @@ class Processor(object):
                                                 b=beta.body,
                                                 name_a=self.alpha_name,
                                                 name_b=self.beta_name)
-        name_a = path.get_name(self.alpha_name)
-        name_b = path.get_name(self.beta_name)
+        name_a = path.get_name(self.alpha_name, extension=False)
+        name_b = path.get_name(self.beta_name, extension=False)
         out_name = REPORT_NAME.format(name_a,
                                       name_b)
         matches = comparator.compare()

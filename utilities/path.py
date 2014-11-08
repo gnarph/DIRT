@@ -20,5 +20,6 @@ def is_hidden_file(name):
     return name[0] == '.'
 
 
-def get_name(filename):
-    return os.path.split(filename)[1]
+def get_name(filename, extension=True):
+    fn = filename if extension else os.path.splitext(filename)[0]
+    return os.path.split(fn)[1]

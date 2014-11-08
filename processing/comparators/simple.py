@@ -39,31 +39,6 @@ class Comparator(base_comparator.BaseComparator):
         cat = concatenator.MatchConcatenator(blocks, self.gap_length)
         return cat.concatenate()
 
-        # this just combines nearby blocks in alpha
-        combined_blocks = []
-        i = 0
-        j = 1
-        end = None
-        g2 = 0
-        while j < len(matching_blocks):
-            first = matching_blocks[i]
-            if end is None:
-                end = first.a + first.size
-            second = matching_blocks[j]
-            gap = second.a - end
-            if gap < self.gap_length:
-                # Block continues
-                # why 2?
-                g2 += gap + 2
-            else:
-                # Block terminates
-                self._terminate_block(combined_blocks, end, first, g2)
-                i = j
-            j += 1
-            end = second.a + second.size
-        self._terminate_block(combined_blocks, end, first, g2)
-        return combined_blocks
-
     def _terminate_block(self, combined_blocks, end, first, g2):
         new_length = end - first.a
         new_match = self.MatchTuple(a=first.a,

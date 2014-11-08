@@ -29,7 +29,7 @@ class Preprocessor(object):
         self.output_dir = output_dir
 
     def process(self):
-        name = path.get_name(self.file_name)
+        name = path.get_name(self.file_name, extension=False)
         output_name = name + PREPROCESS_SUFFIX
         in_file = self.file_name
         out_file = os.path.join(self.output_dir, output_name)
