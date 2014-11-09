@@ -12,15 +12,23 @@ class SmokeTest(unittest.TestCase):
     pre_dir = 'test_preprocessed'
     out_dir = 'test_output'
 
-    def setUp(self):
-        shutil.rmtree(self.pre_dir)
-        shutil.rmtree(self.out_dir)
+    def _reset_dirs(self):
+        try:
+            shutil.rmtree(self.pre_dir)
+        except OSError:
+            pass
+        try:
+            shutil.rmtree(self.out_dir)
+        except OSError:
+            pass
         os.makedirs(self.pre_dir)
         os.makedirs(self.out_dir)
 
-    def tearDown(self):
-        pass
+    def setUp(self):
+        self._reset_dirs()
 
+    def tearDown(self):
+        self._reset_dirs()
 
     def test_a(self):
         args = mock.Mock()
