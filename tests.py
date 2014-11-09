@@ -1,10 +1,9 @@
-import os
 import unittest
-import shutil
 
 import mock
 
 import DIRT
+import utilities.path
 
 
 class SmokeTest(unittest.TestCase):
@@ -13,16 +12,8 @@ class SmokeTest(unittest.TestCase):
     out_dir = 'test_output'
 
     def _reset_dirs(self):
-        try:
-            shutil.rmtree(self.pre_dir)
-        except OSError:
-            pass
-        try:
-            shutil.rmtree(self.out_dir)
-        except OSError:
-            pass
-        os.makedirs(self.pre_dir)
-        os.makedirs(self.out_dir)
+        utilities.path.reset_folder(self.pre_dir)
+        utilities.path.reset_folder(self.out_dir)
 
     def setUp(self):
         self._reset_dirs()
