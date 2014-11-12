@@ -38,6 +38,11 @@ class MatchSinglet(object):
                 'passage': self.passage,
                 }
 
+    @staticmethod
+    def from_dict(d):
+        return MatchSinglet(d['file_name'],
+                            d['passage'])
+
     def get_context(self, context_chars=10):
         """
         Get matching passage with some context from surrounding text
@@ -46,7 +51,7 @@ class MatchSinglet(object):
         :return: string of matching passage and surrounding context
         """
         loc, top = find_in_body(body=self.document.body,
-                                      passage=self.passage)
+                                passage=self.passage)
         desired_lower = loc - context_chars
         desired_upper = top + context_chars
         lower_bound = desired_lower if desired_lower >= 0 else 0

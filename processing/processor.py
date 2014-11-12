@@ -48,5 +48,5 @@ class Processor(object):
         json_match = cjson.encode(match_dicts)
         unicode_json_match = json_match.encode('utf8')
         out_file = os.path.join(self.output_dir, out_name)
-        with codecs.open(out_file, 'w+', 'UTF-8') as o:
+        with codecs.open(out_file, 'w+', 'utf8') as o:
             o.write(unicode_json_match)
