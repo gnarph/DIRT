@@ -19,12 +19,13 @@ COMPARATOR_PATH = 'processing.comparators.{}'
 class UnsupportedFunctionException(BaseException):
     pass
 
+
 def iter_files_in_file(filename):
     with open(filename) as f:
         contents = f.read()
         lines = contents.split('\n')
     for line in lines:
-        if line:
+        if line and path.should_use_file(line):
             yield line
 
 

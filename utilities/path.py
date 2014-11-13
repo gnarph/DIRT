@@ -7,24 +7,24 @@ def iter_files_in(directory):
     # however, then the processing naming would probably need
     # to be adjusted
     for item_name in os.listdir(directory):
-        if should_use_file(item_name):
-            yield os.path.join(directory, item_name)
+        full_name = os.path.join(directory, item_name)
+        if should_use_file(full_name):
+            yield full_name
 
 
 def should_use_file(name):
-    if os.path.isdir(name):
-        return False
     if is_hidden_file(name):
         return False
-    return True
+    return os.path.isfile(name)
 
 
-def is_hidden_file(name):
+def is_hidden_file(full_name):
     """
     Is a file hidden?
-    :param name: name of file
+    :param full_name: name of file
     :return: True or False
     """
+    name = get_name(full_name)
     return name[0] == '.'
 
 
