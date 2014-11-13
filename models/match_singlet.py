@@ -48,21 +48,34 @@ class MatchSinglet(object):
         return MatchSinglet(d['file_name'],
                             d['passage'])
 
-    def get_context(self, context_chars=10):
+    def get_match_bounds(self, body):
+        """
+        Get the lower and upper indices that bound the match
+        :param body: text body the indices should reference
+        :return: lower index, upper index
+        """
+        loc, top = find_in_body(body=body,
+                                passage=self.passage)
+        return loc, top
+
+    def get_context(self, from_doc=None, context_chars=10):
         """
         Get matching passage with some context from surrounding text
+        :param from_doc: document the context should come from
         :param context_chars: number of chars added to each side of
                               passage to make context
         :return: string of matching passage and surrounding context
         """
-        loc, top = find_in_body(body=self.document.body,
-                                passage=self.passage)
+        if from_doc is None:
+            from_doc = self.document
+        loc, top = self.get_match_bounds(from_doc.body)
         desired_lower = loc - context_chars
         desired_upper = top + context_chars
         lower_bound = desired_lower if desired_lower >= 0 else 0
-        len_body = len(self.document.body)
+        len_body = len(from_doc.body)
         if desired_upper >= len_body:
             upper_bound = len_body
         else:
             upper_bound = desired_upper
-        return self.document.body[lower_bound:upper_bound]
+        context = from_doc.body[lower_bound:upper_bound]
+        return context
