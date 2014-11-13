@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import unittest
 
+import cjson
 import mock
 
 from models.document import Document
 import models.document_factory as document_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
+from models.match_set import MatchSet
 from utilities.fuzzer import is_fuzzy_match
 
 
@@ -138,7 +140,7 @@ class MatchSingletTest(unittest.TestCase):
         self.assertEqual(doc.metadata, meta)
 
 
-class TestMatch(unittest.TestCase):
+class MatchTest(unittest.TestCase):
 
     def setUp(self):
         self.alpha_name = 'a_name'
@@ -162,3 +164,32 @@ class TestMatch(unittest.TestCase):
         self.assertEqual(alpha_dict, self.alpha.to_dict())
         self.assertEqual(beta_dict, self.beta.to_dict())
 
+
+class MatchSetTest(unittest.TestCase):
+
+    def setUp(self):
+        self.documents_a = [chr(i + ord('a')) for i in xrange(10)]
+        self.documents_b = [chr(i + ord('A')) for i in xrange(10)]
+        self.passages_a = list(reversed(self.documents_a))
+        self.passages_b = list(reversed(self.documents_b))
+
+        self.matches = []
+        for i in xrange(len(self.documents_a)):
+            a = MatchSinglet(file_name=self.documents_a[i],
+                             passage=self.passages_a[i])
+            b = MatchSinglet(file_name=self.documents_b[i],
+                             passage=self.passages_b[i])
+            m = Match(a, b)
+            self.matches.append(m)
+        self.match_set = MatchSet(self.matches)
+
+    def test_serialize(self):
+        match_set_dict = self.match_set.to_dict()
+        match_set_json = cjson.encode(match_set_dict)
+        deserialized_dict = cjson.decode(match_set_json)
+        deserialized_match_set = MatchSet.from_dict(deserialized_dict)
+
+        match_count = len(self.match_set.matches)
+        deserialized_match_count = len(deserialized_match_set.matches)
+        self.assertEqual(match_count, deserialized_match_count)
+        # TODO: test contents of matches
