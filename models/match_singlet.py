@@ -18,6 +18,11 @@ class MatchSinglet(object):
         self.passage = passage
         self._document = document
 
+    def __eq__(self, other):
+        if self.file_name != other.file_name:
+            return False
+        return self.passage == other.passage
+
     @property
     def document(self):
         """

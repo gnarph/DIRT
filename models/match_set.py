@@ -8,6 +8,9 @@ class MatchSet(object):
         # TODO: add more data at this level,
         # move it from match singlet
 
+    def __eq__(self, other):
+        return self.matches == other.matches
+
     def to_dict(self):
         return {'matches': [match.to_dict() for match in self.matches],
                 }

@@ -14,6 +14,13 @@ class Match(object):
         self.alpha = alpha
         self.beta = beta
 
+    def __eq__(self, other):
+        if self.alpha == other.alpha:
+            return self.beta == other.beta
+        elif self.alpha == other.beta:
+            return self.beta == other.alpha
+        return False
+
     def to_dict(self):
         """
         Convert match to dictionary representation

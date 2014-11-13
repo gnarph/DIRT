@@ -194,7 +194,7 @@ class MatchSetTest(unittest.TestCase):
         match_count = len(self.match_set.matches)
         deserialized_match_count = len(deserialized_match_set.matches)
         self.assertEqual(match_count, deserialized_match_count)
-        # TODO: test contents of matches
+        self.assertTrue(self.match_set == deserialized_match_set)
 
         test_file = 'test_output/match_set_test.json'
 
@@ -204,3 +204,4 @@ class MatchSetTest(unittest.TestCase):
         deserialized_ms2 = match_set_factory.from_json(test_file)
         ms2_count = len(deserialized_ms2.matches)
         self.assertEqual(match_count, ms2_count)
+        self.assertTrue(self.match_set == deserialized_ms2)
