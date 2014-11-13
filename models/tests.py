@@ -5,6 +5,7 @@ import cjson
 import codecs
 import mock
 
+from processing.processor import Processor
 from models.document import Document
 import models.document_factory as document_factory
 import models.match_set_factory as match_set_factory
@@ -34,7 +35,7 @@ class DocumentFactoryTest(unittest.TestCase):
 
 
 class DocumentTest(unittest.TestCase):
-    file_name = u'test_data/lorem.txt'
+    file_name = u'models/test_data/lorem.json'
     meta = {'title': u'test 稢綌',
             'author': u'gorden 胇赲'
             }
@@ -86,7 +87,7 @@ class DocumentTest(unittest.TestCase):
 class MatchSingletTest(unittest.TestCase):
 
     def setUp(self):
-        self.file_name = u'lorem.json'
+        self.file_name = u'models/test_data/lorem.json'
         self.doc = mock.Mock
         self.context_pad = u' context垥娀 '
         self.match = u'this is 檦 the match'
@@ -94,6 +95,7 @@ class MatchSingletTest(unittest.TestCase):
                                                         match=self.match)
         fmt = u'duck goose raccoon{}鬐鶤鶐膗,觾韄煔垥'
         self.doc.body = fmt.format(self.with_context)
+        self.doc.file_name = self.file_name
         self.body = self.doc.body
         self.singlet = MatchSinglet(file_name=self.file_name,
                                     passage=self.match,
@@ -140,7 +142,7 @@ class MatchSingletTest(unittest.TestCase):
         sing = MatchSinglet(file_name='models/test_data/lorem.json',
                             passage=u'청춘의 피가 심장의 많이')
         doc = sing.document
-        self.assertEqual(doc.file_name, 'lorem.json')
+        self.assertEqual(doc.file_name, 'models/test_data/lorem.json')
         body = u'품에 원대하고, 무엇을 무한한 사막이다. 청춘의 피가 심장의 많이 열락의 무엇을 아니다.'
         self.assertEqual(doc.body, body)
         meta = {}
@@ -183,16 +185,26 @@ class MatchSetTest(unittest.TestCase):
         self.documents_b = [chr(i + ord('A')) for i in xrange(10)]
         self.passages_a = list(reversed(self.documents_a))
         self.passages_b = list(reversed(self.documents_b))
+        self.file_a = 'models/test_data/lorem.json'
+        self.document_a = document_factory.from_file(self.file_a)
+        self.file_b = 'models/test_data/lorem2.json'
+        self.document_b = document_factory.from_file(self.file_b)
 
         self.matches = []
+        self.singlet_pairs = []
         for i in xrange(len(self.documents_a)):
             a = MatchSinglet(file_name=self.documents_a[i],
                              passage=self.passages_a[i])
             b = MatchSinglet(file_name=self.documents_b[i],
                              passage=self.passages_b[i])
-            m = Match(a, b, (0, 1), (0, 1))
-            self.matches.append(m)
-        self.match_set = MatchSet(self.matches)
+            s_pair = (a, b)
+            self.singlet_pairs.append(s_pair)
+        self.matches = Processor.singlet_pairs_to_matches(alpha=self.document_a,
+                                                          beta=self.document_b,
+                                                          singlet_pairs=self.singlet_pairs)
+        self.match_set = MatchSet(alpha_doc=self.document_a,
+                                  beta_doc=self.documents_b,
+                                  matches=self.matches)
 
     def test_serialize(self):
         match_set_dict = self.match_set.to_dict()

@@ -36,7 +36,10 @@ class ComparatorTestCase(unittest.TestCase):
     def test_compare(self):
         a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         b = 'Lorem ipsum dolor xxxxxxxxx consectetur adipiscing a elit.'
-        matches = self.match(a, b, 2, 3)
+        matches = self.match(a=a,
+                             b=b,
+                             gap_length=2,
+                             match_length=3)
         self.assertEqual(len(matches), 2)
 
         match_1 = 'Lorem ipsum dolor '
@@ -52,7 +55,7 @@ class ComparatorTestCase(unittest.TestCase):
     def test_compare_match_len(self):
         a = 'Lorem xxxxx dolor sit amet, consectetur adipiscing ddd.'
         b = 'Lorem ipsum dolor xxxxxxxxx consectetur xxxxxxxxxx a.'
-        matches = self.match(a, b, 0, 9)
+        matches = self.match(a, b, gap_length=0, match_length=9)
         self.assertEqual(len(matches), 1)
 
         m = ' consectetur '
@@ -65,7 +68,7 @@ class ComparatorTestCase(unittest.TestCase):
     def test_compare_gap_len_b(self):
         a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         b = 'Lorem xxipsum dolorxxxxsit amet, xconsectetur xxxadipiscing xelit.'
-        matches = self.match(a, b, 5, 1)
+        matches = self.match(a, b, gap_length=5, match_length=1)
         self.assertEqual(len(matches), 1)
 
         match = matches[0]
@@ -75,7 +78,7 @@ class ComparatorTestCase(unittest.TestCase):
     def test_compare_gap_len_a(self):
         a = 'Lorem xxipsum dolor xxxsit amet, xconsectetur xxxadipiscing xelit.'
         b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        matches = self.match(a, b, 5, 1)
+        matches = self.match(a, b, gap_length=5, match_length=1)
         self.assertEqual(len(matches), 1)
 
         match = matches[0]
@@ -85,7 +88,7 @@ class ComparatorTestCase(unittest.TestCase):
     def test_compare_gap(self):
         a = 'Lorem xxipsum dolorxxxxxxsit amet, xconsectetur xxxadipiscing xelit.'
         b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        matches = self.match(a, b, 3, 2)
+        matches = self.match(a, b, gap_length=3, match_length=2)
         self.assertEqual(len(matches), 2)
 
         match = matches[0]

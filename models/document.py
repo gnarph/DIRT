@@ -6,7 +6,8 @@ class Document(object):
     Class for representing a document in memory
     """
 
-    def __init__(self, file_name, pre_file_name='', metadata=None):
+    def __init__(self, file_name, raw_file_name='',
+                 pre_file_name='', metadata=None):
         """
 
         :param pre_file_name:
@@ -14,12 +15,17 @@ class Document(object):
         :param metadata: dict of metadata
         """
         self.file_name = file_name
+        self.raw_file_name = raw_file_name
         self.pre_file_name = pre_file_name
         self.metadata = metadata if metadata else {}
 
     @property
     def body(self):
         return file_reading.read_utf8(self.file_name)
+
+    @property
+    def raw_body(self):
+        return file_reading.read_json_utf8(self.raw_file_name)
 
     @property
     def pre_body(self):
