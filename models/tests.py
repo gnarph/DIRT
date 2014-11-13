@@ -2,10 +2,12 @@
 import unittest
 
 import cjson
+import codecs
 import mock
 
 from models.document import Document
 import models.document_factory as document_factory
+import models.match_set_factory as match_set_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
 from models.match_set import MatchSet
@@ -193,3 +195,12 @@ class MatchSetTest(unittest.TestCase):
         deserialized_match_count = len(deserialized_match_set.matches)
         self.assertEqual(match_count, deserialized_match_count)
         # TODO: test contents of matches
+
+        test_file = 'test_output/match_set_test.json'
+
+        with codecs.open(test_file, 'w+', encoding='utf8') as f:
+            f.write(match_set_json)
+
+        deserialized_ms2 = match_set_factory.from_json(test_file)
+        ms2_count = len(deserialized_ms2.matches)
+        self.assertEqual(match_count, ms2_count)

@@ -4,6 +4,7 @@ import os
 import cjson
 
 import models.document_factory as document_factory
+from models.match_set import MatchSet
 from processing.comparators import simple
 from utilities import path
 
@@ -44,8 +45,9 @@ class Processor(object):
         out_name = REPORT_NAME.format(name_a,
                                       name_b)
         matches = comparator.compare()
-        match_dicts = [match.to_dict() for match in matches]
-        json_match = cjson.encode(match_dicts)
+        match_set = MatchSet(matches=matches)
+        match_set_dict = match_set.to_dict()
+        json_match = cjson.encode(match_set_dict)
         unicode_json_match = json_match.encode('utf8')
         out_file = os.path.join(self.output_dir, out_name)
         with codecs.open(out_file, 'w+', 'utf8') as o:
