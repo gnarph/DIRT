@@ -17,7 +17,7 @@ class Comparator(base_comparator.BaseComparator):
     def compare(self):
         """
         Compare texts
-        :return: list of Matches
+        :return: list of singlet pairs
         """
         matcher = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
                                           a=self.a,
@@ -28,8 +28,7 @@ class Comparator(base_comparator.BaseComparator):
         filtered_blocks = self._filter_blocks(combined_blocks)
         passage_blocks = self._tuples_to_passages(filtered_blocks)
 
-        matches = self._get_matches(passage_blocks)
-        return matches
+        return self._get_singlet_pairs(passage_blocks)
 
     def _combine_blocks(self, matching_blocks):
         """
@@ -78,11 +77,3 @@ class Comparator(base_comparator.BaseComparator):
                                passage=p_b)
             singlet_pairs.append((s_a, s_b))
         return singlet_pairs
-
-    def _get_matches(self, passage_blocks):
-        singlet_pairs = self._get_singlet_pairs(passage_blocks)
-        matches = []
-        for s_a, s_b in singlet_pairs:
-            match = Match(s_a, s_b)
-            matches.append(match)
-        return matches

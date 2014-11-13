@@ -34,7 +34,7 @@ class DocumentFactoryTest(unittest.TestCase):
 
 
 class DocumentTest(unittest.TestCase):
-    file_name = u'this_is_a_file.txt'
+    file_name = u'test_data/lorem.txt'
     meta = {'title': u'test 稢綌',
             'author': u'gorden 胇赲'
             }
@@ -43,7 +43,6 @@ class DocumentTest(unittest.TestCase):
 
     def setUp(self):
         self.doc = Document(file_name=self.file_name,
-                            body=self.body,
                             metadata=self.meta,
                             pre_file_name=self.pre_file_name)
 
@@ -155,24 +154,24 @@ class MatchTest(unittest.TestCase):
     def setUp(self):
         self.alpha_name = 'a_name'
         self.alpha_passage = 'a_passage'
-        self.alpha = MatchSinglet(file_name=self.alpha_name,
-                                  passage=self.alpha_passage)
+        self.alpha_indices = (0, 12)
         self.beta_name = 'b_name'
         self.beta_passage = 'b_passage'
-        self.beta = MatchSinglet(file_name=self.beta_name,
-                                 passage=self.beta_passage)
-        self.match = Match(alpha=self.alpha,
-                           beta=self.beta)
+        self.beta_indices = (12, 24)
+        self.match = Match(alpha_passage=self.alpha_passage,
+                           alpha_indices=self.alpha_indices,
+                           beta_passage=self.beta_passage,
+                           beta_indices=self.beta_indices)
 
     def test_to_dict(self):
         """
         Test dict conversion for JSON serialization
         """
         match_dict = self.match.to_dict()
-        alpha_dict = match_dict['alpha']
-        beta_dict = match_dict['beta']
-        self.assertEqual(alpha_dict, self.alpha.to_dict())
-        self.assertEqual(beta_dict, self.beta.to_dict())
+        self.assertEqual(self.alpha_passage, match_dict['alpha_passage'])
+        self.assertEqual(self.alpha_indices, match_dict['alpha_indices'])
+        self.assertEqual(self.beta_passage, match_dict['beta_passage'])
+        self.assertEqual(self.beta_indices, match_dict['beta_indices'])
 
         # todo: test eq
 
@@ -191,7 +190,7 @@ class MatchSetTest(unittest.TestCase):
                              passage=self.passages_a[i])
             b = MatchSinglet(file_name=self.documents_b[i],
                              passage=self.passages_b[i])
-            m = Match(a, b)
+            m = Match(a, b, (0, 1), (0, 1))
             self.matches.append(m)
         self.match_set = MatchSet(self.matches)
 

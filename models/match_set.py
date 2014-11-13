@@ -3,7 +3,9 @@ from models.match import Match
 
 class MatchSet(object):
 
-    def __init__(self, matches):
+    def __init__(self, alpha_doc, beta_doc, matches):
+        self.alpha_doc = alpha_doc
+        self.beta_doc = beta_doc
         self.matches = matches
         # TODO: add more data at this level,
         # move it from match singlet

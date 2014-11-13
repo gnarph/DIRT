@@ -4,6 +4,7 @@ import os
 import cjson
 
 import models.document_factory as document_factory
+from models.match import Match
 from models.match_set import MatchSet
 from processing.comparators import simple
 from utilities import path
@@ -30,6 +31,22 @@ class Processor(object):
         self.input_dir = input_dir
         self.output_dir = output_dir
 
+    @staticmethod
+    def singlet_pairs_to_matches(alpha, beta, singlet_pairs):
+        # TODO: should use pre_body
+        matches = []
+        for a, b in singlet_pairs:
+            alpha_indices = a.get_match_bounds(alpha.body)
+            alpha_passage = a.passage
+            beta_indices = b.get_match_bounds(beta.body)
+            beta_passage = b.passage
+            m = Match(alpha_passage=alpha_passage,
+                      alpha_indices=alpha_indices,
+                      beta_passage=beta_passage,
+                      beta_indices=beta_indices)
+            matches.append(m)
+        return matches
+
     def process(self):
         """
         Process input files
@@ -44,8 +61,11 @@ class Processor(object):
         name_b = path.get_name(self.beta_name, extension=False)
         out_name = REPORT_NAME.format(name_a,
                                       name_b)
-        matches = comparator.compare()
-        match_set = MatchSet(matches=matches)
+        singlet_pairs = comparator.compare()
+        matches = self.singlet_pairs_to_matches(alpha, beta, singlet_pairs)
+        match_set = MatchSet(alpha_doc=alpha,
+                             beta_doc=beta,
+                             matches=matches)
         match_set_dict = match_set.to_dict()
         json_match = cjson.encode(match_set_dict)
         unicode_json_match = json_match.encode('utf8')

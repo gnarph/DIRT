@@ -57,6 +57,5 @@ def from_tei(file_name):
 def from_json(file_name):
     data = file_reading.read_json_utf8(file_name)
     return Document(file_name=data['file_name'],
-                    body=data['body'],
                     metadata=data['metadata'],
                     pre_file_name=data['pre_file_name'])
