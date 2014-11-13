@@ -180,16 +180,16 @@ class MatchTest(unittest.TestCase):
 class MatchSetTest(unittest.TestCase):
 
     def setUp(self):
-        self.documents_a = [chr(i + ord('a')) for i in xrange(10)]
-        self.documents_b = [chr(i + ord('A')) for i in xrange(10)]
-        self.passages_a = list(reversed(self.documents_a))
-        self.passages_b = list(reversed(self.documents_b))
+        self.document_a = 'models/test_data/a.txt'
+        self.document_b = 'models/test_data/b.txt'
+        self.passages_a = [chr(i + ord('a')) for i in xrange(10)]
+        self.passages_b = [chr(i + ord('A')) for i in xrange(10)]
 
         self.matches = []
-        for i in xrange(len(self.documents_a)):
-            a = MatchSinglet(file_name=self.documents_a[i],
+        for i in xrange(len(self.passages_a)):
+            a = MatchSinglet(file_name=self.document_a,
                              passage=self.passages_a[i])
-            b = MatchSinglet(file_name=self.documents_b[i],
+            b = MatchSinglet(file_name=self.document_b,
                              passage=self.passages_b[i])
             m = Match(a, b)
             self.matches.append(m)
@@ -215,5 +215,9 @@ class MatchSetTest(unittest.TestCase):
         ms2_count = len(deserialized_ms2.matches)
         self.assertEqual(match_count, ms2_count)
         self.assertTrue(self.match_set == deserialized_ms2)
+
+        # Should test, more of a hack check for now
+        fn = self.match_set.get_file_names()
+        inds = self.match_set.get_indices()
 
     # TODO: test eq
