@@ -55,7 +55,10 @@ def process(args):
         this_set = {a, b}
         if a != b and this_set not in compared:
             compared.append(this_set)
-            pro = processor.Processor(a, b, args.preprocessed_dir, args.output_dir,
+            pro = processor.Processor(alpha_name=a,
+                                      beta_name=b,
+                                      input_dir=args.preprocessed_dir,
+                                      output_dir=args.output_dir,
                                       comparator=comparator)
             pro.process()
 

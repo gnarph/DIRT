@@ -36,7 +36,10 @@ class Preprocessor(object):
 
         in_document = document_factory.from_file(in_file)
         processed = self.standardizer.standardize(in_document.body)
-        out_document = Document(output_name, processed, in_document.metadata)
+        out_document = Document(file_name=self.file_name,
+                                pre_file_name=output_name,
+                                body=processed,
+                                metadata=in_document.metadata)
         processed_dict = out_document.to_dict()
         processed_json = cjson.encode(processed_dict)
         with codecs.open(out_file, mode='w+', encoding='UTF-8') as o:

@@ -18,4 +18,6 @@ class TEIReader(object):
         body = data_dict['body']
         del data_dict['body']
 
-        return models.document.Document(self.file_name, body, data_dict)
+        return models.document.Document(file_name=self.file_name,
+                                        body=body,
+                                        metadata=data_dict)

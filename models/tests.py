@@ -39,11 +39,13 @@ class DocumentTest(unittest.TestCase):
             'author': u'gorden 胇赲'
             }
     body = u'In id tristique orci. 痵痽 犵艿邔 疿疶砳 齸圞趲.'
+    pre_file_name = file_name + '_PRE.json'
 
     def setUp(self):
         self.doc = Document(file_name=self.file_name,
                             body=self.body,
-                            metadata=self.meta)
+                            metadata=self.meta,
+                            pre_file_name=self.pre_file_name)
 
     def test_clone(self):
         """
@@ -66,6 +68,10 @@ class DocumentTest(unittest.TestCase):
 
         doc_cloned.metadata = self.doc.metadata
         doc_cloned.body = ''
+        self.assertFalse(self.doc == doc_cloned)
+
+        doc_cloned.body = self.doc.body
+        doc_cloned.pre_file_name = ''
         self.assertFalse(self.doc == doc_cloned)
 
     def test_to_dict(self):

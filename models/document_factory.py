@@ -34,8 +34,8 @@ def from_file(file_name):
     elif 'txt' in lowered_file_name:
         creator = from_txt
     else:
-        tmpl = 'Input file {file_name} is not a valid file type'
-        msg = tmpl.format(file_name=file_name)
+        template = 'Input file {file_name} is not a valid file type'
+        msg = template.format(file_name=file_name)
         raise InvalidDocumentException(msg)
     return creator(file_name)
 
@@ -43,6 +43,7 @@ def from_file(file_name):
 @unicode_error_handler
 def from_txt(file_name):
     body = file_reading.read_utf8(file_name)
+    # TODO: handle pre names
     return Document(file_name, body)
 
 
@@ -57,4 +58,5 @@ def from_json(file_name):
     data = file_reading.read_json_utf8(file_name)
     return Document(file_name=data['file_name'],
                     body=data['body'],
-                    metadata=data['metadata'])
+                    metadata=data['metadata'],
+                    pre_file_name=data['pre_file_name'])
