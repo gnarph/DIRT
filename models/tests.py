@@ -141,6 +141,8 @@ class MatchSingletTest(unittest.TestCase):
         meta = {}
         self.assertEqual(doc.metadata, meta)
 
+    # TODO: test eq
+
 
 class MatchTest(unittest.TestCase):
 
@@ -165,6 +167,8 @@ class MatchTest(unittest.TestCase):
         beta_dict = match_dict['beta']
         self.assertEqual(alpha_dict, self.alpha.to_dict())
         self.assertEqual(beta_dict, self.beta.to_dict())
+
+        # todo: test eq
 
 
 class MatchSetTest(unittest.TestCase):
@@ -205,3 +209,5 @@ class MatchSetTest(unittest.TestCase):
         ms2_count = len(deserialized_ms2.matches)
         self.assertEqual(match_count, ms2_count)
         self.assertTrue(self.match_set == deserialized_ms2)
+
+    # TODO: test eq

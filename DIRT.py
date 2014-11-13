@@ -78,20 +78,26 @@ if __name__ == '__main__':
 
     # TODO: add parameters to allow only pre/processing/postprocessing
     parser.add_argument('-i', '--input',
-                        help='Directory containing input corpus')
+                        help='Directory containing input corpus',
+                        required=True,
+                        type=str)
     parser.add_argument('-pre', '--preprocessed_dir',
                         default='dirt_preprocessed',
-                        help='Directory containing preprocessed corpus')
+                        help='Directory containing preprocessed corpus',
+                        type=str)
     parser.add_argument('-o', '--output_dir',
                         default='dirt_output',
-                        help='Directory for output files')
+                        help='Directory for output files',
+                        type=str)
 
     parser.add_argument('-l', '--language',
                         default='eng',
-                        help='ISO 639-2 language code')
+                        help='ISO 639-2 language code',
+                        type=str)
     parser.add_argument('-c', '--comparator',
                         default='simple',
-                        help='comparator for processor')
+                        help='comparator for processor',
+                        type=str)
 
     parsed_args = parser.parse_args()
     main(parsed_args)
