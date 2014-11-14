@@ -3,7 +3,7 @@ import unittest
 import models.document_factory as document_factory
 import preprocessing.tei.reader as reader
 import preprocessing.tei.document as tei_document
-import utilities.file_reading as file_reading
+import utilities.file_ops as file_reading
 
 TEI_ZHI = 'test_data/zhi_tei.xml'
 TEI_ENG = 'test_data/eng_tei.xml'

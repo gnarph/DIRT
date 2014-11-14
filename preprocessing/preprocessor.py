@@ -8,6 +8,7 @@ import models.document_factory as document_factory
 from preprocessing.language_standardizer import eng
 from utilities import path
 
+PREPROCESS_DIR = 'dirt_preprocess/'
 PREPROCESS_SUFFIX = '_PRE.json'
 
 
@@ -33,6 +34,7 @@ class Preprocessor(object):
         output_name = name + PREPROCESS_SUFFIX
         in_file = self.file_name
         out_file = os.path.join(self.output_dir, output_name)
+        # TODO: deal with tei here
 
         in_document = document_factory.from_file(in_file)
         processed = self.standardizer.standardize(in_document.body)

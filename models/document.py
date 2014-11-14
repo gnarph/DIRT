@@ -1,4 +1,4 @@
-from utilities import file_reading
+from utilities import file_ops
 
 
 class Document(object):
@@ -21,15 +21,15 @@ class Document(object):
 
     @property
     def body(self):
-        return file_reading.read_utf8(self.file_name)
+        return file_ops.read_utf8(self.file_name)
 
     @property
     def raw_body(self):
-        return file_reading.read_json_utf8(self.raw_file_name)
+        return file_ops.read_json_utf8(self.raw_file_name)
 
     @property
     def pre_body(self):
-        return file_reading.read_utf8(self.pre_file_name)
+        return file_ops.read_utf8(self.pre_file_name)
 
     def clone(self):
         return Document(file_name=self.file_name,

@@ -36,3 +36,10 @@ def get_full_file_name(relative_file, magic_file):
     my_dir = os.path.dirname(raw_loc)
     real_file_name = os.path.join(my_dir, relative_file)
     return real_file_name
+
+
+def write_string(full_name, to_write):
+    if not os.path.exists(os.path.dirname(full_name)):
+        os.makedirs(os.path.dirname(full_name))
+    with codecs.open(full_name, 'w+', encoding='utf8') as f:
+        f.write(to_write)
