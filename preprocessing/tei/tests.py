@@ -41,8 +41,6 @@ class TEITest(unittest.TestCase):
         metadata = desired['metadata']
         self.assertEquals(output['title'], metadata['title'])
         body = self._read_file(raw_file)
-        esc = body.decode('string_escape')
-        file_ops.write_string('preprocessing/gordgord.txt', output['body'])
         self.assertEqual(output['body'], body)
 
     def test_get_data(self):
