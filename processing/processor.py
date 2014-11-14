@@ -3,7 +3,7 @@ import os
 
 import cjson
 
-import models.document_factory as document_factory
+from models.document import Document
 from models.match import Match
 from models.match_set import MatchSet
 from processing.comparators import simple
@@ -51,8 +51,8 @@ class Processor(object):
         """
         Process input files
         """
-        alpha = document_factory.from_file(self.alpha_name)
-        beta = document_factory.from_file(self.beta_name)
+        alpha = Document.from_json(self.alpha_name)
+        beta = Document.from_json(self.beta_name)
         comparator = self.comparator.Comparator(a=alpha.body,
                                                 b=beta.body,
                                                 name_a=self.alpha_name,

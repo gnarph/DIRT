@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import models.document_factory as document_factory
+from models.document import Document
 from preprocessing.preprocessor import Preprocessor
 import utilities.path
 
@@ -21,10 +21,8 @@ class PreprocessorTest(unittest.TestCase):
         for file_name in out_dir_files:
             name = utilities.path.get_name(self.file_name,
                                            extension=False)
-            print name
-            print file_name
             if name in file_name:
                 file_path = os.path.join(self.output_dir, file_name)
-                doc = document_factory.from_file(file_path)
+                doc = Document.from_json(file_path)
                 self.assertNotEqual(doc.pre_file_name, self.file_name)
                 self.assertEqual(doc.file_name, self.file_name)

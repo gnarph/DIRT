@@ -7,31 +7,11 @@ import mock
 
 from processing.processor import Processor
 from models.document import Document
-import models.document_factory as document_factory
 import models.match_set_factory as match_set_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
 from models.match_set import MatchSet
 from utilities.fuzzer import is_fuzzy_match
-
-
-class DocumentFactoryTest(unittest.TestCase):
-
-    def test_unicode_error_handle(self):
-        """
-        Test that a unicode decode error is captured and an
-        invalid document error is raised instead
-        """
-        with self.assertRaises(document_factory.InvalidDocumentException):
-            document_factory.from_file('models/test_data/invalid.txt')
-
-    def test_hidden_error_handle(self):
-        """
-        Test that a file without an extension raises and invalid
-        document error
-        """
-        with self.assertRaises(document_factory.InvalidDocumentException):
-            document_factory.from_file('models/test_data/invalid')
 
 
 class DocumentTest(unittest.TestCase):
@@ -186,9 +166,9 @@ class MatchSetTest(unittest.TestCase):
         self.passages_a = list(reversed(self.documents_a))
         self.passages_b = list(reversed(self.documents_b))
         self.file_a = 'models/test_data/lorem.json'
-        self.document_a = document_factory.from_file(self.file_a)
+        self.document_a = Document.from_json(self.file_a)
         self.file_b = 'models/test_data/lorem2.json'
-        self.document_b = document_factory.from_file(self.file_b)
+        self.document_b = Document.from_json(self.file_b)
 
         self.matches = []
         self.singlet_pairs = []

@@ -19,6 +19,14 @@ class Document(object):
         self.pre_file_name = pre_file_name
         self.metadata = metadata if metadata else {}
 
+    @staticmethod
+    def from_json(file_name):
+        data = file_ops.read_json_utf8(file_name)
+        return Document(file_name=data['file_name'],
+                        raw_file_name=data['raw_file_name'],
+                        metadata=data['metadata'],
+                        pre_file_name=data['pre_file_name'])
+
     @property
     def body(self):
         return file_ops.read_utf8(self.file_name)

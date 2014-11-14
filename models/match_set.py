@@ -20,5 +20,4 @@ class MatchSet(object):
     @staticmethod
     def from_dict(d):
         matches = [Match.from_dict(m) for m in d['matches']]
-        print matches
         return MatchSet(matches)
