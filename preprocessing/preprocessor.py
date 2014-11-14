@@ -36,7 +36,7 @@ class Preprocessor(object):
         in_file = self.file_name
         out_file = os.path.join(self.output_dir, output_name)
 
-        if in_file.endswith('.tei'):
+        if in_file.endswith('.tei') or in_file.endswith('.xml'):
             reader = TEIReader(in_file)
             raw_text, metadata = reader.read()
         else:
