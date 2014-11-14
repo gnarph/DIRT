@@ -44,6 +44,6 @@ class TEITest(unittest.TestCase):
         tei_body = tei_data['body']
         r = reader.TEIReader(real_data_file)
         read_doc = r.read()
-        self.assertEqual(tei_body, read_doc.body)
+        self.assertEqual(tei_body, read_doc[0])
         global_doc = Document.from_json(real_data_file)
         self.assertEqual(read_doc, global_doc)

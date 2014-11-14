@@ -1,6 +1,25 @@
 from utilities import file_ops
 
 
+class InvalidDocumentException(BaseException):
+    pass
+
+
+def error_handler(fn):
+    def wrapped(*args, **kwargs):
+        try:
+            val = fn(*args, **kwargs)
+        except (UnicodeDecodeError, KeyError) as e:
+            tmpl = u'Error {err} in {func_name} with args {args},{kwargs}'
+            msg = tmpl.format(err=str(e),
+                              func_name=str(fn),
+                              args=args,
+                              kwargs=kwargs)
+            raise InvalidDocumentException(msg)
+        return val
+    return wrapped
+
+
 class Document(object):
     """
     Class for representing a document in memory
@@ -20,7 +39,10 @@ class Document(object):
         self.metadata = metadata if metadata else {}
 
     @staticmethod
+    @error_handler
     def from_json(file_name):
+        if not file_name.endswith('.json'):
+            raise Exception('Need json file')
         data = file_ops.read_json_utf8(file_name)
         return Document(file_name=data['file_name'],
                         raw_file_name=data['raw_file_name'],
@@ -56,5 +78,7 @@ class Document(object):
         if self.metadata != other.metadata:
             return False
         if self.pre_file_name != other.pre_file_name:
+            return False
+        if self.raw_file_name != other.raw_file_name:
             return False
         return True

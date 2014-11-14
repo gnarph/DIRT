@@ -47,10 +47,10 @@ class DocumentTest(unittest.TestCase):
         self.assertFalse(self.doc == doc_cloned)
 
         doc_cloned.metadata = self.doc.metadata
-        doc_cloned.body = ''
+        doc_cloned.raw_file_name = ''
         self.assertFalse(self.doc == doc_cloned)
 
-        doc_cloned.body = self.doc.body
+        doc_cloned.raw_file_name = self.doc.raw_file_name
         doc_cloned.pre_file_name = ''
         self.assertFalse(self.doc == doc_cloned)
 
@@ -61,7 +61,8 @@ class DocumentTest(unittest.TestCase):
         doc_dict = self.doc.to_dict()
         self.assertEqual(doc_dict['file_name'], self.doc.file_name)
         self.assertEqual(doc_dict['metadata'], self.doc.metadata)
-        self.assertEqual(doc_dict['body'], self.doc.body)
+        self.assertEqual(doc_dict['pre_file_name'], self.doc.pre_file_name)
+        # TODO check raw
 
 
 class MatchSingletTest(unittest.TestCase):
