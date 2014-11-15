@@ -125,7 +125,7 @@ class MatchSingletTest(unittest.TestCase):
         sing = MatchSinglet(file_name='models/test_data/lorem.json',
                             passage=u'청춘의 피가 심장의 많이')
         doc = sing.document
-        self.assertEqual(doc.file_name, 'models/test_data/lorem.json')
+        self.assertEqual(doc.file_name, 'models/test_data/raw/lorem.txt')
         body = u'품에 원대하고, 무엇을 무한한 사막이다. 청춘의 피가 심장의 많이 열락의 무엇을 아니다.'
         self.assertEqual(doc.body, body)
         meta = {}
