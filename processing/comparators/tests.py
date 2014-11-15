@@ -23,14 +23,16 @@ class ComparatorTestCase(unittest.TestCase):
                                      name_b=self.name_b,
                                      gap_length=gap_length,
                                      match_length=match_length)
-        tups = comparator.compare()
+        singlet_pairs = comparator.compare()
         alpha = Mock()
-        alpha.body = a
+        alpha.raw_body = a
+        alpha.pre_body = a
         beta = Mock()
-        beta.body = b
+        beta.raw_body = b
+        beta.pre_body = b
         matches = Processor.singlet_pairs_to_matches(alpha=alpha,
                                                      beta=beta,
-                                                     singlet_pairs=tups)
+                                                     singlet_pairs=singlet_pairs)
         return matches
 
     def test_compare(self):
