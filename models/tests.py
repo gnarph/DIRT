@@ -35,8 +35,10 @@ class DocumentTest(unittest.TestCase):
         """
         doc_cloned = self.doc.clone()
         self.assertEqual(doc_cloned.file_name, self.doc.file_name)
+        self.assertEqual(doc_cloned.pre_file_name, self.doc.pre_file_name)
+        self.assertEqual(doc_cloned.raw_file_name, self.doc.raw_file_name)
         self.assertEqual(doc_cloned.metadata, self.doc.metadata)
-        self.assertEqual(doc_cloned.body, self.doc.body)
+        self.assertEqual(doc_cloned.raw_body, self.doc.raw_body)
         self.assertEqual(self.doc, doc_cloned)
 
         # using assertFalse instead of assertNotEqual in order to
@@ -125,9 +127,10 @@ class MatchSingletTest(unittest.TestCase):
         sing = MatchSinglet(file_name='models/test_data/lorem.json',
                             passage=u'청춘의 피가 심장의 많이')
         doc = sing.document
-        self.assertEqual(doc.file_name, 'models/test_data/raw/lorem.txt')
+        self.assertEqual(doc.file_name, 'models/test_data/lorem.json')
+        self.assertEqual(doc.raw_file_name, 'models/test_data/raw/lorem.txt')
         body = u'품에 원대하고, 무엇을 무한한 사막이다. 청춘의 피가 심장의 많이 열락의 무엇을 아니다.'
-        self.assertEqual(doc.body, body)
+        self.assertEqual(doc.raw_body, body)
         meta = {}
         self.assertEqual(doc.metadata, meta)
 
@@ -184,7 +187,7 @@ class MatchSetTest(unittest.TestCase):
         self.matches = Processor.singlet_pairs_to_matches(alpha=self.document_a,
                                                           beta=self.document_b,
                                                           singlet_pairs=self.singlet_pairs)
-        self.match_set = MatchSet(alpha_doc=self.documentt _a,
+        self.match_set = MatchSet(alpha_doc=self.document_a,
                                   beta_doc=self.document_b,
                                   matches=self.matches)
 

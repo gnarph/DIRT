@@ -36,9 +36,9 @@ class Processor(object):
         # TODO: should use pre_body
         matches = []
         for a, b in singlet_pairs:
-            alpha_indices = a.get_match_bounds(alpha.body)
+            alpha_indices = a.get_match_bounds(alpha.raw_body)
             alpha_passage = a.passage
-            beta_indices = b.get_match_bounds(beta.body)
+            beta_indices = b.get_match_bounds(beta.raw_body)
             beta_passage = b.passage
             m = Match(alpha_passage=alpha_passage,
                       alpha_indices=alpha_indices,
@@ -53,8 +53,8 @@ class Processor(object):
         """
         alpha = Document.from_json(self.alpha_name)
         beta = Document.from_json(self.beta_name)
-        comparator = self.comparator.Comparator(a=alpha.body,
-                                                b=beta.body,
+        comparator = self.comparator.Comparator(a=alpha.pre_body,
+                                                b=beta.pre_body,
                                                 name_a=self.alpha_name,
                                                 name_b=self.beta_name)
         name_a = path.get_name(self.alpha_name, extension=False)

@@ -1,4 +1,5 @@
 from models.match import Match
+from models.document import Document
 
 
 class MatchSet(object):
@@ -14,10 +15,17 @@ class MatchSet(object):
         return self.matches == other.matches
 
     def to_dict(self):
-        return {'matches': [match.to_dict() for match in self.matches],
+        # Need document json name
+        return {'alpha_doc': self.alpha_doc.file_name,
+                'beta_doc': self.beta_doc.file_name,
+                'matches': [match.to_dict() for match in self.matches],
                 }
 
     @staticmethod
     def from_dict(d):
         matches = [Match.from_dict(m) for m in d['matches']]
-        return MatchSet(matches)
+        alpha = Document.from_json(d['alpha_doc'])
+        beta = Document.from_json(d['beta_doc'])
+        return MatchSet(alpha_doc=alpha,
+                        beta_doc=beta,
+                        matches=matches)

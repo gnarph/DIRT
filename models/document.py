@@ -44,16 +44,12 @@ class Document(object):
         if not file_name.endswith('.json'):
             template = 'Need json file, got {}'
             message = template.format(file_name)
-            raise Exception(template)
+            raise Exception(message)
         data = file_ops.read_json_utf8(file_name)
-        return Document(file_name=data['file_name'],
+        return Document(file_name=file_name,
                         raw_file_name=data['raw_file_name'],
                         metadata=data['metadata'],
                         pre_file_name=data['pre_file_name'])
-
-    @property
-    def body(self):
-        return file_ops.read_utf8(self.file_name)
 
     @property
     def raw_body(self):

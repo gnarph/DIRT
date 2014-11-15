@@ -18,10 +18,11 @@ class Match(object):
         self.beta_indices = beta_indices
 
     def __eq__(self, other):
-        if self.alpha_passage == other.alpha:
-            return self.beta_passage == other.beta
-        elif self.alpha_passage == other.beta:
-            return self.beta_passage == other.alpha
+        # TODO: check indices
+        if self.alpha_passage == other.alpha_passage:
+            return self.beta_passage == other.beta_passage
+        elif self.alpha_passage == other.beta_passage:
+            return self.beta_passage == other.alpha_passage
         return False
 
     def to_dict(self):
