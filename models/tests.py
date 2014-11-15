@@ -164,29 +164,28 @@ class MatchTest(unittest.TestCase):
 class MatchSetTest(unittest.TestCase):
 
     def setUp(self):
-        self.documents_a = [chr(i + ord('a')) for i in xrange(10)]
-        self.documents_b = [chr(i + ord('A')) for i in xrange(10)]
-        self.passages_a = list(reversed(self.documents_a))
-        self.passages_b = list(reversed(self.documents_b))
-        self.file_a = 'models/test_data/lorem.json'
+        self.passages_a = [chr(i + ord('a')) for i in xrange(10)]
+        self.passages_b = [chr(i + ord('A')) for i in xrange(10)]
+        self.file_a = 'models/test_data/match_set_test.json'
         self.document_a = Document.from_json(self.file_a)
-        self.file_b = 'models/test_data/lorem2.json'
+        self.file_b = 'models/test_data/match_set_test2.json'
         self.document_b = Document.from_json(self.file_b)
 
         self.matches = []
         self.singlet_pairs = []
-        for i in xrange(len(self.documents_a)):
-            a = MatchSinglet(file_name=self.documents_a[i],
+        for i in xrange(len(self.passages_a)):
+            a = MatchSinglet(file_name=self.document_a,
                              passage=self.passages_a[i])
-            b = MatchSinglet(file_name=self.documents_b[i],
+            b = MatchSinglet(file_name=self.document_b,
                              passage=self.passages_b[i])
             s_pair = (a, b)
             self.singlet_pairs.append(s_pair)
+            # Alpha/beta need to be actual documents, not names
         self.matches = Processor.singlet_pairs_to_matches(alpha=self.document_a,
                                                           beta=self.document_b,
                                                           singlet_pairs=self.singlet_pairs)
-        self.match_set = MatchSet(alpha_doc=self.document_a,
-                                  beta_doc=self.documents_b,
+        self.match_set = MatchSet(alpha_doc=self.documentt _a,
+                                  beta_doc=self.document_b,
                                   matches=self.matches)
 
     def test_serialize(self):
