@@ -42,7 +42,9 @@ class Document(object):
     @error_handler
     def from_json(file_name):
         if not file_name.endswith('.json'):
-            raise Exception('Need json file')
+            template = 'Need json file, got {}'
+            message = template.format(file_name)
+            raise Exception(template)
         data = file_ops.read_json_utf8(file_name)
         return Document(file_name=data['file_name'],
                         raw_file_name=data['raw_file_name'],
@@ -55,7 +57,7 @@ class Document(object):
 
     @property
     def raw_body(self):
-        return file_ops.read_json_utf8(self.raw_file_name)
+        return file_ops.read_utf8(self.raw_file_name)
 
     @property
     def pre_body(self):
@@ -68,6 +70,7 @@ class Document(object):
 
     def to_dict(self):
         return {'file_name': self.file_name,
+                'raw_file_name': self.raw_file_name,
                 'metadata': self.metadata,
                 'pre_file_name': self.pre_file_name,
                 }
