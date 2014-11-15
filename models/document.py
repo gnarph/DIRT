@@ -66,7 +66,8 @@ class Document(object):
     def clone(self):
         return Document(file_name=self.file_name,
                         metadata=self.metadata,
-                        pre_file_name=self.pre_file_name)
+                        pre_file_name=self.pre_file_name,
+                        raw_file_name=self.raw_file_name)
 
     def to_dict(self):
         return {'file_name': self.file_name,

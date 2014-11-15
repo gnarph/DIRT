@@ -21,11 +21,13 @@ class DocumentTest(unittest.TestCase):
             }
     body = u'In id tristique orci. 痵痽 犵艿邔 疿疶砳 齸圞趲.'
     pre_file_name = file_name + '_PRE.json'
+    raw_file_name = file_name
 
     def setUp(self):
         self.doc = Document(file_name=self.file_name,
                             metadata=self.meta,
-                            pre_file_name=self.pre_file_name)
+                            pre_file_name=self.pre_file_name,
+                            raw_file_name=self.raw_file_name)
 
     def test_clone(self):
         """
