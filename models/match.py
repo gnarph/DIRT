@@ -1,6 +1,3 @@
-from models.match_singlet import MatchSinglet
-
-
 class Match(object):
     """
     Class for representing matches

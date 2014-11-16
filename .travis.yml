@@ -2,7 +2,7 @@ language: python
 python:
     - "2.7"
 install:
-    - pip install -r requirements.txt
+    - pip install --allow-external jianfan --allow-unverified jianfan -r requirements.txt
     - pip install coveralls
     - mkdir test_preprocessed
     - mkdir test_output
