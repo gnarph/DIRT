@@ -1,7 +1,7 @@
 import unittest
 
 import preprocessing.language_standardizer.zhi as zhi
-import utilities.file_reading as file_reading
+import utilities.file_ops as file_reading
 
 
 NEWS_DATA_FILE = 'test_data/zhi_news.txt'

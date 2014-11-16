@@ -1,4 +1,3 @@
-import models.document
 import preprocessing.tei.document as tei_document
 
 
@@ -10,7 +9,7 @@ class TEIReader(object):
     def read(self):
         """
         Read TEI xml document into a more useful form
-        :return: models.document for file
+        :return:
         """
         # TODO: is this module necessary?
         doc = tei_document.TEIDocument(self.file_name)
@@ -18,6 +17,4 @@ class TEIReader(object):
         body = data_dict['body']
         del data_dict['body']
 
-        return models.document.Document(file_name=self.file_name,
-                                        body=body,
-                                        metadata=data_dict)
+        return body, data_dict
