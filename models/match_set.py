@@ -29,3 +29,25 @@ class MatchSet(object):
         return MatchSet(alpha_doc=alpha,
                         beta_doc=beta,
                         matches=matches)
+
+    def get_file_names(self):
+        """
+        :return: file name a, file name b
+        Could use document_factory to make them into documents to
+        get metadata etc.
+        """
+        alpha_name = self.alpha_doc.file_name
+        beta_name = self.beta_doc.file_name
+        return alpha_name, beta_name
+
+    def get_indices(self):
+        """
+        :return: list of tuple of tuple
+        [(PAIR), (PAIR), ...]
+        PAIR=((a_lower, a_upper), (b_lower, b_upper))
+        """
+        indices = []
+        for match in self.matches:
+            index_pair = match.alpha_indices, match.beta_indices
+            indices.append(index_pair)
+        return indices

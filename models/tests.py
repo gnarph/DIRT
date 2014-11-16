@@ -212,4 +212,11 @@ class MatchSetTest(unittest.TestCase):
         self.assertEqual(match_count, ms2_count)
         self.assertTrue(self.match_set == deserialized_ms2)
 
+        # Should test, more of a hack check for now
+        fn = self.match_set.get_file_names()
+        doc_a_name, doc_b_name = fn
+        self.assertEqual(doc_a_name, self.file_a)
+        self.assertEqual(doc_b_name, self.file_b)
+        inds = self.match_set.get_indices()
+        self.assertEqual(len(inds), len(self.matches))
     # TODO: test eq
