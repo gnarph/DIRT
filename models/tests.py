@@ -7,6 +7,7 @@ import mock
 
 from processing.processor import Processor
 from models.document import Document
+from models.document import InvalidDocumentException
 import models.match_set_factory as match_set_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
@@ -67,6 +68,14 @@ class DocumentTest(unittest.TestCase):
         self.assertEqual(doc_dict['metadata'], self.doc.metadata)
         self.assertEqual(doc_dict['pre_file_name'], self.doc.pre_file_name)
         # TODO check raw
+
+    def test_open(self):
+        self.assertRaises(InvalidDocumentException,
+                          Document.from_json,
+                          'models/test_data/invalid.json')
+        self.assertRaises(InvalidDocumentException,
+                          Document.from_json,
+                          'models/test_data/invalid.txt')
 
 
 class MatchSingletTest(unittest.TestCase):

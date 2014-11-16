@@ -1,3 +1,5 @@
+import cjson
+
 from utilities import file_ops
 
 
@@ -9,12 +11,12 @@ def error_handler(fn):
     def wrapped(*args, **kwargs):
         try:
             val = fn(*args, **kwargs)
-        except (UnicodeDecodeError, KeyError) as e:
-            tmpl = u'Error {err} in {func_name} with args {args},{kwargs}'
-            msg = tmpl.format(err=str(e),
-                              func_name=str(fn),
-                              args=args,
-                              kwargs=kwargs)
+        except (cjson.DecodeError, UnicodeDecodeError, KeyError) as e:
+            template = u'Error {err} in {func_name} with args {args},{kwargs}'
+            msg = template.format(err=str(e),
+                                  func_name=str(fn),
+                                  args=args,
+                                  kwargs=kwargs)
             raise InvalidDocumentException(msg)
         return val
     return wrapped
@@ -44,7 +46,7 @@ class Document(object):
         if not file_name.endswith('.json'):
             template = 'Need json file, got {}'
             message = template.format(file_name)
-            raise Exception(message)
+            raise InvalidDocumentException(message)
         data = file_ops.read_json_utf8(file_name)
         return Document(file_name=file_name,
                         raw_file_name=data['raw_file_name'],
