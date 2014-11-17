@@ -8,6 +8,7 @@ from models.match import Match
 from models.match_set import MatchSet
 from processing.comparators import simple
 from utilities import path
+from utilities import file_ops
 
 REPORT_NAME = '{}__{}__CMP.json'
 
@@ -67,8 +68,5 @@ class Processor(object):
                              beta_doc=beta,
                              matches=matches)
         match_set_dict = match_set.to_dict()
-        json_match = cjson.encode(match_set_dict)
-        unicode_json_match = json_match.encode('utf8')
         out_file = os.path.join(self.output_dir, out_name)
-        with codecs.open(out_file, 'w+', 'utf8') as o:
-            o.write(unicode_json_match)
+        file_ops.write_json_utf8(out_file, match_set_dict)
