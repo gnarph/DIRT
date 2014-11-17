@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-import preprocessing.language_standardizer.zhi as zhi
-import utilities.file_ops as file_reading
+from preprocessing.language_standardizer import zhi
+from utilities import file_ops
 
 
 NEWS_DATA_FILE = 'test_data/zhi_news.txt'
@@ -21,12 +21,12 @@ NEWS_TRAD_STD_FILE = 'test_data/zhi_news_trad_std.json'
 class ZhiTest(unittest.TestCase):
 
     def _read_file(self, file_name):
-        full_name = file_reading.get_full_file_name(file_name, __file__)
-        return file_reading.read_utf8(full_name)
+        full_name = file_ops.get_full_file_name(file_name, __file__)
+        return file_ops.read_utf8(full_name)
 
     def _read_json_file(self, file_name):
-        full_name = file_reading.get_full_file_name(file_name, __file__)
-        return file_reading.read_json_utf8(full_name)
+        full_name = file_ops.get_full_file_name(file_name, __file__)
+        return file_ops.read_json_utf8(full_name)
 
     def _check_data_vs_std(self, data_file, std_file):
         """
@@ -59,16 +59,16 @@ class ZhiTest(unittest.TestCase):
                       u'體中文版正式公開!預定於2015年發售，並一同公開了繁' \
                       u'體中文版宣傳片，下面來欣賞了解一下。'
 
-        simp_is_simp = zhi.is_simp(simplified)
+        simp_is_simp = zhi.is_simplified(simplified)
         self.assertTrue(simp_is_simp)
-        trad_is_trad = zhi.is_trad(traditional)
+        trad_is_trad = zhi.is_traditional(traditional)
         self.assertTrue(trad_is_trad)
 
         trans_traditional = zhi.make_traditional(simplified)
         self.assertEqual(trans_traditional, traditional)
 
     def test_strip(self):
-        expected_result = u'hello whats yo1231薩達231ur 盛大阿什頓name '
+        expected_result = u'hellowhatsyo1231薩達231ur盛大阿什頓name'
         testing = u"hel，lo! &^*&^*(&what：s 《yo1231薩達231。ur 盛大阿什頓name? &"
 
         remove_result = zhi.strip(testing)

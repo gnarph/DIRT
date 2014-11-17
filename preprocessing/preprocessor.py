@@ -59,6 +59,4 @@ class Preprocessor(object):
                                 pre_file_name=pre_file,
                                 metadata=metadata)
         processed_dict = out_document.to_dict()
-        processed_json = cjson.encode(processed_dict)
-        with codecs.open(out_file, mode='w+', encoding='utf8') as o:
-            o.write(processed_json)
+        file_ops.write_json_utf8(out_file, processed_dict)

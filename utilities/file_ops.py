@@ -15,6 +15,16 @@ def read_utf8(file_name):
     return raw_passage
 
 
+def write_utf8(file_name, text):
+    """
+    Write a utf8 coded file
+    :param file_name:  name of file
+    :param text: file contents
+    """
+    with codecs.open(file_name, mode='w+', encoding='utf8') as o:
+        o.write(text)
+
+
 def read_json_utf8(file_name):
     """
     Read a utf8 encoded json file
@@ -23,6 +33,11 @@ def read_json_utf8(file_name):
     """
     raw = read_utf8(file_name)
     return cjson.decode(raw)
+
+
+def write_json_utf8(file_name, serializable):
+    json_rep = cjson.encode(serializable)
+    write_utf8(file_name, json_rep)
 
 
 def get_full_file_name(relative_file, magic_file):

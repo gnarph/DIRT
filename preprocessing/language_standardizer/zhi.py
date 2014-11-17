@@ -7,18 +7,14 @@ from unicodedata import category
 import mafan
 
 
-BLACKLIST = [u' ',
-             u'\n']
-
-
 def standardize(text):
     """
     Standardize a line of Chinese text
     :param text: unicode string of Chinese
     :return: standardize form of input line
     """
-    trad = make_traditional(text)
-    # Remove punctuation?
+    stripped = strip(text)
+    trad = make_traditional(stripped)
     return trad
 
 
@@ -30,11 +26,11 @@ def make_traditional(text):
     return trad
 
 
-def is_trad(text):
+def is_traditional(text):
     return mafan.is_traditional(text)
 
 
-def is_simp(text):
+def is_simplified(text):
     return mafan.is_simplified(text)
 
 
@@ -47,8 +43,8 @@ def strip(text):
     """
     punctuation_cats = {'Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'}
     symbol_cats = {'Sc', 'Sk', 'Sm', 'So'}
-    remove_cats = punctuation_cats.union(symbol_cats)
-    print remove_cats
+    separator_cats = {'Zi', 'Zp', 'Zs'}
+    remove_cats = punctuation_cats | symbol_cats | separator_cats
     gen = (x for x in text
            if category(x) not in remove_cats)
     return u''.join(gen)
