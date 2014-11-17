@@ -5,7 +5,6 @@ chardet==2.1.1
 cjklib==0.3.2
 coverage==3.7.1
 fuzzywuzzy==0.3.3
-gnureadline==6.3.3
 ipython==2.3.0
 jianfan==0.0.1
 jieba==0.29
@@ -13,8 +12,6 @@ lxml==3.4.0
 mafan==0.2.6
 mock==1.0.1
 nose==1.3.4
-numpy==1.9.0
-nwalign==0.3.1
 python-Levenshtein==0.11.2
 python-cjson==1.1.0
 wxPython==3.0.1.1
