@@ -2,7 +2,7 @@
 Module for standarizing Chinese text
 """
 
-import jieba
+import mafan
 
 
 BLACKLIST = [u' ',
@@ -15,16 +15,22 @@ def standardize(text):
     :param text: unicode string of Chinese
     :return: standardize form of input line
     """
-    words = segment_words(text)
+    trad = make_traditional(text)
     # Remove punctuation?
-    return ' '.join(words)
+    return trad
 
 
-def segment_words(unsegmented):
-    """
-    Segment input text into words, removing blacklisted segments
-    :param unsegmented: raw input text, words unseparated by spaces
-    :return: generator of words
-    """
-    words = jieba.cut(unsegmented)
-    return (word for word in words if word not in BLACKLIST)
+def make_traditional(text):
+    if not mafan.is_traditional(text):
+        trad = mafan.tradify(text)
+    else:
+        trad = text
+    return trad
+
+
+def is_trad(text):
+    return mafan.is_traditional(text)
+
+
+def is_simp(text):
+    return mafan.is_simplified(text)
