@@ -2,6 +2,8 @@
 Module for standarizing Chinese text
 """
 
+from unicodedata import category
+
 import mafan
 
 
@@ -34,3 +36,20 @@ def is_trad(text):
 
 def is_simp(text):
     return mafan.is_simplified(text)
+
+
+def strip(text):
+    """
+    Strip punctuation and symbols from text
+    Thanks to http://stackoverflow.com/a/11066579/2701544
+    :param text: input unicode string
+    :return: unicode string without punctuation or symbols
+    """
+    punctuation_cats = {'Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'}
+    symbol_cats = {'Sc', 'Sk', 'Sm', 'So'}
+    remove_cats = punctuation_cats.union(symbol_cats)
+    print remove_cats
+    gen = (x for x in text
+           if category(x) not in remove_cats)
+    return u''.join(gen)
+

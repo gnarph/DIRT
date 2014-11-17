@@ -66,3 +66,10 @@ class ZhiTest(unittest.TestCase):
 
         trans_traditional = zhi.make_traditional(simplified)
         self.assertEqual(trans_traditional, traditional)
+
+    def test_strip(self):
+        expected_result = u'hello whats yo1231薩達231ur 盛大阿什頓name '
+        testing = u"hel，lo! &^*&^*(&what：s 《yo1231薩達231。ur 盛大阿什頓name? &"
+
+        remove_result = zhi.strip(testing)
+        self.assertEqual(remove_result, expected_result)
