@@ -89,7 +89,7 @@ if __name__ == '__main__':
     # TODO: add parameters to allow only pre/processing/postprocessing
     parser.add_argument('-i', '--input',
                         help='Directory containing input corpus',
-                        required=False,
+                        required=True,
                         type=str)
     parser.add_argument('-pre', '--preprocessed_dir',
                         default='dirt_preprocessed',
