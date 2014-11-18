@@ -71,8 +71,9 @@ def postprocess(args):
 
 
 def gui(args):
-    app = mainframe.App(args.input)
-    app.MainLoop()
+    if args.gui is True:
+        app = mainframe.App(args.input)
+        app.MainLoop()
 
 
 def main(parsed_args):
@@ -110,7 +111,8 @@ if __name__ == '__main__':
                         type=str)
 
     parser.add_argument('-g', '--gui',
-                        help='gui for reports')
+                        help='gui for reports',
+                        type=bool)
 
     parsed_args = parser.parse_args()
     main(parsed_args)
