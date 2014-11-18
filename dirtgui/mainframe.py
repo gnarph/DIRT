@@ -4,8 +4,11 @@
 # noinspection PyUnresolvedReferences
 import os
 import sys
-from wx import *
 import codecs
+
+import wx
+
+
 # noinspection PyUnresolvedReferences
 
 import reportpanels.html_panel as html_panel
