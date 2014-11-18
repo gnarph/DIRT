@@ -1,5 +1,5 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+#coding: utf-8
 
 """
 ZetCode PyQt4 tutorial 
@@ -53,7 +53,8 @@ class Example(QtGui.QMainWindow):
         f = open(fname, 'r')
         with f:        
             data = f.read()
-            self.textEdit.setText(data) 
+            #data = unicode(data,'utf8').encode('utf8')
+            self.textEdit.setText(unicode(data,'utf8'))
                                 
         
 def main():
