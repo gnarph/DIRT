@@ -10,7 +10,7 @@ import importlib
 
 import preprocessing.preprocessor as preprocessor
 import processing.processor as processor
-import dirtgui.mainframe as mainframe
+import dirtgui.mainframe as main_frame
 from utilities import path
 
 STANDARDIZER_PATH = 'preprocessing.language_standardizer.{}'
@@ -72,7 +72,7 @@ def postprocess(args):
 
 def gui(args):
     if args.gui is True:
-        app = mainframe.App(args.input)
+        app = main_frame.App(args.input)
         app.MainLoop()
 
 

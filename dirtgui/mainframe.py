@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# noinspection PyUnresolvedReferences
 import os
 import sys
-import codecs
 
 import wx
 
+from utilities import file_ops
+from reportpanels import html_panel
+from reportpanels import filemenu_panel
 
-# noinspection PyUnresolvedReferences
-
-import reportpanels.html_panel as html_panel
-import reportpanels.filemenu_panel as filemenu_panel
 
 root = ""
 
@@ -67,16 +64,17 @@ class MainFrame(wx.Frame):
         self.Close()
 
     def _window_size(self, event):
-        self.main_panel.SetSize(size=self.GetClientSizeTuple())
-        self.m_panel2.SetSize(size=self.main_panel.GetClientSizeTuple())
+        client_size = self.GetClientSizeTuple()
+        self.main_panel.SetSize(client_size)
+        self.m_panel2.SetSize(client_size)
         self.Layout()
 
     def _parse_text(self, input_list):
-        with codecs.open(input_list, 'r', encoding='utf8') as fin:
-            for line in fin:
-                file_path = os.path.join(root, line.strip())
-                self.lines.append(file_path)
-                self.m_panel2.add_input(file_path)
+        fin = file_ops.read_utf8(input_list)
+        for line in fin.split('\n'):
+            file_path = os.path.join(root, line.strip())
+            self.lines.append(file_path)
+            self.m_panel2.add_input(file_path)
         if os.path.isfile(self.lines[0]):
             self.m_panel2.set_focus_doc(self.lines[0])
         if self.m_panel2.index >= 2:
@@ -88,14 +86,13 @@ class MainFrame(wx.Frame):
 
 
 class App(wx.App):
-    def __init__(self,input_list):
+    def __init__(self, input_list):
         wx.App.__init__(self)
         self.top_frame = MainFrame(parent=None, dir=input_list)
         self.top_frame.Show()
         self.SetTopWindow(self.top_frame)
 
     def OnInit(self):
-
         return True
 
     def OnExit(self):
