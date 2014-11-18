@@ -57,6 +57,11 @@ class MatchSet(object):
         return indices
 
     def get_match_percentage(self):
+        """
+        Return what percentage of each document is a match with
+        the other, roughly
+        :return: a's similarity, b's similarity
+        """
         match_len_a = 0.0
         match_len_b = 0.0
         len_a = len(self.alpha_doc.pre_body)
