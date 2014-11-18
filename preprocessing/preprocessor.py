@@ -47,13 +47,13 @@ class Preprocessor(object):
         raw_file = os.path.join(self.output_dir,
                                 'raw/',
                                 name + PLAIN_SUFFIX)
-        file_ops.write_string(raw_file, raw_text)
+        file_ops.write_utf8(raw_file, raw_text)
 
         processed_text = self.standardizer.standardize(raw_text)
         pre_file = os.path.join(self.output_dir,
                                 'pre/',
                                 name + PLAIN_SUFFIX)
-        file_ops.write_string(pre_file, processed_text)
+        file_ops.write_utf8(pre_file, processed_text)
 
         out_document = Document(file_name=self.file_name,
                                 raw_file_name=raw_file,

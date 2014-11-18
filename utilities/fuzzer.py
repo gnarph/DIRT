@@ -28,6 +28,8 @@ def find_in_body(body, passage, match_limit=5):
                                          limit=match_limit)
     indices = [tup[2] for tup in matches]
     try:
+        # TODO: this will mess up if there are good matches
+        # in two areas of the document
         min_index = min(indices)
         max_index = max(indices) + len_passage
     except ValueError:

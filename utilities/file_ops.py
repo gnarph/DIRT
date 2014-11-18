@@ -15,16 +15,6 @@ def read_utf8(file_name):
     return raw_passage
 
 
-def write_utf8(file_name, text):
-    """
-    Write a utf8 coded file
-    :param file_name:  name of file
-    :param text: file contents
-    """
-    with codecs.open(file_name, mode='w+', encoding='utf8') as o:
-        o.write(text)
-
-
 def read_json_utf8(file_name):
     """
     Read a utf8 encoded json file
@@ -54,7 +44,12 @@ def get_full_file_name(relative_file, magic_file):
     return real_file_name
 
 
-def write_string(full_name, to_write):
+def write_utf8(full_name, to_write):
+    """
+    Write a utf8 coded file
+    :param file_name:  name of file
+    :param text: file contents
+    """
     if not os.path.exists(os.path.dirname(full_name)):
         os.makedirs(os.path.dirname(full_name))
     with codecs.open(full_name, 'w+', encoding='utf8') as f:
