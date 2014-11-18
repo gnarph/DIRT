@@ -1,12 +1,10 @@
 """
-Module for standarizing Chinese text
+Module for standardizing Chinese text
 """
 
-import jieba
+from unicodedata import category
 
-
-BLACKLIST = [u' ',
-             u'\n']
+import mafan
 
 
 def standardize(text):
@@ -15,16 +13,49 @@ def standardize(text):
     :param text: unicode string of Chinese
     :return: standardize form of input line
     """
-    words = segment_words(text)
-    # Remove punctuation?
-    return ' '.join(words)
+    stripped = strip(text)
+    trad = make_traditional(stripped)
+    return trad
 
 
-def segment_words(unsegmented):
+def make_traditional(text):
     """
-    Segment input text into words, removing blacklisted segments
-    :param unsegmented: raw input text, words unseparated by spaces
-    :return: generator of words
+    Makes Chinese text Traditional Chinese
+    :param text: unicode string of Chinese
+    :return: unicode string of Traditional Chinese
     """
-    words = jieba.cut(unsegmented)
-    return (word for word in words if word not in BLACKLIST)
+    if not mafan.is_traditional(text):
+        trad = mafan.tradify(text)
+    else:
+        trad = text
+    return trad
+
+
+def is_traditional(text):
+    """
+    Checks if a unicode string is Traditional Chinese
+    :param text: unicode string
+    :return: boolean
+    """
+    return mafan.is_traditional(text)
+
+
+def is_simplified(text):
+    return mafan.is_simplified(text)
+
+
+def strip(text):
+    """
+    Strip punctuation and symbols from text
+    Thanks to http://stackoverflow.com/a/11066579/2701544
+    :param text: input unicode string
+    :return: unicode string without punctuation or symbols
+    """
+    punctuation_cats = {'Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'}
+    symbol_cats = {'Sc', 'Sk', 'Sm', 'So'}
+    separator_cats = {'Zi', 'Zp', 'Zs'}
+    remove_cats = punctuation_cats | symbol_cats | separator_cats
+    gen = (x for x in text
+           if category(x) not in remove_cats)
+    return u''.join(gen)
+

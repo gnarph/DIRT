@@ -25,4 +25,4 @@ class PreprocessorTest(unittest.TestCase):
                 file_path = os.path.join(self.output_dir, file_name)
                 doc = Document.from_json(file_path)
                 self.assertNotEqual(doc.pre_file_name, self.file_name)
-                self.assertEqual(doc.file_name, 'test_preprocessed/lorem_PRE.json')
+                self.assertEqual(doc.file_name, 'test_preprocessed/lorem.json')

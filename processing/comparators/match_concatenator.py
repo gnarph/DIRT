@@ -35,11 +35,12 @@ class MatchConcatenator(object):
         self.j = 1
         self.g2 = 0
         self.gap_length = gap_length
-        first = self.match_list[self.i]
-        self.a_cursor = first.a_end
-        self.b_cursor = first.b_end
-        self.combined = []
         self.match_count = len(self.match_list)
+        if self.match_count:
+            first = self.match_list[self.i]
+            self.a_cursor = first.a_end
+            self.b_cursor = first.b_end
+            self.combined = []
 
     def move_cursors_to_end(self, second):
         self.a_cursor = second.a_end
@@ -102,6 +103,8 @@ class MatchConcatenator(object):
         Concatenate match blocks depending on gap_length
         :return: list of concatenated blocks
         """
+        if not self.match_count:
+            return []
         cont = True
         while cont:
             first, second, cont = self._process_main()

@@ -10,7 +10,7 @@ def read_utf8(file_name):
     :param file_name: name of file
     :return: unicode string of file
     """
-    with codecs.open(file_name, encoding='utf-8') as f:
+    with codecs.open(file_name, encoding='utf8') as f:
         raw_passage = f.read()
     return raw_passage
 
@@ -23,6 +23,17 @@ def read_json_utf8(file_name):
     """
     raw = read_utf8(file_name)
     return cjson.decode(raw)
+
+
+def write_json_utf8(file_name, serializable):
+    """
+    Convert a serializable object to json and write it to a file
+    :param file_name: name of file to write to
+    :param serializable: object to be serialized and written
+    """
+    json_rep = cjson.encode(serializable)
+    unicode_json_rep = json_rep.decode('unicode_escape')
+    write_utf8(file_name, unicode_json_rep)
 
 
 def get_full_file_name(relative_file, magic_file):
@@ -38,8 +49,13 @@ def get_full_file_name(relative_file, magic_file):
     return real_file_name
 
 
-def write_string(full_name, to_write):
-    if not os.path.exists(os.path.dirname(full_name)):
-        os.makedirs(os.path.dirname(full_name))
-    with codecs.open(full_name, 'w+', encoding='utf8') as f:
-        f.write(to_write)
+def write_utf8(file_name, text):
+    """
+    Write a utf8 coded file
+    :param file_name:  name of file
+    :param text: file contents
+    """
+    if not os.path.exists(os.path.dirname(file_name)):
+        os.makedirs(os.path.dirname(file_name))
+    with codecs.open(file_name, 'w+', encoding='utf8') as f:
+        f.write(text)

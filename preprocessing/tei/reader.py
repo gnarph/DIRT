@@ -9,7 +9,7 @@ class TEIReader(object):
     def read(self):
         """
         Read TEI xml document into a more useful form
-        :return:
+        :return: unicode text body, metadata dictionary
         """
         # TODO: is this module necessary?
         doc = tei_document.TEIDocument(self.file_name)
