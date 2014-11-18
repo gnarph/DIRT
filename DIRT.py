@@ -10,6 +10,7 @@ import importlib
 
 import preprocessing.preprocessor as preprocessor
 import processing.processor as processor
+import dirtgui.mainframe as mainframe
 from utilities import path
 
 STANDARDIZER_PATH = 'preprocessing.language_standardizer.{}'
@@ -69,10 +70,16 @@ def postprocess(args):
         # TODO: actually postprocess
 
 
+def gui(args):
+    app = mainframe.App()
+    app.MainLoop()
+
+
 def main(parsed_args):
     preprocess(parsed_args)
     process(parsed_args)
     postprocess(parsed_args)
+    gui(parsed_args)
 
 
 if __name__ == '__main__':
@@ -82,7 +89,7 @@ if __name__ == '__main__':
     # TODO: add parameters to allow only pre/processing/postprocessing
     parser.add_argument('-i', '--input',
                         help='Directory containing input corpus',
-                        required=True,
+                        required=False,
                         type=str)
     parser.add_argument('-pre', '--preprocessed_dir',
                         default='dirt_preprocessed',
@@ -101,6 +108,9 @@ if __name__ == '__main__':
                         default='simple',
                         help='comparator for processor',
                         type=str)
+
+    parser.add_argument('-g', '--gui',
+                        help='gui for reports')
 
     parsed_args = parser.parse_args()
     main(parsed_args)
