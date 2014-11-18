@@ -39,3 +39,12 @@ class SmokeTest(unittest.TestCase):
         args.language = 'eng'
         args.comparator = 'simple'
         DIRT.main(args)
+
+    def test_z(self):
+        args = mock.Mock()
+        args.input = 'test_data/zhi'
+        args.preprocessed_dir = self.pre_dir
+        args.output_dir = self.out_dir
+        args.language = 'zhi'
+        args.comparator = 'simple'
+        DIRT.main(args)
