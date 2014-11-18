@@ -14,7 +14,7 @@ import wx
 import reportpanels.html_panel as html_panel
 import reportpanels.filemenu_panel as filemenu_panel
 
-root = "../"
+root = ""
 
 
 class MainFrame(wx.Frame):
@@ -88,13 +88,14 @@ class MainFrame(wx.Frame):
 
 
 class App(wx.App):
-    def __init__(self):
+    def __init__(self,input_list):
         wx.App.__init__(self)
-
-    def OnInit(self):
-        self.top_frame = MainFrame(parent=None, dir=sys.argv[1])
+        self.top_frame = MainFrame(parent=None, dir=input_list)
         self.top_frame.Show()
         self.SetTopWindow(self.top_frame)
+
+    def OnInit(self):
+
         return True
 
     def OnExit(self):
@@ -103,7 +104,7 @@ class App(wx.App):
 
 # Required to run wxpython
 def main():
-    app = App()
+    app = App(sys.argv[1])
     app.MainLoop()
 
 

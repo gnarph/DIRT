@@ -71,7 +71,7 @@ def postprocess(args):
 
 
 def gui(args):
-    app = mainframe.App()
+    app = mainframe.App(args.input)
     app.MainLoop()
 
 
