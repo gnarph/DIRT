@@ -10,7 +10,8 @@ from utilities import path
 from utilities import file_ops
 
 PREPROCESS_DIR = 'dirt_preprocess/'
-PREPROCESS_SUFFIX = '_PRE.json'
+PREPROCESS_SUFFIX = '.json'
+PLAIN_SUFFIX = '.txt'
 
 
 class Preprocessor(object):
@@ -45,13 +46,13 @@ class Preprocessor(object):
 
         raw_file = os.path.join(self.output_dir,
                                 'raw/',
-                                name)
+                                name + PLAIN_SUFFIX)
         file_ops.write_string(raw_file, raw_text)
 
         processed_text = self.standardizer.standardize(raw_text)
         pre_file = os.path.join(self.output_dir,
                                 'pre/',
-                                name)
+                                name + PLAIN_SUFFIX)
         file_ops.write_string(pre_file, processed_text)
 
         out_document = Document(file_name=self.file_name,
