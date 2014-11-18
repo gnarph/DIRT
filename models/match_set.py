@@ -3,6 +3,10 @@ from models.document import Document
 
 
 class MatchSet(object):
+    """
+    Represents a set of matches between two documents
+    Also contains some metadata
+    """
 
     def __init__(self, alpha_doc, beta_doc, matches):
         self.alpha_doc = alpha_doc
@@ -51,3 +55,19 @@ class MatchSet(object):
             index_pair = match.alpha_indices, match.beta_indices
             indices.append(index_pair)
         return indices
+
+    def get_match_percentage(self):
+        match_len_a = 0.0
+        match_len_b = 0.0
+        len_a = len(self.alpha_doc.pre_body)
+        len_b = len(self.beta_doc.pre_body)
+        for match in self.matches:
+            a = match.alpha_indices[1] - match.alpha_indices[0]
+            match_len_a += a
+            b = match.beta_indices[1] - match.beta_indices[0]
+            match_len_b += b
+        percentage_a = (match_len_a/len_a) * 100
+        percentage_b = (match_len_b/len_b) * 100
+        return percentage_a, percentage_b
+
+

@@ -4,8 +4,10 @@ from utilities import fuzzer
 
 class MatchSinglet(object):
     """
-    Class for representing half of a match
+    Class for representing half of a match,
+    and for getting information about them
     """
+    # TODO: rename class
 
     def __init__(self, file_name, passage, document=None):
         """
