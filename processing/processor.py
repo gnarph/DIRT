@@ -32,10 +32,10 @@ class Processor(object):
         self.output_dir = output_dir
 
     @staticmethod
-    def _get_match(a, alpha, b, beta, threshold=60):
-        alpha_indices = a.get_match_bounds(alpha.raw_body, threshold)
+    def _get_match(a, alpha, b, beta):
+        alpha_indices = a.get_match_bounds(alpha.raw_body)
         alpha_passage = a.passage
-        beta_indices = b.get_match_bounds(beta.raw_body, threshold)
+        beta_indices = b.get_match_bounds(beta.raw_body)
         beta_passage = b.passage
         m = Match(alpha_passage=alpha_passage,
                   alpha_indices=alpha_indices,
@@ -53,11 +53,6 @@ class Processor(object):
                 matches.append(m)
             except fuzzer.FuzzerFailure:
                 print 'err'
-                m = Processor._get_match(a, alpha, b, beta, 0)
-                matches.append(m)
-                pass
-            finally:
-                print 'match'
         return matches
 
     def process(self):

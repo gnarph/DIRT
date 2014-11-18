@@ -14,7 +14,7 @@ class FuzzerTest(unittest.TestCase):
 
     def test_fuzzer_fail(self):
         body = 'hello, world!'
-        passage = 'not in body'
+        passage = 'xxx'
         self.assertRaises(fuzzer.FuzzerFailure,
                           fuzzer.find_in_body,
                           body, passage)
