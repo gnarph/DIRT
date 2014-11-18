@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 from models.document import Document
@@ -6,6 +7,7 @@ from models.match_set import MatchSet
 from processing.comparators import simple
 from utilities import path
 from utilities import file_ops
+from utilities import fuzzer
 
 REPORT_NAME = '{}__{}__CMP.json'
 
@@ -30,19 +32,32 @@ class Processor(object):
         self.output_dir = output_dir
 
     @staticmethod
+    def _get_match(a, alpha, b, beta, threshold=60):
+        alpha_indices = a.get_match_bounds(alpha.raw_body, threshold)
+        alpha_passage = a.passage
+        beta_indices = b.get_match_bounds(beta.raw_body, threshold)
+        beta_passage = b.passage
+        m = Match(alpha_passage=alpha_passage,
+                  alpha_indices=alpha_indices,
+                  beta_passage=beta_passage,
+                  beta_indices=beta_indices)
+        return m
+
+    @staticmethod
     def singlet_pairs_to_matches(alpha, beta, singlet_pairs):
         # TODO: should use pre_body
         matches = []
         for a, b in singlet_pairs:
-            alpha_indices = a.get_match_bounds(alpha.raw_body)
-            alpha_passage = a.passage
-            beta_indices = b.get_match_bounds(beta.raw_body)
-            beta_passage = b.passage
-            m = Match(alpha_passage=alpha_passage,
-                      alpha_indices=alpha_indices,
-                      beta_passage=beta_passage,
-                      beta_indices=beta_indices)
-            matches.append(m)
+            try:
+                m = Processor._get_match(a, alpha, b, beta)
+                matches.append(m)
+            except fuzzer.FuzzerFailure:
+                print 'err'
+                m = Processor._get_match(a, alpha, b, beta, 0)
+                matches.append(m)
+                pass
+            finally:
+                print 'match'
         return matches
 
     def process(self):

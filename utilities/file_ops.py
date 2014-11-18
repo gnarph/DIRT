@@ -37,7 +37,8 @@ def read_json_utf8(file_name):
 
 def write_json_utf8(file_name, serializable):
     json_rep = cjson.encode(serializable)
-    write_utf8(file_name, json_rep)
+    unicode_json_rep = json_rep.decode('unicode_escape')
+    write_utf8(file_name, unicode_json_rep)
 
 
 def get_full_file_name(relative_file, magic_file):

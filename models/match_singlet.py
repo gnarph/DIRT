@@ -48,14 +48,15 @@ class MatchSinglet(object):
         return MatchSinglet(d['file_name'],
                             d['passage'])
 
-    def get_match_bounds(self, body):
+    def get_match_bounds(self, body, threshold):
         """
         Get the lower and upper indices that bound the match
         :param body: text body the indices should reference
         :return: lower index, upper index
         """
         loc, top = find_in_body(body=body,
-                                passage=self.passage)
+                                passage=self.passage,
+                                score_cutoff=threshold)
         return loc, top
 
     def get_context(self, from_doc=None, context_chars=10):
