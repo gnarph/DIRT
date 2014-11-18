@@ -1,6 +1,6 @@
 class Match(object):
     """
-    Class for representing matches
+    Class for representing a single matching passage
     """
 
     def __init__(self, alpha_passage, alpha_indices,

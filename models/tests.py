@@ -229,3 +229,8 @@ class MatchSetTest(unittest.TestCase):
         inds = self.match_set.get_indices()
         self.assertEqual(len(inds), len(self.matches))
     # TODO: test eq
+
+    def test_percentage(self):
+        a, b = self.match_set.get_match_percentage()
+        self.assertEqual(a, 62.5)
+        self.assertAlmostEqual(b, 58.823, places=1)
