@@ -1,5 +1,5 @@
 """
-Module for standarizing Chinese text
+Module for standardizing Chinese text
 """
 
 from unicodedata import category
@@ -19,6 +19,11 @@ def standardize(text):
 
 
 def make_traditional(text):
+    """
+    Makes Chinese text Traditional Chinese
+    :param text: unicode string of Chinese
+    :return: unicode string of Traditional Chinese
+    """
     if not mafan.is_traditional(text):
         trad = mafan.tradify(text)
     else:
@@ -27,6 +32,11 @@ def make_traditional(text):
 
 
 def is_traditional(text):
+    """
+    Checks if a unicode string is Traditional Chinese
+    :param text: unicode string
+    :return: boolean
+    """
     return mafan.is_traditional(text)
 
 

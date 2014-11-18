@@ -1,6 +1,5 @@
 from models.document import Document
-from utilities.fuzzer import find_in_body
-# from utilities.nwmatch import find_in_body
+from utilities import fuzzer
 
 
 class MatchSinglet(object):
@@ -30,7 +29,6 @@ class MatchSinglet(object):
         :return:
         """
         if self._document is None:
-            # from_file is memoized
             return Document.from_json(self.file_name)
         return self._document
 
@@ -54,8 +52,9 @@ class MatchSinglet(object):
         :param body: text body the indices should reference
         :return: lower index, upper index
         """
-        loc, top = find_in_body(body=body,
-                                passage=self.passage)
+        # NOTE: This is where the program spends most of its time
+        loc, top = fuzzer.find_in_body(body=body,
+                                       passage=self.passage)
         return loc, top
 
     def get_context(self, from_doc=None, context_chars=10):
