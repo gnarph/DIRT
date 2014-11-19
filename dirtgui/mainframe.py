@@ -21,6 +21,7 @@ class MainFrame(wx.Frame):
                           size=wx.Size(500, 300),
                           style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        self.CreateStatusBar()
         self.lines = []
 
         # sets file menu

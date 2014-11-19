@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# noinspection PyUnresolvedReferences
 import os
-
-from wx import *
 import codecs
 
-from wx.html import *
-from wx.lib.wordwrap import *
-# noinspection PyUnresolvedReferences
+import wx
+from wx import LC_REPORT
+from wx import LC_HRULES
+from wx import ClientDC
+from wx.html import HtmlWindow
+from wx.html import HW_SCROLLBAR_AUTO
+from wx.lib.wordwrap import wordwrap
+
 
 REPORT_FORMATS = ['.xml', '.json', '.txt']
 

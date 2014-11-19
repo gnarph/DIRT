@@ -4,7 +4,6 @@ import wx
 class FileMenuPanel(wx.Panel):
     def __init__(self, parent=None):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
-        self.GetTopLevelParent().CreateStatusBar()  # A Statusbar in the bottom of the window
 
         self.createMenuBar()
 
