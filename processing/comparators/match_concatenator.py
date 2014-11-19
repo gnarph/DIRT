@@ -105,6 +105,8 @@ class MatchConcatenator(object):
         """
         if not self.match_count:
             return []
+        if self.match_count <= 1:
+            return self.match_list
         cont = True
         while cont:
             first, second, cont = self._process_main()

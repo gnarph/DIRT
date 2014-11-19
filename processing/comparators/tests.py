@@ -106,6 +106,14 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(m2.alpha_passage, m2_a)
         self.assertEqual(m2.beta_passage, m2_b)
 
+    def test_out_of_order(self):
+        a = 'Lorem ipsum dolor amit'
+        b = 'dolor amit Lorem ipsum'
+        matches = self.match(a, b, gap_length=3, match_length=3)
+
+        self.assertEqual(len(matches), 2)
+        match = matches[0]
+
 # Example of how to make a test for another comparator
 # class SimpleComparatorTestCase(ComparatorTestCase):
 #     def setUp(self):
