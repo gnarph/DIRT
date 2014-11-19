@@ -73,9 +73,10 @@ class MainFrame(wx.Frame):
     def _parse_text(self, input_list):
         fin = file_ops.read_utf8(input_list)
         for line in fin.split('\n'):
-            file_path = os.path.join(root, line.strip())
-            self.lines.append(file_path)
-            self.m_panel2.add_input(file_path)
+            stripped_text = line.strip()
+            relative_path = os.path.join(root, stripped_text)
+            self.lines.append(relative_path)
+            self.m_panel2.add_input(relative_path)
         if os.path.isfile(self.lines[0]):
             self.m_panel2.set_focus_doc(self.lines[0])
         if self.m_panel2.index >= 2:
