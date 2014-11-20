@@ -108,9 +108,17 @@ class ComparatorTestCase(unittest.TestCase):
         a = 'Lorem ipsum dolor amit'
         b = 'dolor amit Lorem ipsum'
         matches = self.match(a, b, gap_length=3, match_length=3)
-
         self.assertEqual(len(matches), 2)
-        match = matches[0]
+
+        m1 = matches[0]
+        p1 = 'Lorem ipsum'
+        self.assertEqual(m1.alpha_passage, p1)
+        self.assertEqual(m1.beta_passage, p1)
+
+        m2 = matches[1]
+        p2 = 'dolor amit'
+        self.assertEqual(m2.alpha_passage, p2)
+        self.assertEqual(m2.beta_passage, p2)
 
 # Example of how to make a test for another comparator
 # class SimpleComparatorTestCase(ComparatorTestCase):

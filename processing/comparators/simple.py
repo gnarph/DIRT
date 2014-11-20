@@ -16,16 +16,14 @@ MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 class Comparator(base_comparator.BaseComparator):
 
-    def compare(self):
-        """
-        Compare texts
-        :return: list of singlet pairs
-        """
+    def _get_matching_blocks_ab(self):
         matcher = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
                                           a=self.a,
                                           b=self.b)
         matching_blocks = matcher.get_matching_blocks()
+        return matching_blocks
 
+    def _get_matching_blocks_ba(self):
         matcher2 = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
                                            a=self.b,
                                            b=self.a)
@@ -36,6 +34,16 @@ class Comparator(base_comparator.BaseComparator):
                            b=block.a,
                            size=block.size)
             matching_blocks2.append(b)
+
+        return matching_blocks2
+
+    def compare(self):
+        """
+        Compare texts
+        :return: list of singlet pairs
+        """
+        matching_blocks = self._get_matching_blocks_ab()
+        matching_blocks2 = self._get_matching_blocks_ba()
 
         # Last block is a dummy
         combined_blocks = self._combine_blocks(matching_blocks[:-1])
