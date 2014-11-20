@@ -119,5 +119,13 @@ if __name__ == '__main__':
                              'document length',
                         type=int)
 
+    parser.add_argument('-v', '--verbose',
+                        help='Verbose',
+                        action='count')
+
     parsed_args = parser.parse_args()
+    if parsed_args.verbose:
+        from utilities import logger
+        logger.show_info()
+
     main(parsed_args)

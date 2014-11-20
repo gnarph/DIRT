@@ -8,6 +8,7 @@ from processing.comparators import simple
 from utilities import path
 from utilities import file_ops
 from utilities import fuzzer
+from utilities import logger
 
 REPORT_NAME = '{}__{}__CMP.json'
 
@@ -67,6 +68,7 @@ class Processor(object):
         """
         Process input files
         """
+        logger.info('Processing {}, {}'.format(self.alpha_name, self.beta_name))
         alpha = Document.from_json(self.alpha_name)
         beta = Document.from_json(self.beta_name)
         comparator = self.comparator.Comparator(a=alpha.pre_body,
