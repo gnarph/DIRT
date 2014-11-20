@@ -59,7 +59,10 @@ def process(args):
                                       beta_name=b,
                                       input_dir=args.preprocessed_dir,
                                       output_dir=args.output_dir,
-                                      comparator=comparator)
+                                      comparator=comparator,
+                                      gap_length=args.gap_length,
+                                      match_length=args.match_length,
+                                      percentage_match_length=args.percentage_match_length)
             pro.process()
 
 
@@ -101,6 +104,20 @@ if __name__ == '__main__':
                         default='simple',
                         help='comparator for processor',
                         type=str)
+
+    parser.add_argument('-gl', '--gap_length',
+                        default=3,
+                        help='Size of gaps between matches to be jumped',
+                        type=int)
+    parser.add_argument('-ml', '--match_length',
+                        default=10,
+                        help='Minimum length of a match',
+                        type=int)
+    parser.add_argument('-pml', '--percentage_match_length',
+                        default=0,
+                        help='Minimum length of match as a percentage of total'
+                             'document length',
+                        type=int)
 
     parsed_args = parser.parse_args()
     main(parsed_args)
