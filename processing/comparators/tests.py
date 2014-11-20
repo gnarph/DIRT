@@ -36,6 +36,9 @@ class ComparatorTestCase(unittest.TestCase):
         return matches
 
     def test_compare(self):
+        """
+        Basic comparator test
+        """
         a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         b = 'Lorem ipsum dolor xxxxxxxxx consectetur adipiscing a elit.'
         matches = self.match(a=a,
@@ -55,6 +58,9 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(matches[1].beta_passage, mb_2)
 
     def test_compare_match_len(self):
+        """
+        Test match length criteria
+        """
         a = 'Lorem xxxxx dolor sit amet, consectetur adipiscing ddd.'
         b = 'Lorem ipsum dolor zzzzzzzzz consectetur zzzzzzzzzz a.'
         matches = self.match(a, b, gap_length=0, match_length=9)
@@ -66,6 +72,9 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(match.beta_passage, m)
 
     def test_compare_gap_len_b(self):
+        """
+        Test gap jumping, with gaps in b
+        """
         a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         b = 'Lorem xxipsum dolorxxxxsit amet, xconsectetur xxxadipiscing xelit.'
         matches = self.match(a, b, gap_length=5, match_length=1)
@@ -76,6 +85,9 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(match.beta_passage, b)
 
     def test_compare_gap_len_a(self):
+        """
+        Test gap jumping, with gaps in a
+        """
         a = 'Lorem xxipsum dolor xxxsit amet, xconsectetur xxxadipiscing xelit.'
         b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         matches = self.match(a, b, gap_length=5, match_length=1)
@@ -86,6 +98,9 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(match.beta_passage, b)
 
     def test_compare_gap(self):
+        """
+        Test gap jumping, with different lengths of matches
+        """
         a = 'Lorem xxipsum dolorxxxxxxsit amet, xconsectetur xxxadipiscing xelit.'
         b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
         matches = self.match(a, b, gap_length=3, match_length=2)
@@ -105,6 +120,12 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(m2.beta_passage, m2_b)
 
     def test_out_of_order(self):
+        """
+        Check that the matcher is able to match up blocks
+        where block x appears first in body a, second in
+        body a, and block y appears first in body b,
+        second in body a
+        """
         a = 'Lorem ipsum dolor amit'
         b = 'dolor amit Lorem ipsum'
         matches = self.match(a, b, gap_length=3, match_length=3)

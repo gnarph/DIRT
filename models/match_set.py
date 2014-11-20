@@ -19,6 +19,10 @@ class MatchSet(object):
         return self.matches == other.matches
 
     def to_dict(self):
+        """
+        Covert MatchSet to dictionary representation
+        :return: dict representation of MatchSet
+        """
         # Need document json name
         return {'alpha_doc': self.alpha_doc.file_name,
                 'beta_doc': self.beta_doc.file_name,
@@ -27,6 +31,11 @@ class MatchSet(object):
 
     @staticmethod
     def from_dict(d):
+        """
+        Convert dict representation to MatchSet
+        :param d: dict representaton of a MatchSet
+        :return: MatchSet
+        """
         matches = [Match.from_dict(m) for m in d['matches']]
         alpha = Document.from_json(d['alpha_doc'])
         beta = Document.from_json(d['beta_doc'])

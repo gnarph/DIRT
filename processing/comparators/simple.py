@@ -17,6 +17,9 @@ MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 class Comparator(base_comparator.BaseComparator):
 
     def _get_matching_blocks_ab(self):
+        """
+        Get matching blocks going from a
+        """
         matcher = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
                                           a=self.a,
                                           b=self.b)
@@ -24,11 +27,15 @@ class Comparator(base_comparator.BaseComparator):
         return matching_blocks
 
     def _get_matching_blocks_ba(self):
+        """
+        Get matching blocks going from b
+        """
         matcher2 = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
                                            a=self.b,
                                            b=self.a)
         inv_matching_blocks = matcher2.get_matching_blocks()
         matching_blocks2 = []
+        # Need to swap around to match format based on a
         for block in inv_matching_blocks:
             b = MatchBlock(a=block.b,
                            b=block.a,
