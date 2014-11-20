@@ -15,7 +15,7 @@ root = ""
 
 
 class MainFrame(wx.Frame):
-    def __init__(self, parent, dir):
+    def __init__(self, parent, directory):
         wx.Frame.__init__(self, parent, id=wx.ID_ANY, title=wx.EmptyString,
                           pos=wx.DefaultPosition,
                           size=wx.Size(500, 300),
@@ -38,8 +38,8 @@ class MainFrame(wx.Frame):
         self.m_panel2 = html_panel.ReportPanel(self.main_panel)
         main_sizer.Add(self.m_panel2, 1, flag=wx.EXPAND)
 
-        if os.path.isfile(dir):
-            self._parse_text(dir)
+        if os.path.isfile(directory):
+            self._parse_text(directory)
 
         # result panel
         # self.m_panel3 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition,
@@ -90,7 +90,7 @@ class MainFrame(wx.Frame):
 class App(wx.App):
     def __init__(self, input_list):
         wx.App.__init__(self)
-        self.top_frame = MainFrame(parent=None, dir=input_list)
+        self.top_frame = MainFrame(parent=None, directory=input_list)
         self.top_frame.Show()
         self.SetTopWindow(self.top_frame)
 
