@@ -54,6 +54,7 @@ class MatchSet(object):
         for match in self.matches:
             index_pair = match.alpha_indices, match.beta_indices
             indices.append(index_pair)
+        # TODO: return something nicer
         return indices
 
     def get_match_percentage(self):

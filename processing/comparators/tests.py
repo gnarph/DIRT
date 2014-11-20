@@ -56,14 +56,12 @@ class ComparatorTestCase(unittest.TestCase):
 
     def test_compare_match_len(self):
         a = 'Lorem xxxxx dolor sit amet, consectetur adipiscing ddd.'
-        b = 'Lorem ipsum dolor xxxxxxxxx consectetur xxxxxxxxxx a.'
+        b = 'Lorem ipsum dolor zzzzzzzzz consectetur zzzzzzzzzz a.'
         matches = self.match(a, b, gap_length=0, match_length=9)
         self.assertEqual(len(matches), 1)
 
         m = ' consectetur '
         match = matches[0]
-        # print match.alpha_passage
-        # print match.beta_passage
         self.assertEqual(match.alpha_passage, m)
         self.assertEqual(match.beta_passage, m)
 

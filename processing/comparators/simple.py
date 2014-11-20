@@ -3,13 +3,15 @@ import difflib
 
 import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
-from models.match import Match
 from utilities.iteration import niter
 import processing.comparators.match_concatenator as concatenator
 
 
 def double_iter(iterable):
     return niter(iterable, 2)
+
+
+MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 
 class Comparator(base_comparator.BaseComparator):
@@ -23,10 +25,31 @@ class Comparator(base_comparator.BaseComparator):
                                           a=self.a,
                                           b=self.b)
         matching_blocks = matcher.get_matching_blocks()
+
+        matcher2 = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
+                                           a=self.b,
+                                           b=self.a)
+        inv_matching_blocks = matcher2.get_matching_blocks()
+        matching_blocks2 = []
+        for block in inv_matching_blocks:
+            b = MatchBlock(a=block.b,
+                           b=block.a,
+                           size=block.size)
+            matching_blocks2.append(b)
+
         # Last block is a dummy
         combined_blocks = self._combine_blocks(matching_blocks[:-1])
         filtered_blocks = self._filter_blocks(combined_blocks)
+
+        combined_blocks2 = self._combine_blocks(matching_blocks2[:-1])
+        filtered_blocks2 = self._filter_blocks(combined_blocks2)
+
         passage_blocks = self._tuples_to_passages(filtered_blocks)
+        passage_blocks2 = self._tuples_to_passages(filtered_blocks2)
+
+        for pb in passage_blocks2:
+            if pb not in passage_blocks:
+                passage_blocks.append(pb)
 
         return self._get_singlet_pairs(passage_blocks)
 
