@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import time
 
 from models.document import Document
 from models.match import Match
@@ -64,11 +65,18 @@ class Processor(object):
                 print 'err'
         return matches
 
+    def _log_duration(self, duration):
+        template = 'Processed {}, {} in {} seconds'
+        message = template.format(self.alpha_name,
+                                  self.beta_name,
+                                  duration)
+        logger.info(message)
+
     def process(self):
         """
         Process input files
         """
-        logger.info('Processing {}, {}'.format(self.alpha_name, self.beta_name))
+        start_time = time.time()
         alpha = Document.from_json(self.alpha_name)
         beta = Document.from_json(self.beta_name)
         comparator = self.comparator.Comparator(a=alpha.pre_body,
@@ -89,3 +97,6 @@ class Processor(object):
         match_set_dict = match_set.to_dict()
         out_file = os.path.join(self.output_dir, out_name)
         file_ops.write_json_utf8(out_file, match_set_dict)
+
+        duration = time.time() - start_time
+        self._log_duration(duration)

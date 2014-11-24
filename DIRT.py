@@ -52,7 +52,7 @@ def process(args):
     beta_iter = path.iter_files_in(args.preprocessed_dir)
     compared = []
     for a, b in itertools.product(alpha_iter, beta_iter):
-        this_set = {a, b}
+        this_set = sorted([a, b])
         if a != b and this_set not in compared:
             compared.append(this_set)
             pro = processor.Processor(alpha_name=a,
