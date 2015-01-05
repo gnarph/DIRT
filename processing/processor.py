@@ -43,9 +43,9 @@ class Processor(object):
 
     @staticmethod
     def _get_match(a, alpha, b, beta):
-        alpha_indices = a.get_match_bounds(alpha.raw_body)
+        alpha_indices = a.get_match_bounds(alpha.pre_body)
         alpha_passage = a.passage
-        beta_indices = b.get_match_bounds(beta.raw_body)
+        beta_indices = b.get_match_bounds(beta.pre_body)
         beta_passage = b.passage
         m = Match(alpha_passage=alpha_passage,
                   alpha_indices=alpha_indices,

@@ -54,10 +54,9 @@ class MatchSinglet(object):
         :param body: text body the indices should reference
         :return: lower index, upper index
         """
-        # NOTE: This is where the program spends most of its time
-        loc, top = fuzzer.find_in_body(body=body,
-                                       passage=self.passage)
-        return loc, top
+        start = body.index(self.passage)
+        end = start + len(self.passage)
+        return start, end
 
     def get_context(self, from_doc=None, context_chars=10):
         """
