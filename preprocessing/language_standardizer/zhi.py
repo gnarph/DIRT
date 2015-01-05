@@ -63,6 +63,6 @@ def chunk_gen(text, sub=' '):
 
     for char in text:
         if category(char) in sub_cats:
-            yield char
-        else:
             yield sub
+        else:
+            yield char
