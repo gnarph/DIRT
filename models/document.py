@@ -11,7 +11,7 @@ def error_handler(fn):
     def wrapped(*args, **kwargs):
         try:
             val = fn(*args, **kwargs)
-        except (cjson.DecodeError, UnicodeDecodeError, KeyError) as e:
+        except (file_ops.DIRTFileException, KeyError) as e:
             template = u'Error {err} in {func_name} with args {args},{kwargs}'
             msg = template.format(err=str(e),
                                   func_name=str(fn),

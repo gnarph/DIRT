@@ -52,14 +52,17 @@ def process(args):
     beta_iter = path.iter_files_in(args.preprocessed_dir)
     compared = []
     for a, b in itertools.product(alpha_iter, beta_iter):
-        this_set = {a, b}
+        this_set = sorted([a, b])
         if a != b and this_set not in compared:
             compared.append(this_set)
             pro = processor.Processor(alpha_name=a,
                                       beta_name=b,
                                       input_dir=args.preprocessed_dir,
                                       output_dir=args.output_dir,
-                                      comparator=comparator)
+                                      comparator=comparator,
+                                      gap_length=args.gap_length,
+                                      match_length=args.match_length,
+                                      percentage_match_length=args.percentage_match_length)
             pro.process()
 
 
@@ -102,5 +105,27 @@ if __name__ == '__main__':
                         help='comparator for processor',
                         type=str)
 
+    parser.add_argument('-gl', '--gap_length',
+                        default=3,
+                        help='Size of gaps between matches to be jumped',
+                        type=int)
+    parser.add_argument('-ml', '--match_length',
+                        default=10,
+                        help='Minimum length of a match',
+                        type=int)
+    parser.add_argument('-pml', '--percentage_match_length',
+                        default=0,
+                        help='Minimum length of match as a percentage of total'
+                             'document length',
+                        type=int)
+
+    parser.add_argument('-v', '--verbose',
+                        help='Verbose',
+                        action='count')
+
     parsed_args = parser.parse_args()
+    if parsed_args.verbose:
+        from utilities import logger
+        logger.show_info()
+
     main(parsed_args)

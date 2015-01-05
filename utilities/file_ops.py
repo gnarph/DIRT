@@ -4,6 +4,26 @@ import os
 import cjson
 
 
+class DIRTFileException(Exception):
+    pass
+
+
+def unicode_error_handler(fn):
+    def wrapped(*args, **kwargs):
+        try:
+            val = fn(*args, **kwargs)
+        except (cjson.DecodeError, UnicodeDecodeError) as e:
+            template = u'Error {err} in {func_name} with args {args},{kwargs}'
+            msg = template.format(err=str(e),
+                                  func_name=str(fn),
+                                  args=args,
+                                  kwargs=kwargs)
+            raise DIRTFileException(msg)
+        return val
+    return wrapped
+
+
+@unicode_error_handler
 def read_utf8(file_name):
     """
     Read a utf8 coded file
@@ -15,6 +35,7 @@ def read_utf8(file_name):
     return raw_passage
 
 
+@unicode_error_handler
 def read_json_utf8(file_name):
     """
     Read a utf8 encoded json file
