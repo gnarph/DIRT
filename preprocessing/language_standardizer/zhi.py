@@ -51,11 +51,18 @@ def strip(text):
     :param text: input unicode string
     :return: unicode string without punctuation or symbols
     """
+    gen = chunk_gen(text)
+    return u''.join(gen)
+
+
+def chunk_gen(text, sub=' '):
     punctuation_cats = {'Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'}
     symbol_cats = {'Sc', 'Sk', 'Sm', 'So'}
     separator_cats = {'Zi', 'Zp', 'Zs'}
-    remove_cats = punctuation_cats | symbol_cats | separator_cats
-    gen = (x for x in text
-           if category(x) not in remove_cats)
-    return u''.join(gen)
+    sub_cats = punctuation_cats | symbol_cats | separator_cats
 
+    for char in text:
+        if category(char) in sub_cats:
+            yield char
+        else:
+            yield sub
