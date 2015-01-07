@@ -59,11 +59,11 @@ class MatchSet(object):
         [(PAIR), (PAIR), ...]
         PAIR=((a_lower, a_upper), (b_lower, b_upper))
         """
+        # TODO: consider a class instead of the odd data structure
         indices = []
         for match in self.matches:
             index_pair = match.alpha_indices, match.beta_indices
             indices.append(index_pair)
-        # TODO: return something nicer
         return indices
 
     def get_match_percentage(self):

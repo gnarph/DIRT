@@ -100,7 +100,8 @@ class MatchSingletTest(unittest.TestCase):
         Test that get_context returns the match and appropriate context
         """
         pad_chars = len(self.context_pad)
-        match_with_context = self.singlet.get_context(context_chars=pad_chars)
+        match_with_context = self.singlet.get_context(self.body,
+                                                      context_chars=pad_chars)
         self.assertTrue(is_fuzzy_match(match_with_context, self.with_context))
 
         # Test match at end of body
@@ -110,7 +111,8 @@ class MatchSingletTest(unittest.TestCase):
         end_singlet = MatchSinglet(file_name=self.file_name,
                                    passage=self.match,
                                    document=self.doc)
-        end_match_context = end_singlet.get_context(context_chars=pad_chars)
+        end_match_context = end_singlet.get_context(self.doc.body,
+                                                    context_chars=pad_chars)
         self.assertIn(self.match, end_match_context)
 
         # Test match at start of body
@@ -118,7 +120,8 @@ class MatchSingletTest(unittest.TestCase):
         beg_singlet = MatchSinglet(file_name=self.file_name,
                                    passage=self.match,
                                    document=self.doc)
-        beg_match_context = beg_singlet.get_context(context_chars=pad_chars)
+        beg_match_context = beg_singlet.get_context(self.doc.body,
+                                                    context_chars=pad_chars)
         self.assertIn(self.match, beg_match_context)
 
     def test_to_dict(self):

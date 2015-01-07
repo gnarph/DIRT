@@ -57,24 +57,22 @@ class MatchSinglet(object):
         end = start + len(self.passage)
         return start, end
 
-    def get_context(self, from_doc=None, context_chars=10):
+    def get_context(self, body, context_chars=10):
         """
         Get matching passage with some context from surrounding text
-        :param from_doc: document the context should come from
+        :param body:
         :param context_chars: number of chars added to each side of
                               passage to make context
         :return: string of matching passage and surrounding context
         """
-        if from_doc is None:
-            from_doc = self.document
-        loc, top = self.get_match_bounds(from_doc.body)
+        loc, top = self.get_match_bounds(body)
         desired_lower = loc - context_chars
         desired_upper = top + context_chars
         lower_bound = desired_lower if desired_lower >= 0 else 0
-        len_body = len(from_doc.body)
+        len_body = len(body)
         if desired_upper >= len_body:
             upper_bound = len_body
         else:
             upper_bound = desired_upper
-        context = from_doc.body[lower_bound:upper_bound]
+        context = body[lower_bound:upper_bound]
         return context
