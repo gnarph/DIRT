@@ -12,8 +12,6 @@ class MatchSet(object):
         self.alpha_doc = alpha_doc
         self.beta_doc = beta_doc
         self.matches = matches
-        # TODO: add more data at this level,
-        #       move it from match singlet
 
     def __eq__(self, other):
         return self.matches == other.matches

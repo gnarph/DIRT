@@ -109,9 +109,7 @@ class Comparator(base_comparator.BaseComparator):
     def _get_singlet_pairs(self, passage_blocks):
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
-            s_a = MatchSinglet(file_name=self.name_a,
-                               passage=p_a)
-            s_b = MatchSinglet(file_name=self.name_b,
-                               passage=p_b)
+            s_a = MatchSinglet(passage=p_a)
+            s_b = MatchSinglet(passage=p_b)
             singlet_pairs.append((s_a, s_b))
         return singlet_pairs

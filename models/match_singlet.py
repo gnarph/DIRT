@@ -1,6 +1,3 @@
-from models.document import Document
-
-
 class MatchSinglet(object):
     """
     Class for representing half of a match,
@@ -8,44 +5,26 @@ class MatchSinglet(object):
     """
     # TODO: rename class
 
-    def __init__(self, file_name, passage, document=None):
+    def __init__(self, passage):
         """
-        :param file_name: name of source file
         :param passage: matching passage, non-preprocessed
-        :param document: models.document.Document, optional
         """
-        self.file_name = file_name
         self.passage = passage
-        self._document = document
 
     def __eq__(self, other):
-        if self.file_name != other.file_name:
-            return False
         return self.passage == other.passage
-
-    @property
-    def document(self):
-        """
-        Plain input document... need to get context from it
-        :return:
-        """
-        if self._document is None:
-            return Document.from_json(self.file_name)
-        return self._document
 
     def to_dict(self):
         """
         Convert to dictionary representation
         :return: dict representation of MatchSinglet
         """
-        return {'file_name': self.file_name,
-                'passage': self.passage,
+        return {'passage': self.passage,
                 }
 
     @staticmethod
     def from_dict(d):
-        return MatchSinglet(d['file_name'],
-                            d['passage'])
+        return MatchSinglet(d['passage'])
 
     def get_match_bounds(self, body):
         """
@@ -60,11 +39,13 @@ class MatchSinglet(object):
     def get_context(self, body, context_chars=10):
         """
         Get matching passage with some context from surrounding text
-        :param body:
+        :param body: text body to get the match from,
+                     must contain self.passage
         :param context_chars: number of chars added to each side of
                               passage to make context
         :return: string of matching passage and surrounding context
         """
+        # TODO: test when self.passage not in body?
         loc, top = self.get_match_bounds(body)
         desired_lower = loc - context_chars
         desired_upper = top + context_chars

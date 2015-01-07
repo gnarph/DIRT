@@ -91,9 +91,7 @@ class MatchSingletTest(unittest.TestCase):
         self.doc.body = fmt.format(self.with_context)
         self.doc.file_name = self.file_name
         self.body = self.doc.body
-        self.singlet = MatchSinglet(file_name=self.file_name,
-                                    passage=self.match,
-                                    document=self.doc)
+        self.singlet = MatchSinglet(passage=self.match)
 
     def test_get_context(self):
         """
@@ -108,18 +106,14 @@ class MatchSingletTest(unittest.TestCase):
         loc = self.body.find(self.match)
         end_match = loc + len(self.match)
         self.doc.body = self.doc.body[:end_match]
-        end_singlet = MatchSinglet(file_name=self.file_name,
-                                   passage=self.match,
-                                   document=self.doc)
+        end_singlet = MatchSinglet(passage=self.match)
         end_match_context = end_singlet.get_context(self.doc.body,
                                                     context_chars=pad_chars)
         self.assertIn(self.match, end_match_context)
 
         # Test match at start of body
         self.doc.body = self.body[loc:]
-        beg_singlet = MatchSinglet(file_name=self.file_name,
-                                   passage=self.match,
-                                   document=self.doc)
+        beg_singlet = MatchSinglet(passage=self.match)
         beg_match_context = beg_singlet.get_context(self.doc.body,
                                                     context_chars=pad_chars)
         self.assertIn(self.match, beg_match_context)
@@ -129,22 +123,7 @@ class MatchSingletTest(unittest.TestCase):
         Test conversion to dict representation
         """
         sing_dict = self.singlet.to_dict()
-        self.assertEqual(sing_dict['file_name'], self.file_name)
         self.assertEqual(sing_dict['passage'], self.match)
-
-    def test_document(self):
-        """
-        Test getting document
-        """
-        sing = MatchSinglet(file_name='models/test_data/lorem.json',
-                            passage=u'청춘의 피가 심장의 많이')
-        doc = sing.document
-        self.assertEqual(doc.file_name, 'models/test_data/lorem.json')
-        self.assertEqual(doc.raw_file_name, 'models/test_data/raw/lorem.txt')
-        body = u'품에 원대하고, 무엇을 무한한 사막이다. 청춘의 피가 심장의 많이 열락의 무엇을 아니다.'
-        self.assertEqual(doc.raw_body, body)
-        meta = {}
-        self.assertEqual(doc.metadata, meta)
 
     # TODO: test eq
 
@@ -189,10 +168,8 @@ class MatchSetTest(unittest.TestCase):
         self.matches = []
         self.singlet_pairs = []
         for i in xrange(len(self.passages_a)):
-            a = MatchSinglet(file_name=self.document_a,
-                             passage=self.passages_a[i])
-            b = MatchSinglet(file_name=self.document_b,
-                             passage=self.passages_b[i])
+            a = MatchSinglet(passage=self.passages_a[i])
+            b = MatchSinglet(passage=self.passages_b[i])
             s_pair = (a, b)
             self.singlet_pairs.append(s_pair)
             # Alpha/beta need to be actual documents, not names
