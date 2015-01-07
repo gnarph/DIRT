@@ -1,5 +1,3 @@
-import cjson
-
 from utilities import file_ops
 
 

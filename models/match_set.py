@@ -13,7 +13,7 @@ class MatchSet(object):
         self.beta_doc = beta_doc
         self.matches = matches
         # TODO: add more data at this level,
-        # move it from match singlet
+        #       move it from match singlet
 
     def __eq__(self, other):
         return self.matches == other.matches

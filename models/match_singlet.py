@@ -1,5 +1,4 @@
 from models.document import Document
-from utilities import fuzzer
 
 
 class MatchSinglet(object):

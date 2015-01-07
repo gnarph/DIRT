@@ -123,9 +123,9 @@ if __name__ == '__main__':
                         help='Verbose',
                         action='count')
 
-    parsed_args = parser.parse_args()
-    if parsed_args.verbose:
+    parsed = parser.parse_args()
+    if parsed.verbose:
         from utilities import logger
         logger.show_info()
 
-    main(parsed_args)
+    main(parsed)
