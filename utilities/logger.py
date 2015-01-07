@@ -6,7 +6,10 @@ def get_logger():
 
 
 def show_info():
-    logging.basicConfig(level=logging.INFO)
+    level = logging.INFO
+    logging.basicConfig(level=level)
+    logger = get_logger()
+    logger.setLevel(level)
 
 
 def info(msg):

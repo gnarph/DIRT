@@ -125,6 +125,22 @@ class MatchSingletTest(unittest.TestCase):
         sing_dict = self.singlet.to_dict()
         self.assertEqual(sing_dict['passage'], self.match)
 
+    def test_eq(self):
+        singlet_a = MatchSinglet(passage="test")
+        singlet_b = MatchSinglet(passage="test")
+        singlet_c = MatchSinglet(passage="nope")
+
+        self.assertTrue(singlet_a == singlet_b)
+        self.assertFalse(singlet_a == singlet_c)
+        self.assertFalse(singlet_b == singlet_c)
+
+    def test_from_dict(self):
+        singlet_a = MatchSinglet(passage=u'hey')
+        singlet_a_dict = singlet_a.to_dict()
+        singlet_from_dict = MatchSinglet.from_dict(singlet_a_dict)
+
+        self.assertTrue(singlet_a == singlet_from_dict)
+
     # TODO: test eq
 
 
@@ -152,7 +168,23 @@ class MatchTest(unittest.TestCase):
         self.assertEqual(self.beta_passage, match_dict['beta_passage'])
         self.assertEqual(self.beta_indices, match_dict['beta_indices'])
 
-        # todo: test eq
+    def test_eq(self):
+        a = Match(alpha_passage=u'one',
+                  alpha_indices=(3, 5),
+                  beta_passage=u'two',
+                  beta_indices=(9, 11))
+        b = Match(alpha_passage=u'two',
+                  alpha_indices=(9, 11),
+                  beta_passage=u'one',
+                  beta_indices=(3, 5))
+        c = Match(alpha_passage=u'five',
+                  alpha_indices=(44, 47),
+                  beta_passage=u'six',
+                  beta_indices=(0, 3))
+
+        self.assertTrue(a == b)
+        self.assertFalse(a == c)
+        self.assertFalse(b == c)
 
 
 class MatchSetTest(unittest.TestCase):

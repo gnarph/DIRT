@@ -22,6 +22,7 @@ class MatchSinglet(object):
         return {'passage': self.passage,
                 }
 
+    # TODO: this method may no longer be needed
     @staticmethod
     def from_dict(d):
         return MatchSinglet(d['passage'])

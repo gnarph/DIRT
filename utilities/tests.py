@@ -1,7 +1,9 @@
 import unittest
+import logging
 
 import utilities.path
 from utilities import fuzzer
+import utilities.logger
 
 
 class PathTest(unittest.TestCase):
@@ -24,3 +26,12 @@ class FuzzerTest(unittest.TestCase):
         b = '01234g6789abc'
         match = fuzzer.is_fuzzy_match(a, b)
         self.assertTrue(match)
+
+
+class LoggerTest(unittest.TestCase):
+
+    def test_show_info(self):
+        utilities.logger.show_info()
+        logger = utilities.logger.get_logger()
+        log_level = logger.getEffectiveLevel()
+        self.assertEqual(log_level, logging.INFO)
