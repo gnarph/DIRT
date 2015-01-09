@@ -1,3 +1,5 @@
+from postprocessing import postprocessor
+
 
 def dummy_test():
-    pass
+    post = postprocessor.Postprocessor()

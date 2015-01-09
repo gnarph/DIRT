@@ -97,6 +97,19 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(match.alpha_passage, a)
         self.assertEqual(match.beta_passage, b)
 
+    def test_compare_gap_long_b(self):
+        """
+        Something
+        """
+        a = 'Lorem ipsum'
+        b = 'Lorem dolor amit ipsum'
+        matches = self.match(a, b, gap_length=20, match_length=15)
+        self.assertEqual(len(matches), 1)
+
+        match = matches[0]
+        self.assertEqual(match.alpha_passage, a)
+        self.assertEqual(match.beta_passage, b)
+
     def test_compare_gap(self):
         """
         Test gap jumping, with different lengths of matches

@@ -6,11 +6,6 @@ from models.match_singlet import MatchSinglet
 from utilities.iteration import niter
 import processing.comparators.match_concatenator as concatenator
 
-
-def double_iter(iterable):
-    return niter(iterable, 2)
-
-
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 
@@ -75,14 +70,6 @@ class Comparator(base_comparator.BaseComparator):
         blocks = concatenator.difflib_blocks_to_match_tuples(matching_blocks)
         cat = concatenator.MatchConcatenator(blocks, self.gap_length)
         return cat.concatenate()
-
-    def _terminate_block(self, combined_blocks, end, first, g2):
-        new_length = end - first.a
-        new_match = self.MatchTuple(a=first.a,
-                                    b=first.b,
-                                    len_a=new_length,
-                                    len_b=new_length + g2)
-        combined_blocks.append(new_match)
 
     def _filter_blocks(self, combined_blocks):
         """
