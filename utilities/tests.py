@@ -27,6 +27,24 @@ class FuzzerTest(unittest.TestCase):
         match = fuzzer.is_fuzzy_match(a, b)
         self.assertTrue(match)
 
+    def test_longer_passage(self):
+        passage = 'a longer passage'
+        body = 'longer'
+        start, end = fuzzer.find_in_body(body=body,
+                                         passage=passage)
+        self.assertEqual(start, 0)
+        self.assertEqual(end, len(body))
+
+    def test_double_match(self):
+        passage = 'name'
+        body = 'name is a name in name'
+        start, end = fuzzer.find_in_body(body=body,
+                                         passage=passage)
+
+        self.assertEqual(start, 0)
+        # fails
+        self.assertEqual(end, 4)
+
 
 class LoggerTest(unittest.TestCase):
 
