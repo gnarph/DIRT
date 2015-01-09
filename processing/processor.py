@@ -8,7 +8,6 @@ from models.match_set import MatchSet
 from processing.comparators import simple
 from utilities import path
 from utilities import file_ops
-from utilities import fuzzer
 from utilities import logger
 
 REPORT_NAME = '{}__{}__CMP.json'
@@ -58,11 +57,8 @@ class Processor(object):
         # TODO: should use pre_body
         matches = []
         for a, b in singlet_pairs:
-            try:
-                m = Processor._get_match(a, alpha, b, beta)
-                matches.append(m)
-            except fuzzer.FuzzerFailure:
-                print 'err'
+            m = Processor._get_match(a, alpha, b, beta)
+            matches.append(m)
         return matches
 
     def _log_duration(self, duration):
