@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <teiHeader>
+        <fileDesc>
+            <sourceDesc>
+                <p>If Chinese, the text below is based on the Taishō text from the CBETA-Database
+                (Version Feb.2006). If Pāli, the text base is the VRI Chaṭṭa Saṅgāyana edition
+                (ver.3). If Sanskrit the text base is <bibl>Enomoto, Fumio 榎本文雄 (1994): A
+                    comprehensive study of the Chinese Saṃyuktāgama: Indic texts corresponding to
+                    the Chinese Saṃyuktāgama as found in the Sarvāstivāda-Mūlasarvāstivāda
+                    literature. Kyoto: Kacho Junior College</bibl> and other scholarly publications (as referenced).
+                English translations by Marcus Bingenheimer.</p>
+            </sourceDesc>
+        </fileDesc>
+    </teiHeader>
+    <text>
+        <front>
+            <div>
+                <head>Sujāta is praised</head>
+                <p>Translation of BZA 001. First version published in <emph>Buddhist Studies Review</emph> vol. 23-1 (2006). </p>
+            </div>
+        </front>
+    </text>
+</TEI>

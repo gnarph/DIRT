@@ -59,3 +59,8 @@ class TEITest(unittest.TestCase):
         global_doc = Document.from_json(json_name)
         self.assertEqual(read_body, global_doc.raw_body)
         self.assertEqual(read_metadata, global_doc.metadata)
+
+    def test_invalid_data(self):
+        file_name = 'preprocessing/tei/test_data/invalid_tei.xml'
+        tei_doc = tei_document.TEIDocument(file_name)
+        tei_data = tei_doc.get_data()
