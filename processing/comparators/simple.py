@@ -3,7 +3,6 @@ import difflib
 
 import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
-from utilities.iteration import niter
 import processing.comparators.match_concatenator as concatenator
 
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])

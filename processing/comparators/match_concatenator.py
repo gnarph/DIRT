@@ -1,7 +1,8 @@
 from collections import namedtuple
 
 
-MatchTuple = namedtuple('MatchTuple', ['a', 'b', 'a_end', 'b_end'])
+MatchTuple = namedtuple(typename='MatchTuple',
+                        field_names=['a', 'b', 'a_end', 'b_end'])
 
 
 class DoneMainBlocks(BaseException):
@@ -85,14 +86,9 @@ class MatchConcatenator(object):
         """
         last = second
         if not self.jump_gap(last):
-            if first.a_end == self.a_cursor:
-                # no combining
-                self.combined.append(first)
-                self.combined.append(second)
-            else:
-                # terminate
-                self.combine_and_select_block(first)
-                self.combined.append(last)
+            # no combining
+            self.combined.append(first)
+            self.combined.append(second)
         else:
             # combine and terminate
             self.move_cursors_to_end(last)

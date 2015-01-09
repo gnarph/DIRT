@@ -3,6 +3,32 @@ from mock import Mock
 
 from processing.comparators import simple
 from processing.processor import Processor
+from processing.comparators.match_concatenator import MatchConcatenator
+from processing.comparators.match_concatenator import MatchTuple
+
+
+class MatchConcatenatorTestCase(unittest.TestCase):
+
+    def test_no_matches(self):
+        matches = []
+        concatenator = MatchConcatenator(match_list=matches,
+                                         gap_length=3)
+        combined = concatenator.concatenate()
+        self.assertEqual(combined, [])
+
+    def test_combine_at_end(self):
+        first = MatchTuple(a=0,
+                           b=0,
+                           a_end=4,
+                           b_end=5)
+        second = MatchTuple(a=6,
+                            b=6,
+                            a_end=8,
+                            b_end=8)
+        concatenator = MatchConcatenator(match_list=[first, second],
+                                         gap_length=5)
+        combined = concatenator.concatenate()
+        self.assertEqual(len(combined), 1)
 
 
 class ComparatorTestCase(unittest.TestCase):
