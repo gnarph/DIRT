@@ -31,6 +31,7 @@ class Processor(object):
         :param match_length: min match length
         :param percentage_match_length: min percentage match len
         """
+        # TODO: make more of these parameters to the process call
         self.comparator = comparator
         self.alpha_name = alpha_name
         self.beta_name = beta_name
@@ -54,7 +55,6 @@ class Processor(object):
 
     @staticmethod
     def singlet_pairs_to_matches(alpha, beta, singlet_pairs):
-        # TODO: should use pre_body
         matches = []
         for a, b in singlet_pairs:
             m = Processor._get_match(a, alpha, b, beta)
