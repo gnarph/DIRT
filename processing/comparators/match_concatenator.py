@@ -84,14 +84,13 @@ class MatchConcatenator(object):
         :param first:
         :param second:
         """
-        last = second
-        if not self.jump_gap(last):
+        if not self.jump_gap(second):
             # no combining
             self.combined.append(first)
             self.combined.append(second)
         else:
             # combine and terminate
-            self.move_cursors_to_end(last)
+            self.move_cursors_to_end(second)
             self.combine_and_select_block(first)
 
     def concatenate(self):
