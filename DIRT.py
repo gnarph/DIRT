@@ -51,14 +51,16 @@ def process(args):
 
     alpha_iter = path.iter_files_in(args.preprocessed_dir)
     beta_iter = path.iter_files_in(args.preprocessed_dir)
+    pro = processor.Processor(output_dir=args.output_dir,
+                              comparator=comparator,
+                              gap_length=args.gap_length,
+                              match_length=args.match_length,
+                              percentage_match_length=args.percentage_match_length)
     compared = []
     for a, b in itertools.product(alpha_iter, beta_iter):
         this_set = sorted([a, b])
         if a != b and this_set not in compared:
             compared.append(this_set)
-            pro = processor.Processor(output_dir=args.output_dir, comparator=comparator, gap_length=args.gap_length,
-                                      match_length=args.match_length,
-                                      percentage_match_length=args.percentage_match_length)
             alpha = Document.from_json(a)
             beta = Document.from_json(b)
             pro.process(alpha_document=alpha, beta_document=beta)

@@ -16,7 +16,8 @@ class Processor(object):
     """
     Processor
     """
-    def __init__(self, output_dir, comparator=simple, gap_length=3, match_length=10, percentage_match_length=None):
+    def __init__(self, output_dir, comparator=simple, gap_length=3,
+                 match_length=10, percentage_match_length=None):
         """
         Create a new Processor
         :param output_dir: directory of output files
