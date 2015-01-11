@@ -8,6 +8,7 @@ import os
 import itertools
 import importlib
 
+from models.document import Document
 import preprocessing.preprocessor as preprocessor
 import processing.processor as processor
 from utilities import path
@@ -55,14 +56,12 @@ def process(args):
         this_set = sorted([a, b])
         if a != b and this_set not in compared:
             compared.append(this_set)
-            pro = processor.Processor(input_dir=args.preprocessed_dir,
-                                      output_dir=args.output_dir,
-                                      comparator=comparator,
-                                      gap_length=args.gap_length,
+            pro = processor.Processor(output_dir=args.output_dir, comparator=comparator, gap_length=args.gap_length,
                                       match_length=args.match_length,
                                       percentage_match_length=args.percentage_match_length)
-            pro.process(alpha_name=a,
-                        beta_name=b)
+            alpha = Document.from_json(a)
+            beta = Document.from_json(b)
+            pro.process(alpha_document=alpha, beta_document=beta)
 
 
 def postprocess(args):

@@ -2,7 +2,6 @@
 import os
 import time
 
-from models.document import Document
 from models.match import Match
 from models.match_set import MatchSet
 from processing.comparators import simple
@@ -17,20 +16,16 @@ class Processor(object):
     """
     Processor
     """
-    def __init__(self, input_dir, output_dir, comparator=simple, gap_length=3, match_length=10,
-                 percentage_match_length=None):
+    def __init__(self, output_dir, comparator=simple, gap_length=3, match_length=10, percentage_match_length=None):
         """
         Create a new Processor
-        :param input_dir: directory of input files
         :param output_dir: directory of output files
         :param comparator: comparator module
         :param gap_length: length of gap to jump
         :param match_length: min match length
         :param percentage_match_length: min percentage match len
         """
-        # TODO: make more of these parameters to the process call
         self.comparator = comparator
-        self.input_dir = input_dir
         self.output_dir = output_dir
         self.gap_length = gap_length
         self.match_length = match_length
@@ -64,31 +59,33 @@ class Processor(object):
                                   duration)
         logger.info(message)
 
-    def process(self, alpha_name, beta_name):
+    def process(self, alpha_document, beta_document):
         """
         Process input files
         """
         start_time = time.time()
-        alpha = Document.from_json(alpha_name)
-        beta = Document.from_json(beta_name)
-        comparator = self.comparator.Comparator(a=alpha.pre_body,
-                                                b=beta.pre_body,
-                                                name_a=alpha_name,
-                                                name_b=beta_name,
+        comparator = self.comparator.Comparator(a=alpha_document.pre_body,
+                                                b=beta_document.pre_body,
+                                                name_a=alpha_document.file_name,
+                                                name_b=beta_document.file_name,
                                                 match_length=self.match_length,
                                                 gap_length=self.gap_length)
-        name_a = path.get_name(alpha_name, extension=False)
-        name_b = path.get_name(beta_name, extension=False)
+        name_a = path.get_name(alpha_document.file_name, extension=False)
+        name_b = path.get_name(beta_document.file_name, extension=False)
         out_name = REPORT_NAME.format(name_a,
                                       name_b)
         singlet_pairs = comparator.compare()
-        matches = self.singlet_pairs_to_matches(alpha, beta, singlet_pairs)
-        match_set = MatchSet(alpha_doc=alpha,
-                             beta_doc=beta,
+        matches = self.singlet_pairs_to_matches(alpha=alpha_document,
+                                                beta=beta_document,
+                                                singlet_pairs=singlet_pairs)
+        match_set = MatchSet(alpha_doc=alpha_document,
+                             beta_doc=beta_document,
                              matches=matches)
         match_set_dict = match_set.to_dict()
         out_file = os.path.join(self.output_dir, out_name)
         file_ops.write_json_utf8(out_file, match_set_dict)
 
         duration = time.time() - start_time
-        self._log_duration(alpha_name, beta_name, duration)
+        self._log_duration(alpha_name=alpha_document.file_name,
+                           beta_name=beta_document.file_name,
+                           duration=duration)
