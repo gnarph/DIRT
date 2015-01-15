@@ -14,6 +14,13 @@ def iter_match_passages(match_set):
         yield match.beta_passage.strip()
 
 
+def contains_contains(l, search_for):
+    for item in l:
+        if search_for in item:
+            return True
+    return False
+
+
 class SmokeTest(unittest.TestCase):
 
     pre_dir = 'test_preprocessed'
@@ -75,7 +82,7 @@ class SmokeTest(unittest.TestCase):
         args.output_dir = self.out_dir
         args.language = 'eng'
         args.comparator = 'simple'
-        args.gap_length = 3
+        args.gap_length = 10
         args.match_length = 10
         DIRT.main(args)
 
@@ -83,18 +90,32 @@ class SmokeTest(unittest.TestCase):
         one_three = self._get_match_set('one__three__CMP.json')
         three_two = self._get_match_set('three__two__CMP.json')
 
-        common_pass = ('This test file consists of mutiple '
-                       'paragraphs. This paragraph in particular '
-                       'occurs in multiple test files. DIRT should '
+        common_pass = ('This test file consists of multiple '
+                       'paragraphs  This paragraph in particular '
+                       'occurs in multiple test files  DIRT should '
                        'be able to determine this and create the '
-                       'appropriate matches.')
+                       'appropriate matches')
         passages_32 = list(iter_match_passages(three_two))
-        assert(common_pass in passages_32)
-
         try:
-            passages_12 = list(iter_match_passages(one_two))
-            assert(common_pass in passages_12)
+            found = contains_contains(passages_32, common_pass)
+            self.assertTrue(found)
+        except AssertionError:
+            print passages_32
+            raise
+
+        passages_12 = list(iter_match_passages(one_two))
+        try:
+            found = contains_contains(passages_12, common_pass)
+            self.assertTrue(found)
         except AssertionError:
             print passages_12
+            raise
+
+        passages_13 = list(iter_match_passages(one_three))
+        try:
+            found = contains_contains(passages_13, common_pass)
+            self.assertTrue(found)
+        except AssertionError:
+            print passages_13
             raise
 

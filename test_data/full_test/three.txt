@@ -2,6 +2,6 @@ Another paragraph seems approriate because two is too short.
 
 This paragraph is unique to the third test file. DIRT is well suited to corpuses of text consisting of unicode characters, where words may or may not separated by spaces or punctuation. On the other hand, there is nothing done to make the search more efficient.
 
-This test file consists of mutiple paragraphs. This paragraph in particular occurs in multiple test files. DIRT should be able to determine this and create the appropriate matches.
+This test file consists of multiple paragraphs. This paragraph in particular occurs in multiple test files. DIRT should be able to determine this and create the appropriate matches.
 
 Ducks

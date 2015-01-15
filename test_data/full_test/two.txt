@@ -1,5 +1,5 @@
 This paragraph is unique to the second test file. The focus of DIRT is to work on any language, as current solutions are focused on languages where words are separated by spaces and represented by many characters (English primarily).
 
-This test file consists of mutiple paragraphs. This paragraph in particular occurs in multiple test files. DIRT should be able to determine this and create the appropriate matches.
+This test file consists of multiple paragraphs. This paragraph in particular occurs in multiple test files. DIRT should be able to determine this and create the appropriate matches.
 
 Another paragraph seems approriate because two is too short.
