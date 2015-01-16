@@ -50,3 +50,9 @@ class LCSTest(unittest.TestCase):
                                   offset=off,
                                   target=strip)
         self.assertEqual(base[off:], restored)
+
+    def test_space_locations(self):
+        base = 'XXXHello World! What a day.'
+        space_locations = list(lcs.space_locations(base))
+        desired = [8, 14, 18, 19]
+        self.assertEqual(space_locations, desired)

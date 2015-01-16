@@ -59,7 +59,6 @@ def add_spaces(int[:] space_locations, int offset, basestring target):
 
     chunks = []
     for point in insert_points:
-        print target[last:point]
         chunks += [target[last:point]]
         last = point
     chunks += [target[last:]]

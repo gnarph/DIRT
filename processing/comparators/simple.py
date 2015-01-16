@@ -1,9 +1,13 @@
 from collections import namedtuple
 import difflib
 
+import pyximport
+pyximport.install()
+
 import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
 import processing.comparators.match_concatenator as concatenator
+from utilities.lcs import matched_passages
 
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
@@ -103,9 +107,8 @@ class Comparator(base_comparator.BaseComparator):
         return singlet_pairs
 
     def hack_lcs(self, a, b):
-        import pyximport; pyximport.install()
-        from utilities.lcs import matched_passages
         passages = list(matched_passages(a, b))
-        tups = [(p, p) for p in passages]
+        # tups = [(p, p) for p in passages]
+        tups = [p for p in passages]
         return tups
 
