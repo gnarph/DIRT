@@ -108,7 +108,10 @@ class Comparator(base_comparator.BaseComparator):
 
     def hack_lcs(self, a, b):
         passages = list(matched_passages(a, b))
-        # tups = [(p, p) for p in passages]
-        tups = [p for p in passages]
-        return tups
+        tups = concatenator.passages_to_match_tuples(a, b, passages)
+        c = concatenator.MatchConcatenator(tups, self.gap_length)
+        combined = c.concatenate()
+        filtered = self._filter_blocks(combined)
+        passage_blocks = self._tuples_to_passages(filtered)
+        return passage_blocks
 

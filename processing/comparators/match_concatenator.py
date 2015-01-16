@@ -20,6 +20,29 @@ def difflib_blocks_to_match_tuples(blocks):
     return tuples
 
 
+def passage_to_match_tuple(a, b, a_psg, b_psg):
+    a_start = a.index(a_psg)
+    b_start = b.index(b_psg)
+    a_end = a_start + len(a_psg)
+    b_end = b_start + len(b_psg)
+    mt = MatchTuple(a=a_start,
+                    b=b_start,
+                    a_end=a_end,
+                    b_end=b_end)
+    return mt
+
+
+def passages_to_match_tuples(a, b, passage_pairs):
+    tups = []
+    for a_psg, b_psg in passage_pairs:
+        tup = passage_to_match_tuple(a=a,
+                                     b=b,
+                                     a_psg=a_psg,
+                                     b_psg=b_psg)
+        tups.append(tup)
+    return tups
+
+
 class MatchConcatenator(object):
     """
     Class for combining match blocks based on their locations

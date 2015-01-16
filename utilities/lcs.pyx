@@ -1,19 +1,25 @@
+from collections import namedtuple
 from cpython cimport array
 from array import array
+import numpy as np
+
+
+MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 
 cpdef object lcs(basestring a, basestring b):
     cdef int m = len(a)
     cdef int n = len(b)
     cdef int c, i, j
+    narr = np.zeros((m, n), dtype=np.int32)
+    cdef int [:, :] counter = narr
 
-    counter = [[0]*(n+1) for x in range(m+1)]
     results = set()
-    for i in xrange(m):
-        for j in xrange(n):
+    for i in xrange(m-1):
+        for j in xrange(n-1):
             if a[i] == b[j]:
-                c = counter[i][j] + 1
-                counter[i+1][j+1] = c
+                c = counter[i, j] + 1
+                counter[i+1, j+1] = c
                 new_match = a[i-c+1:i+1]
                 results.add(new_match)
 
@@ -32,16 +38,11 @@ def matched_passages(basestring a, basestring b):
     a_strip = a.replace(' ', '')
     b_strip = b.replace(' ', '')
 
-    substrings = lcs(a, b)
+    substrings = lcs(a_strip, b_strip)
 
     for substring in substrings:
-        try:
-            a_space_start = a_strip.index(substring)
-            b_space_start = b_strip.index(substring)
-        except ValueError:
-            # print a_strip, b_strip, substring, ' '
-            continue
-
+        a_space_start = a_strip.index(substring)
+        b_space_start = b_strip.index(substring)
 
         a_added_spc = add_spaces(space_locations=a_spaces,
                                  offset=a_space_start,
