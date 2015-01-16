@@ -1,5 +1,6 @@
 from collections import namedtuple
 from cpython cimport array
+from cpython cimport bool
 from array import array
 import numpy as np
 
@@ -11,17 +12,18 @@ cpdef object lcs(basestring a, basestring b):
     cdef int m = len(a)
     cdef int n = len(b)
     cdef int c, i, j
-    narr = np.zeros((m, n), dtype=np.int32)
+    narr = np.zeros((m+1, n+1), dtype=np.int32)
     cdef int [:, :] counter = narr
 
     results = set()
-    for i in xrange(m-1):
-        for j in xrange(n-1):
+    for i in xrange(m):
+        for j in xrange(n):
             if a[i] == b[j]:
                 c = counter[i, j] + 1
                 counter[i+1, j+1] = c
                 new_match = a[i-c+1:i+1]
-                results.add(new_match)
+                if new_match:
+                    results.add(new_match)
 
     return results
 
@@ -31,6 +33,8 @@ def matched_passages(basestring a, basestring b):
     cdef int b_space_start
     cdef basestring a_added_spc
     cdef basestring b_added_spc
+    cdef bool skip = False
+    cdef basestring s, t
 
     a_spaces = space_locations(a)
     b_spaces = space_locations(b)
@@ -39,6 +43,20 @@ def matched_passages(basestring a, basestring b):
     b_strip = b.replace(' ', '')
 
     substrings = lcs(a_strip, b_strip)
+
+    # should remove items from substrings
+    # that are substrings of other items
+    ordered_subs = sorted(list(substrings), key=len, reverse=True)
+    take = []
+    for s in ordered_subs:
+        for t in take:
+            skip = s in t
+            if skip:
+                break
+        if skip:
+            continue
+        take.append(s)
+    substrings = take
 
     for substring in substrings:
         a_space_start = a_strip.index(substring)
