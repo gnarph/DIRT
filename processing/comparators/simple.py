@@ -43,22 +43,24 @@ class Comparator(base_comparator.BaseComparator):
         Compare texts
         :return: list of singlet pairs
         """
-        matching_blocks = self._get_matching_blocks_ab()
-        matching_blocks2 = self._get_matching_blocks_ba()
 
-        # Last block is a dummy
-        combined_blocks = self._combine_blocks(matching_blocks[:-1])
-        filtered_blocks = self._filter_blocks(combined_blocks)
-
-        combined_blocks2 = self._combine_blocks(matching_blocks2[:-1])
-        filtered_blocks2 = self._filter_blocks(combined_blocks2)
-
-        passage_blocks = self._tuples_to_passages(filtered_blocks)
-        passage_blocks2 = self._tuples_to_passages(filtered_blocks2)
-
-        for pb in passage_blocks2:
-            if pb not in passage_blocks:
-                passage_blocks.append(pb)
+        # matching_blocks = self._get_matching_blocks_ab()
+        # matching_blocks2 = self._get_matching_blocks_ba()
+        #
+        # # Last block is a dummy
+        # combined_blocks = self._combine_blocks(matching_blocks[:-1])
+        # filtered_blocks = self._filter_blocks(combined_blocks)
+        #
+        # combined_blocks2 = self._combine_blocks(matching_blocks2[:-1])
+        # filtered_blocks2 = self._filter_blocks(combined_blocks2)
+        #
+        # passage_blocks = self._tuples_to_passages(filtered_blocks)
+        # passage_blocks2 = self._tuples_to_passages(filtered_blocks2)
+        #
+        # for pb in passage_blocks2:
+        #     if pb not in passage_blocks:
+        #         passage_blocks.append(pb)
+        passage_blocks = self.hack_lcs(self.a, self.b)
 
         return self._get_singlet_pairs(passage_blocks)
 
@@ -99,3 +101,11 @@ class Comparator(base_comparator.BaseComparator):
             s_b = MatchSinglet(passage=p_b)
             singlet_pairs.append((s_a, s_b))
         return singlet_pairs
+
+    def hack_lcs(self, a, b):
+        import pyximport; pyximport.install()
+        from utilities.lcs import matched_passages
+        passages = list(matched_passages(a, b))
+        tups = [(p, p) for p in passages]
+        return tups
+

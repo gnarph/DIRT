@@ -1,9 +1,12 @@
 import unittest
 import logging
+import pyximport
+pyximport.install()
 
 import utilities.path
 from utilities import fuzzer
 import utilities.logger
+from utilities import lcs
 
 
 class PathTest(unittest.TestCase):
@@ -34,3 +37,16 @@ class LoggerTest(unittest.TestCase):
         logger = utilities.logger.get_logger()
         log_level = logger.getEffectiveLevel()
         self.assertEqual(log_level, logging.INFO)
+
+
+class LCSTest(unittest.TestCase):
+
+    def test_add_spaces(self):
+        off = 3
+        base = 'XXXHello World! What a day.'
+        strip = 'HelloWorld!Whataday.'
+        space_locations = lcs.space_locations(base)
+        restored = lcs.add_spaces(space_locations=space_locations,
+                                  offset=off,
+                                  target=strip)
+        self.assertEqual(base[off:], restored)
