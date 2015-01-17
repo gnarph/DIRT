@@ -8,7 +8,14 @@ import numpy as np
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 
-cpdef object lcs(basestring a, basestring b):
+cdef int[:, :] lcs(basestring a, basestring b):
+    """
+    Do a thing
+    :param a: String to compare
+    :param b: String to compare
+    :return: set of common substrings
+    """
+    # Need to add jump gap here
     cdef int m = len(a)
     cdef int n = len(b)
     cdef int c, i, j
@@ -16,6 +23,9 @@ cpdef object lcs(basestring a, basestring b):
     cdef int [:, :] counter = narr
 
     results = set()
+    # Basically longest common substring algorithm
+    # Except that we look for all common substrings
+    # rather than just the longest one
     for i in xrange(m):
         for j in xrange(n):
             if a[i] == b[j]:
@@ -25,7 +35,54 @@ cpdef object lcs(basestring a, basestring b):
                 if new_match:
                     results.add(new_match)
 
-    return results
+    return counter
+
+
+cpdef object common_passages(basestring a, basestring b, int jump_gap, int match_length):
+    cdef int i, j
+    cdef int [:, :] substring_array = lcs(a, b)
+    cdef int m = len(a)
+    cdef int n = len(b)
+
+    # If substrings are close enough together, stick them together
+    for i in xrange(m):
+        for j in xrange(n):
+            if substring_array[i, j] > 0:
+                # We have a substring, so attempt to extend
+                extend_match(substring_array, m, n, i, j, jump_gap)
+
+    # Get the substrings out of the array
+    
+
+
+
+cdef extend_match(int[:, :] substring_array, int m, int n, int i_start,
+                   int j_start, int jump_gap):
+    cdef int i = i_start + 1
+    cdef int j = j_start + 1
+    cdef int jump = 1
+    cdef x, y, prev_len
+
+    if i < m+1 and j < n+1 and substring_array[i, j] > 0:
+        # Substring continues anyway or there is no more string
+        # to compare
+        return
+
+    # If the substring would otherwise terminate attempt
+    # to jump the gap
+    while i < m+1 and j < n+1 and jump < jump_gap:
+        jump += 1
+        i += 1
+        j += 1
+
+        if substring_array[i, j] > 0:
+            # Extend the substring!
+            prev_len = substring_array[i_start, j_start]
+            for x in xrange(i_start+1, i):
+                for y in xrange(j_start+1, j):
+                    substring_array[x, y] = prev_len + 1
+                    prev_len = substring_array[x, y]
+            return
 
 
 def matched_passages(basestring a, basestring b):
@@ -57,11 +114,15 @@ def matched_passages(basestring a, basestring b):
             continue
         take.append(s)
     substrings = take
+    print take
 
     for substring in substrings:
+        # Find where in the stripped body a passage appears
         a_space_start = a_strip.index(substring)
         b_space_start = b_strip.index(substring)
 
+        # Put the spaces back into passages so we can find
+        # them within the original text
         a_added_spc = add_spaces(space_locations=a_spaces,
                                  offset=a_space_start,
                                  target=substring)
@@ -72,6 +133,13 @@ def matched_passages(basestring a, basestring b):
 
 
 def add_spaces(int[:] space_locations, int offset, basestring target):
+    """
+    Put spaces back into stripped string
+    :param space_locations: where to insert spaces into body to restore it
+    :param offset: location of target within it's body
+    :param target: passage from a body
+    :return:
+    """
     cdef int end = offset + len(target)
     cdef last = 0
     insert_points = (i - offset for i in space_locations if offset <= i <= end)
@@ -85,6 +153,13 @@ def add_spaces(int[:] space_locations, int offset, basestring target):
 
 
 cpdef int[:] space_locations(basestring s):
+    """
+    Get the locations to insert spaces to restore original string
+    after spaces are stripped out
+    :param s: string with spaces which will later be stripped
+    :return: int array of indices to insert spaces to restore original
+             string
+    """
     cdef array.array spaces = array('i', [])
     cdef array.array j
     cdef int new_index

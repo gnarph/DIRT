@@ -89,4 +89,14 @@ class MatchSet(object):
         percentage_b = (match_len_b/len_b) * 100
         return percentage_a, percentage_b
 
+    def all_passages(self):
+        """
+        Return set of all passages
+        """
+        passages = set()
+        for match in self.matches:
+            passages.add(match.alpha_passage)
+            passages.add(match.beta_passage)
+        return passages
+
 

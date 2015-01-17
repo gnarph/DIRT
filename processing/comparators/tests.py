@@ -5,6 +5,7 @@ from processing.comparators import simple
 from processing.processor import Processor
 from processing.comparators.match_concatenator import MatchConcatenator
 from processing.comparators.match_concatenator import MatchTuple
+from models.match_set import MatchSet
 
 
 class MatchConcatenatorTestCase(unittest.TestCase):
@@ -59,29 +60,34 @@ class ComparatorTestCase(unittest.TestCase):
         matches = Processor.singlet_pairs_to_matches(alpha=alpha,
                                                      beta=beta,
                                                      singlet_pairs=singlet_pairs)
-        return matches
+        return MatchSet(None, None, matches=matches)
 
     def test_compare(self):
         """
         Basic comparator test
         """
-        a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        b = 'Lorem ipsum dolor xxxxxxxxx consectetur adipiscing a elit.'
+        a = 'Lorem ipsum dolor sit amet  consectetur adipiscing elit '
+        b = 'Lorem ipsum dolor xxxxxxxxx consectetur adipiscing a elit '
         matches = self.match(a=a,
                              b=b,
                              gap_length=2,
                              match_length=3)
         self.assertEqual(len(matches), 2)
+        matched_passages = matches.all_passages()
+        # need to make matched passages into match set
 
         match_1 = 'Lorem ipsum dolor '
-        self.assertEqual(matches[0].alpha_passage, match_1)
-        self.assertEqual(matches[0].beta_passage, match_1)
+        self.assertIn(match_1, matched_passages)
+        # self.assertEqual(matches[0].alpha_passage, match_1)
+        # self.assertEqual(matches[0].beta_passage, match_1)
 
         match_2 = ' consectetur adipiscing elit.'
-        self.assertEqual(matches[1].alpha_passage, match_2)
+        self.assertIn(match_2, matched_passages)
+        # self.assertEqual(matches[1].alpha_passage, match_2)
 
         mb_2 = ' consectetur adipiscing a elit.'
-        self.assertEqual(matches[1].beta_passage, mb_2)
+        self.assertIn(mb_2, matched_passages)
+        # self.assertEqual(matches[1].beta_passage, mb_2)
 
     def test_compare_match_len(self):
         """
