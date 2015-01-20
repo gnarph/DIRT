@@ -4,11 +4,11 @@ from array import array
 
 
 def radixpass(a, b, r, n, k):
-    '''a : word to sort
+    """a : word to sort
        b : sorted words
        r : initial string
        n : input size
-       k : alphabet size'''
+       k : alphabet size"""
     c = array("i", [0] * (k + 1))
     for i in xrange(n):
         c[r[a[i]]] += 1
@@ -43,10 +43,10 @@ def direct_kark_sort(s):
 
 
 def kark_sort(s, SA, n, K):
-    '''s  : word to sort
+    """s  : word to sort
        SA : result
        n  : len of s
-       K  : alphabet size'''
+       K  : alphabet size"""
     n0 = (n + 2) / 3
     n1 = (n + 1) / 3
     n2 = n / 3
@@ -116,10 +116,10 @@ def kark_sort(s, SA, n, K):
 
 
 def LCP(s, suffix_array):
-    '''
+    """
     return LCP array that LCP[i] is the longest common prefix
     between s[SA[i]] and s[SA[i+1]]
-    '''
+    """
     n = len(s)
     rank = array('i', [0] * n)
     LCP = array('i', [0] * n)

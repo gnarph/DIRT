@@ -1,13 +1,9 @@
 from collections import namedtuple
 import difflib
 
-import pyximport
-pyximport.install()
-
 import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
 import processing.comparators.match_concatenator as concatenator
-from utilities.lcs import common_passages
 
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
@@ -48,23 +44,22 @@ class Comparator(base_comparator.BaseComparator):
         :return: list of singlet pairs
         """
 
-        # matching_blocks = self._get_matching_blocks_ab()
-        # matching_blocks2 = self._get_matching_blocks_ba()
-        #
-        # # Last block is a dummy
-        # combined_blocks = self._combine_blocks(matching_blocks[:-1])
-        # filtered_blocks = self._filter_blocks(combined_blocks)
-        #
-        # combined_blocks2 = self._combine_blocks(matching_blocks2[:-1])
-        # filtered_blocks2 = self._filter_blocks(combined_blocks2)
-        #
-        # passage_blocks = self._tuples_to_passages(filtered_blocks)
-        # passage_blocks2 = self._tuples_to_passages(filtered_blocks2)
-        #
-        # for pb in passage_blocks2:
-        #     if pb not in passage_blocks:
-        #         passage_blocks.append(pb)
-        passage_blocks = self.hack_lcs(self.a, self.b)
+        matching_blocks = self._get_matching_blocks_ab()
+        matching_blocks2 = self._get_matching_blocks_ba()
+
+        # Last block is a dummy
+        combined_blocks = self._combine_blocks(matching_blocks[:-1])
+        filtered_blocks = self._filter_blocks(combined_blocks)
+
+        combined_blocks2 = self._combine_blocks(matching_blocks2[:-1])
+        filtered_blocks2 = self._filter_blocks(combined_blocks2)
+
+        passage_blocks = self._tuples_to_passages(filtered_blocks)
+        passage_blocks2 = self._tuples_to_passages(filtered_blocks2)
+
+        for pb in passage_blocks2:
+            if pb not in passage_blocks:
+                passage_blocks.append(pb)
 
         return self._get_singlet_pairs(passage_blocks)
 
@@ -105,14 +100,3 @@ class Comparator(base_comparator.BaseComparator):
             s_b = MatchSinglet(passage=p_b)
             singlet_pairs.append((s_a, s_b))
         return singlet_pairs
-
-    def hack_lcs(self, a, b):
-        passages = list(common_passages(a, b,
-                                        jump_gap=self.gap_length,
-                                        match_length=self.match_length))
-        tups = concatenator.passages_to_match_tuples(a, b, passages)
-        c = concatenator.MatchConcatenator(tups, self.gap_length)
-        combined = c.concatenate()
-        filtered = self._filter_blocks(combined)
-        passage_blocks = self._tuples_to_passages(filtered)
-        return passage_blocks

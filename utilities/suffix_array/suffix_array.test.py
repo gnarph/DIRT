@@ -14,7 +14,7 @@ print lcp
 
 
 for i in xrange(n - 1):
-    if(s[sa[i]:] > s[sa[i + 1]:]):
+    if s[sa[i]:] > s[sa[i + 1]:]:
         print s[sa[i]:][:40]
         print s[sa[i + 1]:][:40]
         print '=' * 50
