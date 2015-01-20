@@ -5,6 +5,7 @@ import mock
 
 import DIRT
 from models.match_set import MatchSet
+from models import match_set_factory
 import utilities.path
 
 
@@ -70,11 +71,6 @@ class SmokeTest(unittest.TestCase):
         args.match_length = 10
         DIRT.main(args)
 
-    def _get_match_set(self, name):
-        file_name = os.path.join(self.out_dir,
-                                 name)
-        return MatchSet.from_json(file_name)
-
     def full_test(self):
         args = mock.Mock()
         args.input = 'test_data/full_test/files_to_process.txt'
@@ -86,20 +82,9 @@ class SmokeTest(unittest.TestCase):
         args.match_length = 10
         DIRT.main(args)
 
-        try:
-            one_two = self._get_match_set('one__two__CMP.json')
-        except IOError:
-            one_two = self._get_match_set('two__one__CMP.json')
-
-        try:
-            one_three = self._get_match_set('one__three__CMP.json')
-        except IOError:
-            one_three = self._get_match_set('three__one__CMP.json')
-
-        try:
-            three_two = self._get_match_set('three__two__CMP.json')
-        except IOError:
-            three_two = self._get_match_set('two__three__CMP.json')
+        one_two = match_set_factory.find_in_dir('one', 'two', self.out_dir)
+        one_three = match_set_factory.find_in_dir('one', 'three', self.out_dir)
+        three_two = match_set_factory.find_in_dir('three', 'two', self.out_dir)
 
         common_pass = ('This test file consists of multiple '
                        'paragraphs  This paragraph in particular '
