@@ -1,6 +1,5 @@
 from models.match import Match
 from models.document import Document
-from utilities import file_ops
 
 
 class MatchSet(object):
@@ -33,11 +32,6 @@ class MatchSet(object):
                 'beta_doc': self.beta_doc.file_name,
                 'matches': [match.to_dict() for match in self.matches],
                 }
-
-    @staticmethod
-    def from_json(filename):
-        json = file_ops.read_json_utf8(filename)
-        return MatchSet.from_dict(json)
 
     @staticmethod
     def from_dict(d):
