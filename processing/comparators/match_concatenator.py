@@ -150,8 +150,11 @@ class MatchConcatenator(object):
                           b_end=self.b_cursor)
 
     def can_combine(self, first, second):
-        out_of_order = (first.a < second.b
-                        and first.b > second.a)
+        mismatch_ab = (first.a_end < second.a
+                       and second.b_end < first.b)
+        mismatch_ba = (second.a_end < first.a
+                       and first.b_end < second.b)
+        out_of_order = mismatch_ab or mismatch_ba
         return not out_of_order and self.jump_gap(second)
 
     def jump_gap(self, last):
@@ -162,7 +165,5 @@ class MatchConcatenator(object):
         """
         a_gap = last.a - self.a_cursor
         b_gap = last.b - self.b_cursor
-        if a_gap < 0 or b_gap < 0:
-            return False
         return (a_gap <= self.gap_length and
                 b_gap <= self.gap_length)

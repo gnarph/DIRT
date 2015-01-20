@@ -22,7 +22,7 @@ class Comparator(base_comparator.BaseComparator):
         matching_passages = suffix_apps.all_common_substrings(a=self.a,
                                                               b=self.b)
 
-        blocks = []
+        blocks = set()
         for passage in matching_passages:
             a_matches = re.finditer(passage, self.a)
             a_starts = (i.start() for i in a_matches)
@@ -32,10 +32,10 @@ class Comparator(base_comparator.BaseComparator):
             l = len(passage)
             for i, j in itertools.product(a_starts, b_starts):
                 new_block = MatchBlock(i, j, l)
-                blocks.append(new_block)
+                blocks.add(new_block)
         # Concerned that sorting on a may adversely impact
         # concat on the b side
-        blocks.sort(key=operator.attrgetter('a'))
+        blocks = sorted(blocks, key=operator.attrgetter('a'))
 
         combined_blocks = self._combine_blocks(blocks)
         filtered_blocks = self._filter_blocks(combined_blocks)

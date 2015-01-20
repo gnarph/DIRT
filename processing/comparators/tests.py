@@ -176,6 +176,7 @@ class ComparatorTestCase(unittest.TestCase):
         matches = self.match(a, b, gap_length=3, match_length=3)
         self.assertEqual(len(matches), 2)
 
+        # Should order of matches matter?
         m1 = matches[0]
         p1 = 'Lorem ipsum'
         self.assertEqual(m1.alpha_passage, p1)
