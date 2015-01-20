@@ -92,26 +92,13 @@ class SmokeTest(unittest.TestCase):
                        'be able to determine this and create the '
                        'appropriate matches')
         passages_32 = list(iter_match_passages(three_two))
-        try:
-            found = contains_contains(passages_32, common_pass)
-            self.assertTrue(found)
-        except AssertionError:
-            print passages_32
-            raise
+        found = contains_contains(passages_32, common_pass)
+        self.assertTrue(found)
 
         passages_12 = list(iter_match_passages(one_two))
-        try:
-            found = contains_contains(passages_12, common_pass)
-            self.assertTrue(found)
-        except AssertionError:
-            print passages_12
-            raise
+        found = contains_contains(passages_12, common_pass)
+        self.assertTrue(found)
 
         passages_13 = list(iter_match_passages(one_three))
-        try:
-            found = contains_contains(passages_13, common_pass)
-            self.assertTrue(found)
-        except AssertionError:
-            print passages_13
-            raise
-
+        found = contains_contains(passages_13, common_pass)
+        self.assertTrue(found)
