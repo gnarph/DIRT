@@ -86,9 +86,20 @@ class SmokeTest(unittest.TestCase):
         args.match_length = 10
         DIRT.main(args)
 
-        one_two = self._get_match_set('one__two__CMP.json')
-        one_three = self._get_match_set('one__three__CMP.json')
-        three_two = self._get_match_set('three__two__CMP.json')
+        try:
+            one_two = self._get_match_set('one__two__CMP.json')
+        except IOError:
+            one_two = self._get_match_set('two__one__CMP.json')
+
+        try:
+            one_three = self._get_match_set('one__three__CMP.json')
+        except IOError:
+            one_three = self._get_match_set('three__one__CMP.json')
+
+        try:
+            three_two = self._get_match_set('three__two__CMP.json')
+        except IOError:
+            three_two = self._get_match_set('two__three__CMP.json')
 
         common_pass = ('This test file consists of multiple '
                        'paragraphs  This paragraph in particular '
