@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 
 from utilities.suffix_array import applications as app
@@ -39,14 +40,14 @@ class SuffixArrayApplicationTest(unittest.TestCase):
         ac = app.all_common_substrings(a, c)
         bc = app.all_common_substrings(b, c)
         in_all = ab & ac & bc
-        self.assertIn(in_all, u'john')
+        self.assertIn(u'john', in_all)
 
     def test_acs_except(self):
         a = u'dolla$bills'
         b = u'yo'
-        execpt = app.InvalidCharacterException
+        should_raise = app.InvalidCharacterException
         to_call = app.all_common_substrings
-        self.assertRaises(execpt, to_call, a, b)
+        self.assertRaises(should_raise, to_call, a, b)
 
     def test_acs_large(self):
         f_one = 'test_data/full_test/one.txt'
@@ -67,4 +68,4 @@ class SuffixArrayApplicationTest(unittest.TestCase):
         strip_c = strip_set(two_three)
 
         in_all = strip_a & strip_b & strip_c
-        self.assertEqual(len(in_all), 1)
+        self.assertGreaterEqual(len(in_all), 1)

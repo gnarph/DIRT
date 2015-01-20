@@ -1,65 +1,45 @@
 from collections import namedtuple
-import difflib
+import itertools
+import operator
+import re
 
 import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
 import processing.comparators.match_concatenator as concatenator
+from utilities.suffix_array import applications as suffix_apps
 
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 
 class Comparator(base_comparator.BaseComparator):
 
-    def _get_matching_blocks_ab(self):
-        """
-        Get matching blocks going from a
-        """
-        matcher = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
-                                          a=self.a,
-                                          b=self.b)
-        matching_blocks = matcher.get_matching_blocks()
-        return matching_blocks
-
-    def _get_matching_blocks_ba(self):
-        """
-        Get matching blocks going from b
-        """
-        matcher2 = difflib.SequenceMatcher(isjunk=lambda x: x in ' \n\t',
-                                           a=self.b,
-                                           b=self.a)
-        inv_matching_blocks = matcher2.get_matching_blocks()
-        matching_blocks2 = []
-        # Need to swap around to match format based on a
-        for block in inv_matching_blocks:
-            b = MatchBlock(a=block.b,
-                           b=block.a,
-                           size=block.size)
-            matching_blocks2.append(b)
-
-        return matching_blocks2
-
     def compare(self):
         """
         Compare texts
         :return: list of singlet pairs
         """
+        # Still need to remove/re-add spaces
+        matching_passages = suffix_apps.all_common_substrings(a=self.a,
+                                                              b=self.b)
 
-        matching_blocks = self._get_matching_blocks_ab()
-        matching_blocks2 = self._get_matching_blocks_ba()
+        blocks = []
+        for passage in matching_passages:
+            a_matches = re.finditer(passage, self.a)
+            a_starts = (i.start() for i in a_matches)
+            b_matches = re.finditer(passage, self.b)
+            b_starts = (j.start() for j in b_matches)
 
-        # Last block is a dummy
-        combined_blocks = self._combine_blocks(matching_blocks[:-1])
+            l = len(passage)
+            for i, j in itertools.product(a_starts, b_starts):
+                new_block = MatchBlock(i, j, l)
+                blocks.append(new_block)
+        # Concerned that sorting on a may adversely impact
+        # concat on the b side
+        blocks.sort(key=operator.attrgetter('a'))
+
+        combined_blocks = self._combine_blocks(blocks)
         filtered_blocks = self._filter_blocks(combined_blocks)
-
-        combined_blocks2 = self._combine_blocks(matching_blocks2[:-1])
-        filtered_blocks2 = self._filter_blocks(combined_blocks2)
-
         passage_blocks = self._tuples_to_passages(filtered_blocks)
-        passage_blocks2 = self._tuples_to_passages(filtered_blocks2)
-
-        for pb in passage_blocks2:
-            if pb not in passage_blocks:
-                passage_blocks.append(pb)
 
         return self._get_singlet_pairs(passage_blocks)
 

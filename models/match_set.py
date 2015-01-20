@@ -17,6 +17,9 @@ class MatchSet(object):
     def __eq__(self, other):
         return self.matches == other.matches
 
+    def __len__(self):
+        return len(self.matches)
+
     def to_dict(self):
         """
         Covert MatchSet to dictionary representation
