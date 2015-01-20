@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import tools_karkkainen_sanders as tks
+import utilities.suffix_array.tools_karkkainen_sanders as tks
 
 s = 'abab'
 n = len(s)

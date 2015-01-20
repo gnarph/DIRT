@@ -3,7 +3,7 @@
 Based on https://github.com/baiyubin/pysuffix
 by Yubin Bai
 """
-import tools_karkkainen_sanders as tks
+import utilities.suffix_array.tools_karkkainen_sanders as tks
 
 
 def all_common_substrings(a, b, separator='$'):
@@ -22,8 +22,8 @@ def all_common_substrings(a, b, separator='$'):
     for i, v in enumerate(lcp):
         # Only want something that is present in
         # a AND b, not a AND a or b AND b
-        if i >= sep and sa[i]+v > sep:
-            passage = ab[sa[i]-1:sa[i] + v]
+        passage = ab[sa[i]:sa[i] + v]
+        if sa[i] > sep and sa[i]+v > sep:
             if passage not in all_subs:
                 to_remove = set()
                 take = True
