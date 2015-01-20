@@ -23,7 +23,9 @@ def all_common_substrings(a, b, separator='$'):
         # Only want something that is present in
         # a AND b, not a AND a or b AND b
         passage = ab[sa[i]:sa[i] + v]
-        if sa[i] > sep and sa[i]+v > sep:
+        # Checking passage in a|b in case the passage occurs twice in
+        # a or twice in b
+        if (sa[i] > sep and passage in a) or (sa[i]+v <= sep and passage in b):
             if passage not in all_subs:
                 to_remove = set()
                 take = True
