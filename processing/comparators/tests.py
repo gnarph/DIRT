@@ -81,11 +81,11 @@ class ComparatorTestCase(unittest.TestCase):
         # self.assertEqual(matches[0].alpha_passage, match_1)
         # self.assertEqual(matches[0].beta_passage, match_1)
 
-        match_2 = ' consectetur adipiscing elit.'
+        match_2 = ' consectetur adipiscing elit '
         self.assertIn(match_2, matched_passages)
         # self.assertEqual(matches[1].alpha_passage, match_2)
 
-        mb_2 = ' consectetur adipiscing a elit.'
+        mb_2 = ' consectetur adipiscing a elit '
         self.assertIn(mb_2, matched_passages)
         # self.assertEqual(matches[1].beta_passage, mb_2)
 
@@ -93,8 +93,8 @@ class ComparatorTestCase(unittest.TestCase):
         """
         Test match length criteria
         """
-        a = 'Lorem xxxxx dolor sit amet, consectetur adipiscing ddd.'
-        b = 'Lorem ipsum dolor zzzzzzzzz consectetur zzzzzzzzzz a.'
+        a = 'Lorem xxxxx dolor sit amet  consectetur adipiscing ddd '
+        b = 'Lorem ipsum dolor zzzzzzzzz consectetur zzzzzzzzzz a '
         matches = self.match(a, b, gap_length=0, match_length=9)
         self.assertEqual(len(matches), 1)
 
@@ -107,8 +107,8 @@ class ComparatorTestCase(unittest.TestCase):
         """
         Test gap jumping, with gaps in b
         """
-        a = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        b = 'Lorem xxipsum dolorxxxxsit amet, xconsectetur xxxadipiscing xelit.'
+        a = 'Lorem ipsum dolor sit amet  consectetur adipiscing elit '
+        b = 'Lorem xxipsum dolorxxxxsit amet  xconsectetur xxxadipiscing xelit '
         matches = self.match(a, b, gap_length=5, match_length=1)
         self.assertEqual(len(matches), 1)
 
@@ -120,8 +120,8 @@ class ComparatorTestCase(unittest.TestCase):
         """
         Test gap jumping, with gaps in a
         """
-        a = 'Lorem xxipsum dolor xxxsit amet, xconsectetur xxxadipiscing xelit.'
-        b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        a = 'Lorem xxipsum dolor xxxsit amet  xconsectetur xxxadipiscing xelit '
+        b = 'Lorem ipsum dolor sit amet  consectetur adipiscing elit '
         matches = self.match(a, b, gap_length=5, match_length=1)
         self.assertEqual(len(matches), 1)
 
@@ -146,8 +146,8 @@ class ComparatorTestCase(unittest.TestCase):
         """
         Test gap jumping, with different lengths of matches
         """
-        a = 'Lorem xxipsum dolorxxxxxxsit amet, xconsectetur xxxadipiscing xelit.'
-        b = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        a = 'Lorem xxipsum dolorxxxxxxsit amet  xconsectetur xxxadipiscing xelit '
+        b = 'Lorem ipsum dolor sit amet  consectetur adipiscing elit '
         matches = self.match(a, b, gap_length=3, match_length=2)
         self.assertEqual(len(matches), 2)
 
@@ -159,8 +159,8 @@ class ComparatorTestCase(unittest.TestCase):
         self.assertEqual(match.beta_passage, m1_b)
 
         m2 = matches[1]
-        m2_a = 'sit amet, xconsectetur xxxadipiscing xelit.'
-        m2_b = 'sit amet, consectetur adipiscing elit.'
+        m2_a = 'sit amet  xconsectetur xxxadipiscing xelit '
+        m2_b = 'sit amet  consectetur adipiscing elit '
         self.assertEqual(m2.alpha_passage, m2_a)
         self.assertEqual(m2.beta_passage, m2_b)
 

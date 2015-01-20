@@ -20,6 +20,9 @@ class MatchSet(object):
     def __len__(self):
         return len(self.matches)
 
+    def __getitem__(self, item):
+        return self.matches[item]
+
     def to_dict(self):
         """
         Covert MatchSet to dictionary representation

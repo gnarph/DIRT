@@ -79,7 +79,7 @@ class MatchConcatenator(object):
         """
         first = self.match_list[self.i]
         second = self.match_list[self.j]
-        if not self.jump_gap(second):
+        if not self.can_combine(first, second):
             if first.a_end == self.a_cursor:
                 self.combined.append(first)
                 self.i = self.j
@@ -107,7 +107,7 @@ class MatchConcatenator(object):
         :param first:
         :param second:
         """
-        if not self.jump_gap(second):
+        if not self.can_combine(first, second):
             # no combining
             self.combined.append(first)
             self.combined.append(second)
@@ -126,7 +126,9 @@ class MatchConcatenator(object):
         if self.match_count <= 1:
             return self.match_list
         cont = True
-        while cont:
+        first = self.match_list[self.i]
+        second = self.match_list[self.j]
+        while cont and self.match_count > 2:
             first, second, cont = self._process_main()
 
         self._process_last(first, second)
@@ -147,6 +149,11 @@ class MatchConcatenator(object):
                           a_end=self.a_cursor,
                           b_end=self.b_cursor)
 
+    def can_combine(self, first, second):
+        out_of_order = (first.a < second.b
+                        and first.b > second.a)
+        return not out_of_order and self.jump_gap(second)
+
     def jump_gap(self, last):
         """
         Check if we can jump from the cursors to a match
@@ -155,5 +162,7 @@ class MatchConcatenator(object):
         """
         a_gap = last.a - self.a_cursor
         b_gap = last.b - self.b_cursor
+        if a_gap < 0 or b_gap < 0:
+            return False
         return (a_gap <= self.gap_length and
                 b_gap <= self.gap_length)
