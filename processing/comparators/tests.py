@@ -31,6 +31,16 @@ class MatchConcatenatorTestCase(unittest.TestCase):
         combined = concatenator.concatenate()
         self.assertEqual(len(combined), 1)
 
+    def test_single_match(self):
+        first = MatchTuple(a=0,
+                           b=0,
+                           a_end=4,
+                           b_end=5)
+        concatenator = MatchConcatenator(match_list=[first],
+                                         gap_length=5)
+        combined = concatenator.concatenate()
+        self.assertEqual(len(combined), 1)
+
 
 class ComparatorTestCase(unittest.TestCase):
     """

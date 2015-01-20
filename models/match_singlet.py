@@ -33,10 +33,7 @@ class MatchSinglet(object):
         :param body: text body the indices should reference
         :return: lower index, upper index
         """
-        try:
-            start = body.index(self.passage)
-        except TypeError:
-            print self.passage
+        start = body.index(self.passage)
         end = start + len(self.passage)
         return start, end
 
