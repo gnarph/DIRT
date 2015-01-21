@@ -14,6 +14,13 @@ MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 class Comparator(base_comparator.BaseComparator):
 
     def _find_matching_blocks(self, matching_passages):
+        """
+        Find matchblocks from matching passages
+        :param matching_passages: strings representing matching
+                                  passages in both docs
+        :return: list of MatchBlocks sorted by where they appear
+                 in document a
+        """
         blocks = set()
         for passage in matching_passages:
             a_matches = re.finditer(passage, self.a)
@@ -69,14 +76,27 @@ class Comparator(base_comparator.BaseComparator):
         return filtered
 
     def _tuples_to_passages(self, filtered_blocks):
+        """
+        Get passages from concatenator blocks
+        :param filtered_blocks: list of concatenator blocks
+        :return: list of tuples containing the passage
+                 in a and in b
+        """
         passages = []
         for tup in filtered_blocks:
             a = self.a[tup.a:tup.a_end]
             b = self.b[tup.b:tup.b_end]
+            # TODO: consider namedtuple for clarity
             passages.append((a, b))
         return passages
 
-    def _get_singlet_pairs(self, passage_blocks):
+    @staticmethod
+    def _get_singlet_pairs(passage_blocks):
+        """
+        Get the match singlet from passage pairs
+        :param passage_blocks: list of passage pair tuples
+        :return: list of singlet pair tuples
+        """
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
             s_a = MatchSinglet(passage=p_a)

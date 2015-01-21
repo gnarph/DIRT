@@ -6,6 +6,12 @@ from utilities import file_ops
 
 
 def strip_set(s):
+    """
+    Strips character we don't care about from the strings in
+    a set
+    :param s: set of strings
+    :return: set of strings without unwanted characters
+    """
     new_set = set()
     for i in s:
         strip = i.strip(u' \t\n\r')
@@ -18,6 +24,9 @@ def strip_set(s):
 class SuffixArrayApplicationTest(unittest.TestCase):
 
     def test_acs_small(self):
+        """
+        Test on small strings
+        """
         a = u'jeffisacoolguywhoiscool'
         b = u'whoiscooljeffisacoolguy'
         acs = app.all_common_substrings(a, b)
@@ -43,13 +52,23 @@ class SuffixArrayApplicationTest(unittest.TestCase):
         self.assertIn(u'john', in_all)
 
     def test_acs_except(self):
+        """
+        Test an exception is raised if the separator character
+        is present in an input string
+        """
         a = u'dolla$bills'
         b = u'yo'
         should_raise = app.InvalidCharacterException
         to_call = app.all_common_substrings
         self.assertRaises(should_raise, to_call, a, b)
 
+        a, b = b, a
+        self.assertRaises(should_raise, to_call, a, b)
+
     def test_acs_large(self):
+        """
+        Test on actual documents
+        """
         f_one = 'test_data/full_test/one.txt'
         f_two = 'test_data/full_test/two.txt'
         f_three = 'test_data/full_test/three.txt'
@@ -62,7 +81,7 @@ class SuffixArrayApplicationTest(unittest.TestCase):
         one_three = app.all_common_substrings(one, three)
         two_three = app.all_common_substrings(two, three)
 
-        # Strip is somewhat hacky
+        # TODO: replace with check for static string
         strip_a = strip_set(one_two)
         strip_b = strip_set(one_three)
         strip_c = strip_set(two_three)

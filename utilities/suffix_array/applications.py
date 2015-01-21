@@ -12,9 +12,18 @@ class InvalidCharacterException(Exception):
 
 def all_common_substrings(a, b, separator='$'):
     """
-    all substrings in both a and b
+    Find all substrings in both a and b
     such that no substring is a substring of another substring
+    :param a: first string
+    :param b: second string
+    :param separator: character to be used to separate a and b
+                      when creating a suffix array. Cannot
+                      appear in a or b
+    :return: set of strings appearing in both a and b,
+             which is not a substring of another string in the set
     """
+    # TODO: test if we actually want the substring constraint in
+    #       the return value
     if separator in a or separator in b:
         raise InvalidCharacterException('Separator in input strings')
     ab = u''.join([a, separator, b])
@@ -45,7 +54,7 @@ def all_common_substrings(a, b, separator='$'):
                         take = False
                         break
                     elif s in p:
-                        # We want to remove s if it is superceded
+                        # We want to remove s if it is superseded
                         # by p
                         to_remove.add(s)
                 all_subs -= to_remove

@@ -37,7 +37,7 @@ class MatchSet(object):
     def from_dict(d):
         """
         Convert dict representation to MatchSet
-        :param d: dict representaton of a MatchSet
+        :param d: dict representation of a MatchSet
         :return: MatchSet
         """
         matches = [Match.from_dict(m) for m in d['matches']]
