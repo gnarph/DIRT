@@ -1,23 +1,21 @@
-import os
 import unittest
 
 import mock
 
 import DIRT
-from models.match_set import MatchSet
 from models import match_set_factory
 import utilities.path
 
 
 def iter_match_passages(match_set):
     for match in match_set.matches:
-        yield match.alpha_passage.strip()
-        yield match.beta_passage.strip()
+        yield match.alpha_passage
+        yield match.beta_passage
 
 
 def contains_contains(l, search_for):
     for item in l:
-        if search_for in item:
+        if search_for in item or item in search_for:
             return True
     return False
 

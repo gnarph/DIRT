@@ -10,14 +10,17 @@ def from_json(file_name):
     return MatchSet.from_dict(data)
 
 
-def find_in_dir(name_a, name_b, directory):
-    template = processor.REPORT_NAME
-    name = template.format(name_a, name_b)
+def _get_report_name(directory, name_a, name_b):
+    name = processor.REPORT_NAME.format(name_a, name_b)
     full = os.path.join(directory, name)
+    return full
+
+
+def find_in_dir(name_a, name_b, directory):
+    full = _get_report_name(directory, name_a, name_b)
     try:
         ms = from_json(full)
     except IOError:
-        name = template.format(name_b, name_a)
-        full = os.path.join(directory, name)
+        full = _get_report_name(directory, name_b, name_a)
         ms = from_json(full)
     return ms

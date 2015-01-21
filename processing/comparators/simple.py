@@ -13,15 +13,7 @@ MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 class Comparator(base_comparator.BaseComparator):
 
-    def compare(self):
-        """
-        Compare texts
-        :return: list of singlet pairs
-        """
-        # Still need to remove/re-add spaces
-        matching_passages = suffix_apps.all_common_substrings(a=self.a,
-                                                              b=self.b)
-
+    def _find_matching_blocks(self, matching_passages):
         blocks = set()
         for passage in matching_passages:
             a_matches = re.finditer(passage, self.a)
@@ -36,7 +28,18 @@ class Comparator(base_comparator.BaseComparator):
         # Concerned that sorting on a may adversely impact
         # concat on the b side
         blocks = sorted(blocks, key=operator.attrgetter('a'))
+        return blocks
 
+    def compare(self):
+        """
+        Compare texts
+        :return: list of singlet pairs
+        """
+        # Still need to remove/re-add spaces
+        matching_passages = suffix_apps.all_common_substrings(a=self.a,
+                                                              b=self.b)
+
+        blocks = self._find_matching_blocks(matching_passages)
         combined_blocks = self._combine_blocks(blocks)
         filtered_blocks = self._filter_blocks(combined_blocks)
         passage_blocks = self._tuples_to_passages(filtered_blocks)
