@@ -29,7 +29,6 @@ def all_common_substrings(a, b, separator='$'):
     ab = u''.join([a, separator, b])
     sa = tks.simple_kark_sort(ab)
     lcp = tks.LCP(ab, sa)
-    sep = ab.index(separator)
     all_subs = set()
 
     for i, v in enumerate(lcp):
@@ -38,27 +37,32 @@ def all_common_substrings(a, b, separator='$'):
         start = sa[i]
         end = start + v
         p = ab[start:end]
+
+        # Empty strings are not matches
+        if not p:
+            continue
+
         # Checking passage in a|b in case the passage occurs twice in
         # a or twice in b
-        if (start > sep and p in a) or (end <= sep and p in b):
-            if p not in all_subs:
-                to_remove = set()
-                take = True
-                for s in all_subs:
-                    # Current strategy aims to keep memory use
-                    # lower, could go faster if this filtering
-                    # was done after the fact
-                    if p in s:
-                        # If we p is a substring of s
-                        # we don't want to take it so we can leave
-                        take = False
-                        break
-                    elif s in p:
-                        # We want to remove s if it is superseded
-                        # by p
-                        to_remove.add(s)
-                all_subs -= to_remove
-                if take:
-                    all_subs.add(p)
+        tup = (start, end, p)
+        if tup not in all_subs:
+            to_remove = set()
+            take = True
+            for s in all_subs:
+                # also need to check indices of appearance
+                # in other string
+                if start >= s[0] and end <= s[1]:
+                    # If we p is a substring of s
+                    # we don't want to take it so we can leave
+                    take = False
+                    break
+                elif s[0] >= start and s[1] <= end:
+                    # We want to remove s if it is superseded
+                    # by p
+                    to_remove.add(s)
+            all_subs -= to_remove
+            if take:
+                all_subs.add(tup)
 
-    return all_subs
+    # Hack to get things working right now
+    return [x[2] for x in all_subs]
