@@ -1,3 +1,5 @@
+from operator import attrgetter
+
 from models.match import Match
 from models.document import Document
 
@@ -11,7 +13,8 @@ class MatchSet(object):
     def __init__(self, alpha_doc, beta_doc, matches):
         self.alpha_doc = alpha_doc
         self.beta_doc = beta_doc
-        self.matches = matches
+        self.matches = set(matches)
+        self._lmatches = None
 
     def __eq__(self, other):
         return self.matches == other.matches
@@ -20,7 +23,10 @@ class MatchSet(object):
         return len(self.matches)
 
     def __getitem__(self, item):
-        return self.matches[item]
+        if self._lmatches is None:
+            g = attrgetter('alpha_indices')
+            self._lmatches = tuple(sorted(self.matches, key=g))
+        return self._lmatches[item]
 
     def __iter__(self):
         return iter(self.matches)
