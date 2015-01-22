@@ -110,3 +110,11 @@ class SmokeTest(unittest.TestCase):
         self._no_matchset_dupes(one_two)
         self._no_matchset_dupes(one_three)
         self._no_matchset_dupes(three_two)
+
+        # Check matched passages
+        self.assertTrue(contains_contains(passages_12,
+                                          search_for=u'ONEANDTWO'))
+        self.assertTrue(contains_contains(passages_13,
+                                          search_for=u'ONEANDTHREE'))
+        self.assertTrue(contains_contains(passages_32,
+                                          search_for=u'TWOANDTHREE'))
