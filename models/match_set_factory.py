@@ -17,6 +17,8 @@ def _get_report_name(directory, name_a, name_b):
 
 
 def find_in_dir(name_a, name_b, directory):
+    # TODO: consider ensuring that MatchSet.alpha_doc
+    #       refers to name_a
     full = _get_report_name(directory, name_a, name_b)
     try:
         ms = from_json(full)

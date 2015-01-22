@@ -186,6 +186,14 @@ class MatchTest(unittest.TestCase):
         self.assertFalse(a == c)
         self.assertFalse(b == c)
 
+        # If objects are equal their hashes must also be equal
+        hash_a = hash(a)
+        hash_b = hash(b)
+        hash_c = hash(c)
+        self.assertTrue(hash_a == hash_b)
+        self.assertFalse(hash_a == hash_c)
+        self.assertFalse(hash_b == hash_c)
+
 
 class MatchSetTest(unittest.TestCase):
 

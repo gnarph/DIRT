@@ -69,6 +69,12 @@ class SmokeTest(unittest.TestCase):
         args.match_length = 10
         DIRT.main(args)
 
+    def _no_matchset_dupes(self, ms):
+        found = set()
+        for match in ms:
+            self.assertNotIn(match, found)
+            found.add(match)
+
     def full_test(self):
         args = mock.Mock()
         args.input = 'test_data/full_test/files_to_process.txt'
@@ -84,11 +90,11 @@ class SmokeTest(unittest.TestCase):
         one_three = match_set_factory.find_in_dir('one', 'three', self.out_dir)
         three_two = match_set_factory.find_in_dir('three', 'two', self.out_dir)
 
-        common_pass = ('This test file consists of multiple '
-                       'paragraphs  This paragraph in particular '
-                       'occurs in multiple test files  DIRT should '
-                       'be able to determine this and create the '
-                       'appropriate matches')
+        common_pass = (u'This test file consists of multiple '
+                       u'paragraphs  This paragraph in particular '
+                       u'occurs in multiple test files  DIRT should '
+                       u'be able to determine this and create the '
+                       u'appropriate matches')
         passages_32 = list(iter_match_passages(three_two))
         found = contains_contains(passages_32, common_pass)
         self.assertTrue(found)
@@ -100,3 +106,7 @@ class SmokeTest(unittest.TestCase):
         passages_13 = list(iter_match_passages(one_three))
         found = contains_contains(passages_13, common_pass)
         self.assertTrue(found)
+
+        self._no_matchset_dupes(one_two)
+        self._no_matchset_dupes(one_three)
+        self._no_matchset_dupes(three_two)

@@ -22,6 +22,9 @@ class MatchSet(object):
     def __getitem__(self, item):
         return self.matches[item]
 
+    def __iter__(self):
+        return iter(self.matches)
+
     def to_dict(self):
         """
         Covert MatchSet to dictionary representation
