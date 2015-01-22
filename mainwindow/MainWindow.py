@@ -1,29 +1,61 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+
 import sys
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
-
-class Example(QtGui.QMainWindow):
-    
+class MainWindow(QtGui.QMainWindow):
     def __init__(self):
-        super(Example, self).__init__()
+         QtGui.QMainWindow.__init__(self)
+
+         #initial window size
+         self.resize(350, 250)
+         self.setWindowTitle('mainwindow')
+
+         #set central Widget to fill out the rest space
+         self.lay_out = Layout(self)
+         self.setCentralWidget(self.lay_out)
+
+         #file menu: exit 
+         exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
+         exit.setShortcut('Ctrl+Q')
+         exit.setStatusTip('Exit application')
+
+         #file menu: open
+         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
+         openFile.setShortcut('Ctrl+O')
+         openFile.setStatusTip('Open new File')
+         openFile.triggered.connect(self.showDialog)
+         
+
+         #exit when 'exit' is triggered
+         self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+
+         self.statusBar()
+
+         menubar = self.menuBar()
+         file = menubar.addMenu('&File')
+         file.addAction(exit)
+         file.addAction(openFile)   
+
+         toolbar = self.addToolBar('Exit')
+         toolbar.addAction(exit)
+
+    def showDialog(self):
+
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
         
-        self.initUI()
+        f = open(fname, 'r')
         
-    def initUI(self):
+        with f:        
+            data = f.read()
+            
+         
+class Layout(QtGui.QWidget):
+    def __init__(self,parent):
+        super(Layout, self).__init__(parent)
 
-
-        #Menu Bar
-        #self.textEdit = QtGui.QTextEdit()
-        #self.setCentralWidget(self.textEdit)
-        #self.statusBar()
-
-     
-        #rw = RunWidget()
-
-        #the layout of the labels
         location = QtGui.QLabel('Location')
         title = QtGui.QLabel('Title')
         author = QtGui.QLabel('Author')
@@ -50,39 +82,18 @@ class Example(QtGui.QMainWindow):
         grid.addWidget(reviewEdit, 4, 1, 6, 1)
         
         self.setLayout(grid)
-
-        openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
-        openFile.setShortcut('Ctrl+O')
-        openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showDialog)
-
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(openFile)      
-        
-        
-        self.setGeometry(300, 300, 350, 300)
-        self.setWindowTitle('DiRT')    
-        self.show()
-
-    def showDialog(self):
-
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
-                '/home')
-        
-        f = open(fname, 'r')
-        
-        with f:        
-            data = f.read()
-            self.textEdit.setText(data) 
-
+         
 
 def main():
     
     app = QtGui.QApplication(sys.argv)
-    ex = Example()
+    main = MainWindow()
+    main.setGeometry(300, 300, 350, 300)
+    main.setWindowTitle('DiRT')
+    main.show()
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
     main()
+
