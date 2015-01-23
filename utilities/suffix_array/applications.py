@@ -19,17 +19,13 @@ MatchBlock = namedtuple('MatchBlock',
 def all_common_substrings(a, b, separator='$'):
     """
     Find all substrings in both a and b
-    such that no substring is a substring of another substring
     :param a: first string
     :param b: second string
     :param separator: character to be used to separate a and b
                       when creating a suffix array. Cannot
                       appear in a or b
-    :return: set of strings appearing in both a and b,
-             which is not a substring of another string in the set
+    :return: set of strings appearing in both a and b
     """
-    # TODO: test if we actually want the substring constraint in
-    #       the return value
     if separator in a or separator in b:
         raise InvalidCharacterException('Separator in input strings')
     ab = u''.join([a, separator, b])
@@ -38,8 +34,6 @@ def all_common_substrings(a, b, separator='$'):
     all_subs = set()
 
     for i, v in enumerate(lcp):
-        # Only want something that is present in
-        # a AND b, not a AND a or b AND b
         start = sa[i]
         end = start + v
         p = ab[start:end]
