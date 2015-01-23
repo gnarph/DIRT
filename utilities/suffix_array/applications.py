@@ -3,11 +3,17 @@
 Based on https://github.com/baiyubin/pysuffix
 by Yubin Bai
 """
+from collections import namedtuple
+
 import utilities.suffix_array.tools_karkkainen_sanders as tks
 
 
 class InvalidCharacterException(Exception):
     pass
+
+
+MatchBlock = namedtuple('MatchBlock',
+                        field_names=['a', 'b', 'l', 'passage'])
 
 
 def all_common_substrings(a, b, separator='$'):
@@ -39,30 +45,36 @@ def all_common_substrings(a, b, separator='$'):
         p = ab[start:end]
 
         # Empty strings are not matches
-        if not p:
+        if not p or p not in a or p not in b:
             continue
 
-        # Checking passage in a|b in case the passage occurs twice in
-        # a or twice in b
-        tup = (start, end, p)
+        # TODO: p could occur twice in a and/or b
+        a_start = a.index(p)
+        b_start = b.index(p)
+        tup = MatchBlock(a_start, b_start, v, p)
         if tup not in all_subs:
             to_remove = set()
             take = True
             for s in all_subs:
                 # also need to check indices of appearance
                 # in other string
-                if start >= s[0] and end <= s[1]:
+                contained_a = a_start >= s.a and v <= s.l
+                contained_b = b_start >= s.b and v <= s.l
+                if contained_a and contained_b:
                     # If we p is a substring of s
                     # we don't want to take it so we can leave
                     take = False
                     break
-                elif s[0] >= start and s[1] <= end:
-                    # We want to remove s if it is superseded
-                    # by p
-                    to_remove.add(s)
+                else:
+                    contains_a = s.a >= a_start and s.l <= v
+                    contains_b = s.b >= b_start and s.l <= v
+                    if contains_a and contains_b:
+                        # We want to remove s if it is superseded
+                        # by p
+                        to_remove.add(s)
             all_subs -= to_remove
             if take:
                 all_subs.add(tup)
 
     # Hack to get things working right now
-    return [x[2] for x in all_subs]
+    return [x.passage for x in all_subs]
