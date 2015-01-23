@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-import cjson
+try:
+    import cjson
+except ImportError:
+    import json as cjson
 import codecs
 import mock
 
