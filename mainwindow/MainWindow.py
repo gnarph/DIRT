@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
+# mainwindow.py
+
 import sys
 from PyQt4 import QtGui, QtCore
 
@@ -50,38 +52,48 @@ class MainWindow(QtGui.QMainWindow):
         
         with f:        
             data = f.read()
+
+            #to avoid garbage character when decoding other languages
+            data = data.decode('utf-8')
+
+            #set the text to TextEdit
+            self.lay_out.reviewEdit.setText(data)
             
          
 class Layout(QtGui.QWidget):
     def __init__(self,parent):
         super(Layout, self).__init__(parent)
 
+        #testing layout
         location = QtGui.QLabel('Location')
         title = QtGui.QLabel('Title')
         author = QtGui.QLabel('Author')
         review = QtGui.QLabel('Review')
 
-        locationEdit = QtGui.QLineEdit()
-        titleEdit = QtGui.QLineEdit()
-        authorEdit = QtGui.QLineEdit()
-        reviewEdit = QtGui.QTextEdit()
+        #create attributes for lay_out
+        self.locationEdit = QtGui.QLineEdit()
+        self.titleEdit = QtGui.QLineEdit()
+        self.authorEdit = QtGui.QLineEdit()
+        self.reviewEdit = QtGui.QTextEdit()
 
         grid = QtGui.QGridLayout()
         grid.setSpacing(10)
 
         grid.addWidget(location, 1, 0)
-        grid.addWidget(locationEdit, 1, 1)
+        grid.addWidget(self.locationEdit, 1, 1)
 
         grid.addWidget(title, 2, 0)
-        grid.addWidget(titleEdit, 2, 1)
+        grid.addWidget(self.titleEdit, 2, 1)
 
         grid.addWidget(author, 3, 0)
-        grid.addWidget(authorEdit, 3, 1)
+        grid.addWidget(self.authorEdit, 3, 1)
 
         grid.addWidget(review, 4, 0)
-        grid.addWidget(reviewEdit, 4, 1, 6, 1)
+        grid.addWidget(self.reviewEdit, 4, 1, 6, 1)
         
         self.setLayout(grid)
+
+       
          
 
 def main():
