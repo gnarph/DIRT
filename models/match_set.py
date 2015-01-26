@@ -1,3 +1,5 @@
+from operator import attrgetter
+
 from models.match import Match
 from models.document import Document
 
@@ -11,12 +13,23 @@ class MatchSet(object):
     def __init__(self, alpha_doc, beta_doc, matches):
         self.alpha_doc = alpha_doc
         self.beta_doc = beta_doc
-        self.matches = matches
-        # TODO: add more data at this level,
-        # move it from match singlet
+        self.matches = set(matches)
+        self._lmatches = None
 
     def __eq__(self, other):
         return self.matches == other.matches
+
+    def __len__(self):
+        return len(self.matches)
+
+    def __getitem__(self, item):
+        if self._lmatches is None:
+            g = attrgetter('alpha_indices')
+            self._lmatches = tuple(sorted(self.matches, key=g))
+        return self._lmatches[item]
+
+    def __iter__(self):
+        return iter(self.matches)
 
     def to_dict(self):
         """
@@ -33,7 +46,7 @@ class MatchSet(object):
     def from_dict(d):
         """
         Convert dict representation to MatchSet
-        :param d: dict representaton of a MatchSet
+        :param d: dict representation of a MatchSet
         :return: MatchSet
         """
         matches = [Match.from_dict(m) for m in d['matches']]
@@ -59,11 +72,11 @@ class MatchSet(object):
         [(PAIR), (PAIR), ...]
         PAIR=((a_lower, a_upper), (b_lower, b_upper))
         """
+        # TODO: consider a class instead of the odd data structure
         indices = []
         for match in self.matches:
             index_pair = match.alpha_indices, match.beta_indices
             indices.append(index_pair)
-        # TODO: return something nicer
         return indices
 
     def get_match_percentage(self):
@@ -84,5 +97,15 @@ class MatchSet(object):
         percentage_a = (match_len_a/len_a) * 100
         percentage_b = (match_len_b/len_b) * 100
         return percentage_a, percentage_b
+
+    def all_passages(self):
+        """
+        Return set of all passages
+        """
+        passages = set()
+        for match in self.matches:
+            passages.add(match.alpha_passage)
+            passages.add(match.beta_passage)
+        return passages
 
 

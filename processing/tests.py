@@ -1,3 +1,7 @@
+import unittest
 
-def dummy_test():
-    pass
+
+class ProcessorTestCase(unittest.TestCase):
+
+    def test_smoke(self):
+        pass

@@ -6,6 +6,7 @@ install:
     - pip install coveralls
     - mkdir test_preprocessed
     - mkdir test_output
+    - ls
 script:
     - nosetests
     - coverage run --source=preprocessing,processing,models,postprocessing,utilities run_tests.py
@@ -15,4 +16,5 @@ branches:
     only:
         - master
         - develop
-
+        - /^travis.*$/
+sudo: false

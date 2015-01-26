@@ -1,7 +1,8 @@
 from collections import namedtuple
 
 
-MatchTuple = namedtuple('MatchTuple', ['a', 'b', 'a_end', 'b_end'])
+MatchTuple = namedtuple(typename='MatchTuple',
+                        field_names=['a', 'b', 'a_end', 'b_end'])
 
 
 class DoneMainBlocks(BaseException):
@@ -55,7 +56,7 @@ class MatchConcatenator(object):
         """
         first = self.match_list[self.i]
         second = self.match_list[self.j]
-        if not self.jump_gap(second):
+        if not self.can_combine(first, second):
             if first.a_end == self.a_cursor:
                 self.combined.append(first)
                 self.i = self.j
@@ -83,19 +84,13 @@ class MatchConcatenator(object):
         :param first:
         :param second:
         """
-        last = second
-        if not self.jump_gap(last):
-            if first.a_end == self.a_cursor:
-                # no combining
-                self.combined.append(first)
-                self.combined.append(second)
-            else:
-                # terminate
-                self.combine_and_select_block(first)
-                self.combined.append(last)
+        if not self.can_combine(first, second):
+            # no combining
+            self.combined.append(first)
+            self.combined.append(second)
         else:
             # combine and terminate
-            self.move_cursors_to_end(last)
+            self.move_cursors_to_end(second)
             self.combine_and_select_block(first)
 
     def concatenate(self):
@@ -108,7 +103,9 @@ class MatchConcatenator(object):
         if self.match_count <= 1:
             return self.match_list
         cont = True
-        while cont:
+        first = self.match_list[self.i]
+        second = self.match_list[self.j]
+        while cont and self.match_count > 2:
             first, second, cont = self._process_main()
 
         self._process_last(first, second)
@@ -129,9 +126,18 @@ class MatchConcatenator(object):
                           a_end=self.a_cursor,
                           b_end=self.b_cursor)
 
+    def can_combine(self, first, second):
+        mismatch_ab = (first.a_end < second.a
+                       and second.b_end < first.b)
+        mismatch_ba = (second.a_end < first.a
+                       and first.b_end < second.b)
+        out_of_order = mismatch_ab or mismatch_ba
+        return not out_of_order and self.jump_gap(second)
+
     def jump_gap(self, last):
         """
         Check if we can jump from the cursors to a match
+        cannot jump if the matches are out of order
         :param last: match to attempt a jump to
         :return: if we can jump to the next match
         """

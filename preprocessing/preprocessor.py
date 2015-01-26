@@ -1,7 +1,4 @@
-import codecs
 import os
-
-import cjson
 
 from models.document import Document
 from preprocessing.language_standardizer import eng

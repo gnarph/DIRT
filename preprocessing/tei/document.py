@@ -74,6 +74,7 @@ class TEIDocument(object):
         if element is not None:
             return element.xpath('string()')
         else:
+            # TODO: log a warning instead
             return self.no_tag_error_template.format(tag=tag)
 
     def _get_element(self, tag):

@@ -91,34 +91,31 @@ class MatchSingletTest(unittest.TestCase):
         self.doc.body = fmt.format(self.with_context)
         self.doc.file_name = self.file_name
         self.body = self.doc.body
-        self.singlet = MatchSinglet(file_name=self.file_name,
-                                    passage=self.match,
-                                    document=self.doc)
+        self.singlet = MatchSinglet(passage=self.match)
 
     def test_get_context(self):
         """
         Test that get_context returns the match and appropriate context
         """
         pad_chars = len(self.context_pad)
-        match_with_context = self.singlet.get_context(context_chars=pad_chars)
+        match_with_context = self.singlet.get_context(self.body,
+                                                      context_chars=pad_chars)
         self.assertTrue(is_fuzzy_match(match_with_context, self.with_context))
 
         # Test match at end of body
         loc = self.body.find(self.match)
         end_match = loc + len(self.match)
         self.doc.body = self.doc.body[:end_match]
-        end_singlet = MatchSinglet(file_name=self.file_name,
-                                   passage=self.match,
-                                   document=self.doc)
-        end_match_context = end_singlet.get_context(context_chars=pad_chars)
+        end_singlet = MatchSinglet(passage=self.match)
+        end_match_context = end_singlet.get_context(self.doc.body,
+                                                    context_chars=pad_chars)
         self.assertIn(self.match, end_match_context)
 
         # Test match at start of body
         self.doc.body = self.body[loc:]
-        beg_singlet = MatchSinglet(file_name=self.file_name,
-                                   passage=self.match,
-                                   document=self.doc)
-        beg_match_context = beg_singlet.get_context(context_chars=pad_chars)
+        beg_singlet = MatchSinglet(passage=self.match)
+        beg_match_context = beg_singlet.get_context(self.doc.body,
+                                                    context_chars=pad_chars)
         self.assertIn(self.match, beg_match_context)
 
     def test_to_dict(self):
@@ -126,22 +123,23 @@ class MatchSingletTest(unittest.TestCase):
         Test conversion to dict representation
         """
         sing_dict = self.singlet.to_dict()
-        self.assertEqual(sing_dict['file_name'], self.file_name)
         self.assertEqual(sing_dict['passage'], self.match)
 
-    def test_document(self):
-        """
-        Test getting document
-        """
-        sing = MatchSinglet(file_name='models/test_data/lorem.json',
-                            passage=u'청춘의 피가 심장의 많이')
-        doc = sing.document
-        self.assertEqual(doc.file_name, 'models/test_data/lorem.json')
-        self.assertEqual(doc.raw_file_name, 'models/test_data/raw/lorem.txt')
-        body = u'품에 원대하고, 무엇을 무한한 사막이다. 청춘의 피가 심장의 많이 열락의 무엇을 아니다.'
-        self.assertEqual(doc.raw_body, body)
-        meta = {}
-        self.assertEqual(doc.metadata, meta)
+    def test_eq(self):
+        singlet_a = MatchSinglet(passage="test")
+        singlet_b = MatchSinglet(passage="test")
+        singlet_c = MatchSinglet(passage="nope")
+
+        self.assertTrue(singlet_a == singlet_b)
+        self.assertFalse(singlet_a == singlet_c)
+        self.assertFalse(singlet_b == singlet_c)
+
+    def test_from_dict(self):
+        singlet_a = MatchSinglet(passage=u'hey')
+        singlet_a_dict = singlet_a.to_dict()
+        singlet_from_dict = MatchSinglet.from_dict(singlet_a_dict)
+
+        self.assertTrue(singlet_a == singlet_from_dict)
 
     # TODO: test eq
 
@@ -170,7 +168,31 @@ class MatchTest(unittest.TestCase):
         self.assertEqual(self.beta_passage, match_dict['beta_passage'])
         self.assertEqual(self.beta_indices, match_dict['beta_indices'])
 
-        # todo: test eq
+    def test_eq(self):
+        a = Match(alpha_passage=u'one',
+                  alpha_indices=(3, 5),
+                  beta_passage=u'two',
+                  beta_indices=(9, 11))
+        b = Match(alpha_passage=u'two',
+                  alpha_indices=(9, 11),
+                  beta_passage=u'one',
+                  beta_indices=(3, 5))
+        c = Match(alpha_passage=u'five',
+                  alpha_indices=(44, 47),
+                  beta_passage=u'six',
+                  beta_indices=(0, 3))
+
+        self.assertTrue(a == b)
+        self.assertFalse(a == c)
+        self.assertFalse(b == c)
+
+        # If objects are equal their hashes must also be equal
+        hash_a = hash(a)
+        hash_b = hash(b)
+        hash_c = hash(c)
+        self.assertTrue(hash_a == hash_b)
+        self.assertFalse(hash_a == hash_c)
+        self.assertFalse(hash_b == hash_c)
 
 
 class MatchSetTest(unittest.TestCase):
@@ -186,10 +208,8 @@ class MatchSetTest(unittest.TestCase):
         self.matches = []
         self.singlet_pairs = []
         for i in xrange(len(self.passages_a)):
-            a = MatchSinglet(file_name=self.document_a,
-                             passage=self.passages_a[i])
-            b = MatchSinglet(file_name=self.document_b,
-                             passage=self.passages_b[i])
+            a = MatchSinglet(passage=self.passages_a[i])
+            b = MatchSinglet(passage=self.passages_b[i])
             s_pair = (a, b)
             self.singlet_pairs.append(s_pair)
             # Alpha/beta need to be actual documents, not names
