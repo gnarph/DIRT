@@ -5,10 +5,6 @@ MatchTuple = namedtuple(typename='MatchTuple',
                         field_names=['a', 'b', 'a_end', 'b_end'])
 
 
-class DoneMainBlocks(BaseException):
-    pass
-
-
 def difflib_blocks_to_match_tuples(blocks):
     tuples = []
     for tup in blocks:
@@ -44,6 +40,10 @@ class MatchConcatenator(object):
             self.combined = []
 
     def move_cursors_to_end(self, second):
+        """
+        Move cursors to end of target block
+        :param second: block to move cursors to end of
+        """
         self.a_cursor = second.a_end
         self.b_cursor = second.b_end
 
@@ -127,6 +127,12 @@ class MatchConcatenator(object):
                           b_end=self.b_cursor)
 
     def can_combine(self, first, second):
+        """
+        Check if two blocks can be combined
+        :param first: first block in list
+        :param second: second block in list
+        :return: boolean indicating if blocks can be combined
+        """
         mismatch_ab = (first.a_end < second.a
                        and second.b_end < first.b)
         mismatch_ba = (second.a_end < first.a

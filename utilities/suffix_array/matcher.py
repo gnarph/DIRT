@@ -19,11 +19,18 @@ MB = namedtuple('MatchBlock',
 
 
 class MatchBlock(MB):
+    """
+    NamedTuple subclass for representing match blocks
+    """
 
     def __hash__(self):
         return self[0] * self[1] * self[2]
 
     def __eq__(self, other):
+        """
+        Equals method that avoids comparing the string potion
+        of matches
+        """
         if self[0] != other[0]:
             return False
         elif self[1] != other[1]:

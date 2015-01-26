@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from utilities.suffix_array import applications as app
+from utilities.suffix_array import matcher as app
 from utilities import file_ops
 
 
@@ -46,7 +46,7 @@ class SuffixArrayApplicationTest(unittest.TestCase):
         ab = app.all_common_substrings(a, b)
         ac = app.all_common_substrings(a, c)
         bc = app.all_common_substrings(b, c)
-        in_all = ab & ac & bc
+        in_all = set(ab) & set(ac) & set(bc)
         self.assertIn(u'john', in_all)
 
     def test_acs_except(self):

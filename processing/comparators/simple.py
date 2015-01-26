@@ -6,7 +6,7 @@ import re
 import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
 import processing.comparators.match_concatenator as concatenator
-from utilities.suffix_array import applications as suffix_apps
+from utilities.suffix_array import matcher as suffix_apps
 
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
