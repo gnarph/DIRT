@@ -4,10 +4,16 @@ __author__ = 'welcome vince'
 # -*- coding: utf-8 -*-
 
 import sys
+import string
 from PyQt4 import QtGui, QtCore
 
 
 class MainWindow(QtGui.QMainWindow):
+    """
+    The main window GUI for DIRT.
+    Includes some shortcut keys
+    """
+
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
 
@@ -22,17 +28,17 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.lay_out)
 
         # ------------------------------------------------------
-        #file menu: exit
-        exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
-        exit.setShortcut('Ctrl+Q')
-        exit.setStatusTip('Exit application')
-
-        # ------------------------------------------------------
         #file menu: open
         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showDialog)
+
+        # ------------------------------------------------------
+        #file menu: exit
+        exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
+        exit.setShortcut('Ctrl+Q')
+        exit.setStatusTip('Exit application')
 
         # ------------------------------------------------------
         #exit when 'exit' is triggered
@@ -42,8 +48,8 @@ class MainWindow(QtGui.QMainWindow):
 
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
-        file.addAction(exit)
         file.addAction(openFile)
+        file.addAction(exit)
 
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exit)
@@ -63,100 +69,142 @@ class MainWindow(QtGui.QMainWindow):
             self.lay_out.reviewEdit.setText(data)
 
 
+class Table(QtGui.QTableWidget):
+    """
+    Creates a table that self populates
+    """
+
+    def __init__(self, parent=None):
+        super(Table, self).__init__(parent)
+        self.setColumnCount(5)
+        self.populate()
+
+        headers = ['Match Title', 'Author(s)', '# of Matches',
+                   'Match %', 'Location']
+
+        self.setColumnWidth(0,200)
+        self.setColumnWidth(1,200)
+        self.setColumnWidth(2,80)
+        self.setColumnWidth(3,80)
+        self.setColumnWidth(4,80)
+
+        self.horizontalHeader().setStretchLastSection(True)
+        self.setAlternatingRowColors(True)
+        self.setHorizontalHeaderLabels(headers)
+        self.setSortingEnabled(True)
+
+
+    def populate(self):
+        self.setRowCount(10)
+
+        for i in range(10):
+            for j,l in enumerate(string.letters[:5]):
+                self.setItem(i, j, QtGui.QTableWidgetItem(l))
+
+        self.setRowCount(10)
+        for i in range(10):
+            for j,l in enumerate(string.letters[:5]):
+                self.setItem(i, j, QtGui.QTableWidgetItem(l))
+
+        # Populates table using a list by column then row
+        
+        """
+        entries = []
+        with open('data') as input:
+            for line in input:
+                entries.append(line.strip().split('\t'))
+
+        tableWidget.setRowCount(len(entries))
+        tableWidget.setColumnCount(len(entries[0]))
+        
+        for i, row in enumerate(entries):
+            for j, col in enumerate(row):
+                item = QTableWidgetItem(col)
+                tableWidget.setItem(i, j, item)
+        """
+
+
+class Grid(QtGui.QGridLayout):
+    """
+    Creates a grid with Location, Title, Author, and Text READ-only display
+    Param: self, title of the layout
+    """
+    def __init__(self, parent, header):
+        super(Grid, self).__init__(parent)
+
+        # ------------------------------------------------------
+        # Widgets
+
+        label = QtGui.QLabel(header)
+        location = QtGui.QLabel('Location :')
+        title = QtGui.QLabel('Title :')
+        author = QtGui.QLabel('Author :')
+        text = QtGui.QLabel('Text :')
+
+        QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
+        QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
+        QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
+        QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
+
+        QtGui.QTableWidget.locationEdit.setReadOnly(True)       # set to READ-only
+        QtGui.QTableWidget.titleEdit.setReadOnly(True)
+        QtGui.QTableWidget.authorEdit.setReadOnly(True)
+        QtGui.QTableWidget.textEdit.setReadOnly(True)
+
+        # ------------------------------------------------------
+        # Grid Layout
+
+        self.setSpacing(10)
+        self.addWidget(label)
+
+        self.addWidget(location, 1, 0)
+        self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
+
+        self.addWidget(title, 2, 0)
+        self.addWidget(QtGui.QTableWidget.titleEdit, 2, 1)
+
+        self.addWidget(author, 3, 0)
+        self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
+
+        self.addWidget(text, 4, 0)
+        self.addWidget(QtGui.QTableWidget.textEdit, 4, 1, 10, 1)
+
+
+class Frame(QtGui.QFrame):
+    """
+    Creates a frame from a grid layout
+    Param: self, title of the frame
+    """
+    def __init__(self, parent, header):
+        super(Frame, self).__init__(parent)
+
+        grid = Grid(self, header)
+
+        self.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.setLayout(grid)
+
+
 class Layout(QtGui.QWidget):
+    """
+    Splitter layout that separates frames
+    and allows to adjust the size relatively
+    then puts everything in a horizontal layout
+    Theme: Cleanlooks
+    """
+
     def __init__(self,parent):
         super(Layout, self).__init__(parent)
 
         # ------------------------------------------------------
-        # Focus Document Widgets
-        f_label = QtGui.QLabel('FOCUS')
-        f_location = QtGui.QLabel('Location :')
-        f_title = QtGui.QLabel('Title :')
-        f_author = QtGui.QLabel('Author :')
-        f_text = QtGui.QLabel('Text :')
-
-        self.f_locationEdit = QtGui.QLineEdit()
-        self.f_titleEdit = QtGui.QLineEdit()
-        self.f_authorEdit = QtGui.QLineEdit()
-        self.f_textEdit = QtGui.QTextEdit()
-
-        # ------------------------------------------------------
-        # Match Document Widgets
-
-        m_label = QtGui.QLabel('MATCH')
-        m_location = QtGui.QLabel('Location :')
-        m_title = QtGui.QLabel('Title :')
-        m_author = QtGui.QLabel('Author :')
-        m_text = QtGui.QLabel('Text :')
-
-        self.m_locationEdit = QtGui.QLineEdit()
-        self.m_titleEdit = QtGui.QLineEdit()
-        self.m_authorEdit = QtGui.QLineEdit()
-        self.m_textEdit = QtGui.QTextEdit()
-
-        # ------------------------------------------------------
-        # Focus Document Layout
-
-        f_grid = QtGui.QGridLayout()
-        f_grid.setSpacing(10)
-        f_grid.addWidget(f_label)
-
-        f_grid.addWidget(f_location, 1, 0)
-        f_grid.addWidget(self.f_locationEdit, 1, 1)
-
-        f_grid.addWidget(f_title, 2, 0)
-        f_grid.addWidget(self.f_titleEdit, 2, 1)
-
-        f_grid.addWidget(f_author, 3, 0)
-        f_grid.addWidget(self.f_authorEdit, 3, 1)
-
-        f_grid.addWidget(f_text, 4, 0)
-        f_grid.addWidget(self.f_textEdit, 4, 1, 10, 1)
-
-        # ------------------------------------------------------
-        # Match Document Layout
-
-        m_grid = QtGui.QGridLayout()
-        m_grid.setSpacing(10)
-
-        m_grid.addWidget(m_label)
-
-        m_grid.addWidget(m_location, 1, 0)
-        m_grid.addWidget(self.m_locationEdit, 1, 1)
-
-        m_grid.addWidget(m_title, 2, 0)
-        m_grid.addWidget(self.m_titleEdit, 2, 1)
-
-        m_grid.addWidget(m_author, 3, 0)
-        m_grid.addWidget(self.m_authorEdit, 3, 1)
-
-        m_grid.addWidget(m_text, 4, 0)
-        m_grid.addWidget(self.m_textEdit, 4, 1, 10, 1)
-
-        # ------------------------------------------------------
         # Result Table
 
-        result_table = QtGui.QTableWidget(self)
-        result_table.setRowCount(10)
-        result_table.setColumnCount(4)
-
-        headers = ['Match Title', 'Author', '# of Matches',
-                   'Match %']
-
-        result_table.setHorizontalHeaderLabels(headers)
-        result_table.setSortingEnabled(True)
-        result_table.resizeColumnsToContents()
+        result_table = Table()
 
         # ------------------------------------------------------
         # Frames
 
-        f_frame = QtGui.QFrame(self)
-        f_frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        f_frame.setLayout(f_grid)
-
-        m_frame = QtGui.QFrame(self)
-        m_frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        m_frame.setLayout(m_grid)
+        f_frame = Frame(self, 'FOCUS')
+        m_frame = Frame(self, 'MATCH')
 
         # ------------------------------------------------------
         # Splitter Layout
@@ -173,9 +221,7 @@ class Layout(QtGui.QWidget):
 
         hbox.addWidget(splitter2)
         self.setLayout(hbox)
-        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('gtk+'))
-
-
+        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('cleanlooks'))
 
 
 def main():
