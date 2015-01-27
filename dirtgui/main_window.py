@@ -1,34 +1,41 @@
+__author__ = 'welcome vince'
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui, QtCore, Qt
 
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
 
+        # ------------------------------------------------------
         #initial window size
         self.resize(350, 250)
         self.setWindowTitle('mainwindow')
 
+        # ------------------------------------------------------
         #set central Widget to fill out the rest space
         self.lay_out = Layout(self)
         self.setCentralWidget(self.lay_out)
 
+        # ------------------------------------------------------
         #file menu: exit
         exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
         exit.setStatusTip('Exit application')
 
+        # ------------------------------------------------------
         #file menu: open
         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showDialog)
 
-         #exit when 'exit' is triggered
+        # ------------------------------------------------------
+        #exit when 'exit' is triggered
         self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
 
         self.statusBar()
@@ -60,41 +67,120 @@ class Layout(QtGui.QWidget):
     def __init__(self,parent):
         super(Layout, self).__init__(parent)
 
-        #testing layout
-        location = QtGui.QLabel('Location')
-        title = QtGui.QLabel('Title')
-        author = QtGui.QLabel('Author')
-        review = QtGui.QLabel('Review')
+        # ------------------------------------------------------
+        # Focus Document Widgets
+        f_label = QtGui.QLabel('FOCUS')
+        f_location = QtGui.QLabel('Location :')
+        f_title = QtGui.QLabel('Title :')
+        f_author = QtGui.QLabel('Author :')
+        f_text = QtGui.QLabel('Text :')
 
-        #create attributes for lay_out
-        self.locationEdit = QtGui.QLineEdit()
-        self.titleEdit = QtGui.QLineEdit()
-        self.authorEdit = QtGui.QLineEdit()
-        self.reviewEdit = QtGui.QTextEdit()
+        self.f_locationEdit = QtGui.QLineEdit()
+        self.f_titleEdit = QtGui.QLineEdit()
+        self.f_authorEdit = QtGui.QLineEdit()
+        self.f_textEdit = QtGui.QTextEdit()
 
-        grid = QtGui.QGridLayout()
-        grid.setSpacing(10)
+        # ------------------------------------------------------
+        # Match Document Widgets
 
-        grid.addWidget(location, 1, 0)
-        grid.addWidget(self.locationEdit, 1, 1)
+        m_label = QtGui.QLabel('MATCH')
+        m_location = QtGui.QLabel('Location :')
+        m_title = QtGui.QLabel('Title :')
+        m_author = QtGui.QLabel('Author :')
+        m_text = QtGui.QLabel('Text :')
 
-        grid.addWidget(title, 2, 0)
-        grid.addWidget(self.titleEdit, 2, 1)
+        self.m_locationEdit = QtGui.QLineEdit()
+        self.m_titleEdit = QtGui.QLineEdit()
+        self.m_authorEdit = QtGui.QLineEdit()
+        self.m_textEdit = QtGui.QTextEdit()
 
-        grid.addWidget(author, 3, 0)
-        grid.addWidget(self.authorEdit, 3, 1)
+        # ------------------------------------------------------
+        # Focus Document Layout
 
-        grid.addWidget(review, 4, 0)
-        grid.addWidget(self.reviewEdit, 4, 1, 6, 1)
+        f_grid = QtGui.QGridLayout()
+        f_grid.setSpacing(10)
+        f_grid.addWidget(f_label)
 
-        self.setLayout(grid)
+        f_grid.addWidget(f_location, 1, 0)
+        f_grid.addWidget(self.f_locationEdit, 1, 1)
+
+        f_grid.addWidget(f_title, 2, 0)
+        f_grid.addWidget(self.f_titleEdit, 2, 1)
+
+        f_grid.addWidget(f_author, 3, 0)
+        f_grid.addWidget(self.f_authorEdit, 3, 1)
+
+        f_grid.addWidget(f_text, 4, 0)
+        f_grid.addWidget(self.f_textEdit, 4, 1, 6, 1)
+
+        # ------------------------------------------------------
+        # Match Document Layout
+
+        m_grid = QtGui.QGridLayout()
+        m_grid.setSpacing(10)
+
+        m_grid.addWidget(m_label)
+
+        m_grid.addWidget(m_location, 1, 0)
+        m_grid.addWidget(self.m_locationEdit, 1, 1)
+
+        m_grid.addWidget(m_title, 2, 0)
+        m_grid.addWidget(self.m_titleEdit, 2, 1)
+
+        m_grid.addWidget(m_author, 3, 0)
+        m_grid.addWidget(self.m_authorEdit, 3, 1)
+
+        m_grid.addWidget(m_text, 4, 0)
+        m_grid.addWidget(self.m_textEdit, 4, 1, 10, 1)
+
+        # ------------------------------------------------------
+        # Result Table
+
+        result_table = QtGui.QTableWidget(self)
+        result_table.setRowCount(10)
+        result_table.setColumnCount(4)
+
+        headers = ['Match Title', 'Author', '# of Matches',
+                   'Match %']
+
+        result_table.setHorizontalHeaderLabels(headers)
+        result_table.setSortingEnabled(True)
+        result_table.resizeColumnsToContents()
+
+
+        # ------------------------------------------------------
+        # Separators
+
+        h_line = QtGui.QFrame(self)
+        h_line.setFrameShape(QtGui.QFrame.HLine)
+        v_line = QtGui.QFrame(self)
+        v_line.setFrameShape(QtGui.QFrame.VLine)
+
+        # ------------------------------------------------------
+        # Layout
+
+        hbox = QtGui.QHBoxLayout()
+        hbox.addLayout(f_grid)
+        hbox.addSpacing(10)
+        hbox.addWidget(v_line)
+        hbox.addSpacing(10)
+        hbox.addLayout(m_grid)
+
+        vbox = QtGui.QVBoxLayout()
+        vbox.addLayout(hbox)
+        vbox.addSpacing(10)
+        vbox.addWidget(h_line)
+        vbox.addSpacing(10)
+        vbox.addWidget(result_table)
+
+        self.setLayout(vbox)
 
 
 def main():
     app = QtGui.QApplication(sys.argv)
     mw = MainWindow()
     mw.setGeometry(300, 300, 350, 300)
-    mw.setWindowTitle('DiRT')
+    mw.setWindowTitle('DIRT')
     mw.show()
     sys.exit(app.exec_())
 
