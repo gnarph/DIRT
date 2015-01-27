@@ -4,7 +4,7 @@ __author__ = 'welcome vince'
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import QtGui, QtCore, Qt
+from PyQt4 import QtGui, QtCore
 
 
 class MainWindow(QtGui.QMainWindow):
