@@ -111,7 +111,7 @@ class Layout(QtGui.QWidget):
         f_grid.addWidget(self.f_authorEdit, 3, 1)
 
         f_grid.addWidget(f_text, 4, 0)
-        f_grid.addWidget(self.f_textEdit, 4, 1, 6, 1)
+        f_grid.addWidget(self.f_textEdit, 4, 1, 10, 1)
 
         # ------------------------------------------------------
         # Match Document Layout
@@ -147,39 +147,41 @@ class Layout(QtGui.QWidget):
         result_table.setSortingEnabled(True)
         result_table.resizeColumnsToContents()
 
+        # ------------------------------------------------------
+        # Frames
+
+        f_frame = QtGui.QFrame(self)
+        f_frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        f_frame.setLayout(f_grid)
+
+        m_frame = QtGui.QFrame(self)
+        m_frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        m_frame.setLayout(m_grid)
 
         # ------------------------------------------------------
-        # Separators
+        # Splitter Layout
 
-        h_line = QtGui.QFrame(self)
-        h_line.setFrameShape(QtGui.QFrame.HLine)
-        v_line = QtGui.QFrame(self)
-        v_line.setFrameShape(QtGui.QFrame.VLine)
+        hbox = QtGui.QHBoxLayout(self)
 
-        # ------------------------------------------------------
-        # Layout
+        splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        splitter1.addWidget(f_frame)
+        splitter1.addWidget(m_frame)
 
-        hbox = QtGui.QHBoxLayout()
-        hbox.addLayout(f_grid)
-        hbox.addSpacing(10)
-        hbox.addWidget(v_line)
-        hbox.addSpacing(10)
-        hbox.addLayout(m_grid)
+        splitter2 = QtGui.QSplitter(QtCore.Qt.Vertical)
+        splitter2.addWidget(splitter1)
+        splitter2.addWidget(result_table)
 
-        vbox = QtGui.QVBoxLayout()
-        vbox.addLayout(hbox)
-        vbox.addSpacing(10)
-        vbox.addWidget(h_line)
-        vbox.addSpacing(10)
-        vbox.addWidget(result_table)
+        hbox.addWidget(splitter2)
+        self.setLayout(hbox)
+        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('gtk+'))
 
-        self.setLayout(vbox)
+
 
 
 def main():
     app = QtGui.QApplication(sys.argv)
     mw = MainWindow()
-    mw.setGeometry(300, 300, 350, 300)
+    mw.setGeometry(500, 200, 700, 600)
     mw.setWindowTitle('DIRT')
     mw.show()
     sys.exit(app.exec_())
