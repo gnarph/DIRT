@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow):
         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showDialog)
+        openFile.triggered.connect(self.dispaly_focus)
 
         # ------------------------------------------------------
         #file menu: exit
@@ -54,7 +54,7 @@ class MainWindow(QtGui.QMainWindow):
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exit)
 
-    def showDialog(self):
+    def display_focus(self):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
 
         f = open(fname, 'r')
@@ -66,7 +66,7 @@ class MainWindow(QtGui.QMainWindow):
             data = data.decode('utf-8')
 
             #set the text to TextEdit
-            self.lay_out.reviewEdit.setText(data)
+            self.lay_out.f_frame.grid.textEdit.setText(data)
 
 
 class Table(QtGui.QTableWidget):
@@ -144,7 +144,9 @@ class Grid(QtGui.QGridLayout):
         QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
         QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
         QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
-        QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
+        self.textEdit = QtGui.QTextEdit()
+
+        self.textEdit = QtGui.QTableWidget.textEdit
 
         QtGui.QTableWidget.locationEdit.setReadOnly(True)       # set to READ-only
         QtGui.QTableWidget.titleEdit.setReadOnly(True)
@@ -170,6 +172,9 @@ class Grid(QtGui.QGridLayout):
         self.addWidget(QtGui.QTableWidget.textEdit, 4, 1, 10, 1)
 
 
+
+
+
 class Frame(QtGui.QFrame):
     """
     Creates a frame from a grid layout
@@ -178,10 +183,10 @@ class Frame(QtGui.QFrame):
     def __init__(self, parent, header):
         super(Frame, self).__init__(parent)
 
-        grid = Grid(self, header)
+        self.grid = Grid(self, header)
 
         self.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.setLayout(grid)
+        self.setLayout(self.grid)
 
 
 class Layout(QtGui.QWidget):
@@ -203,8 +208,8 @@ class Layout(QtGui.QWidget):
         # ------------------------------------------------------
         # Frames
 
-        f_frame = Frame(self, 'FOCUS')
-        m_frame = Frame(self, 'MATCH')
+        self.f_frame = Frame(self, 'FOCUS')
+        self.m_frame = Frame(self, 'MATCH')
 
         # ------------------------------------------------------
         # Splitter Layout
@@ -212,8 +217,8 @@ class Layout(QtGui.QWidget):
         hbox = QtGui.QHBoxLayout(self)
 
         splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        splitter1.addWidget(f_frame)
-        splitter1.addWidget(m_frame)
+        splitter1.addWidget(self.f_frame)
+        splitter1.addWidget(self.m_frame)
 
         splitter2 = QtGui.QSplitter(QtCore.Qt.Vertical)
         splitter2.addWidget(splitter1)
