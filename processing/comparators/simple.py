@@ -13,15 +13,14 @@ MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
 class Comparator(base_comparator.BaseComparator):
 
-    def compare(self):
+    def _find_matching_blocks(self, matching_passages):
         """
-        Compare texts
-        :return: list of singlet pairs
+        Find matchblocks from matching passages
+        :param matching_passages: strings representing matching
+                                  passages in both docs
+        :return: list of MatchBlocks sorted by where they appear
+                 in document a
         """
-        # Still need to remove/re-add spaces
-        matching_passages = suffix_apps.all_common_substrings(a=self.a,
-                                                              b=self.b)
-
         blocks = set()
         for passage in matching_passages:
             a_matches = re.finditer(passage, self.a)
@@ -36,7 +35,18 @@ class Comparator(base_comparator.BaseComparator):
         # Concerned that sorting on a may adversely impact
         # concat on the b side
         blocks = sorted(blocks, key=operator.attrgetter('a'))
+        return blocks
 
+    def compare(self):
+        """
+        Compare texts
+        :return: list of singlet pairs
+        """
+        # Still need to remove/re-add spaces
+        matching_passages = suffix_apps.all_common_substrings(a=self.a,
+                                                              b=self.b)
+
+        blocks = self._find_matching_blocks(matching_passages)
         combined_blocks = self._combine_blocks(blocks)
         filtered_blocks = self._filter_blocks(combined_blocks)
         passage_blocks = self._tuples_to_passages(filtered_blocks)
@@ -66,14 +76,27 @@ class Comparator(base_comparator.BaseComparator):
         return filtered
 
     def _tuples_to_passages(self, filtered_blocks):
+        """
+        Get passages from concatenator blocks
+        :param filtered_blocks: list of concatenator blocks
+        :return: list of tuples containing the passage
+                 in a and in b
+        """
         passages = []
         for tup in filtered_blocks:
             a = self.a[tup.a:tup.a_end]
             b = self.b[tup.b:tup.b_end]
+            # TODO: consider namedtuple for clarity
             passages.append((a, b))
         return passages
 
-    def _get_singlet_pairs(self, passage_blocks):
+    @staticmethod
+    def _get_singlet_pairs(passage_blocks):
+        """
+        Get the match singlet from passage pairs
+        :param passage_blocks: list of passage pair tuples
+        :return: list of singlet pair tuples
+        """
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
             s_a = MatchSinglet(passage=p_a)

@@ -1,22 +1,21 @@
-import os
 import unittest
 
 import mock
 
 import DIRT
-from models.match_set import MatchSet
+from models import match_set_factory
 import utilities.path
 
 
 def iter_match_passages(match_set):
     for match in match_set.matches:
-        yield match.alpha_passage.strip()
-        yield match.beta_passage.strip()
+        yield match.alpha_passage
+        yield match.beta_passage
 
 
 def contains_contains(l, search_for):
     for item in l:
-        if search_for in item:
+        if search_for in item or item in search_for:
             return True
     return False
 
@@ -70,10 +69,11 @@ class SmokeTest(unittest.TestCase):
         args.match_length = 10
         DIRT.main(args)
 
-    def _get_match_set(self, name):
-        file_name = os.path.join(self.out_dir,
-                                 name)
-        return MatchSet.from_json(file_name)
+    def _no_matchset_dupes(self, ms):
+        found = set()
+        for match in ms:
+            self.assertNotIn(match, found)
+            found.add(match)
 
     def full_test(self):
         args = mock.Mock()
@@ -86,36 +86,27 @@ class SmokeTest(unittest.TestCase):
         args.match_length = 10
         DIRT.main(args)
 
-        one_two = self._get_match_set('one__two__CMP.json')
-        one_three = self._get_match_set('one__three__CMP.json')
-        three_two = self._get_match_set('three__two__CMP.json')
+        one_two = match_set_factory.find_in_dir('one', 'two', self.out_dir)
+        one_three = match_set_factory.find_in_dir('one', 'three', self.out_dir)
+        three_two = match_set_factory.find_in_dir('three', 'two', self.out_dir)
 
-        common_pass = ('This test file consists of multiple '
-                       'paragraphs  This paragraph in particular '
-                       'occurs in multiple test files  DIRT should '
-                       'be able to determine this and create the '
-                       'appropriate matches')
+        common_pass = (u'This test file consists of multiple '
+                       u'paragraphs  This paragraph in particular '
+                       u'occurs in multiple test files  DIRT should '
+                       u'be able to determine this and create the '
+                       u'appropriate matches')
         passages_32 = list(iter_match_passages(three_two))
-        try:
-            found = contains_contains(passages_32, common_pass)
-            self.assertTrue(found)
-        except AssertionError:
-            print passages_32
-            raise
+        found = contains_contains(passages_32, common_pass)
+        self.assertTrue(found)
 
         passages_12 = list(iter_match_passages(one_two))
-        try:
-            found = contains_contains(passages_12, common_pass)
-            self.assertTrue(found)
-        except AssertionError:
-            print passages_12
-            raise
+        found = contains_contains(passages_12, common_pass)
+        self.assertTrue(found)
 
         passages_13 = list(iter_match_passages(one_three))
-        try:
-            found = contains_contains(passages_13, common_pass)
-            self.assertTrue(found)
-        except AssertionError:
-            print passages_13
-            raise
+        found = contains_contains(passages_13, common_pass)
+        self.assertTrue(found)
 
+        self._no_matchset_dupes(one_two)
+        self._no_matchset_dupes(one_three)
+        self._no_matchset_dupes(three_two)

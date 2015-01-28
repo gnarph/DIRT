@@ -1,5 +1,8 @@
-#! /usr/bin/python
 # -*- coding: utf-8 -*-
+"""
+Originally from https://code.google.com/p/pysuffix/
+Used from  https://github.com/baiyubin/pysuffix
+"""
 from array import array
 
 

@@ -137,6 +137,7 @@ class MatchConcatenator(object):
     def jump_gap(self, last):
         """
         Check if we can jump from the cursors to a match
+        cannot jump if the matches are out of order
         :param last: match to attempt a jump to
         :return: if we can jump to the next match
         """
