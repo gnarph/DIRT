@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow):
         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.display_focus)
+        openFile.triggered.connect(self.display_comparison)
 
         # ------------------------------------------------------
         #file menu: exit
@@ -54,8 +54,12 @@ class MainWindow(QtGui.QMainWindow):
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exit)
 
-    def display_focus(self):
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
+
+    def display_comparison(self):
+        """
+        Displays both the focus and match document
+        """
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/test')
 
         f = open(fname, 'r')
 
@@ -68,6 +72,24 @@ class MainWindow(QtGui.QMainWindow):
             #set the text to TextEdit
             self.lay_out.f_frame.grid.textEdit.setText(data)
 
+        self.display_match()
+
+
+    def display_match(self):
+        """
+        Displays the match document
+        """
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/temp1')
+        f = open(fname, 'r')
+
+        with f:
+            data = f.read()
+
+            #to avoid garbage character when decoding other languages
+            data = data.decode('utf-8')
+
+            #set the text to TextEdit
+            self.lay_out.m_frame.grid.textEdit.setText(data)
 
 
 class Table(QtGui.QTableWidget):
@@ -96,19 +118,18 @@ class Table(QtGui.QTableWidget):
 
 
     def populate(self):
+        """
+        Populates the table with elements
+        """
+
+        # Populates table with alphabetical lettering
         self.setRowCount(10)
 
-        for i in range(10):
-            for j,l in enumerate(string.letters[:5]):
-                self.setItem(i, j, QtGui.QTableWidgetItem(l))
-
-        self.setRowCount(10)
         for i in range(10):
             for j,l in enumerate(string.letters[:5]):
                 self.setItem(i, j, QtGui.QTableWidgetItem(l))
 
         # Populates table using a list by column then row
-        
         """
         entries = []
         with open('data') as input:
@@ -136,44 +157,49 @@ class Grid(QtGui.QGridLayout):
         # ------------------------------------------------------
         # Widgets
 
+        # Labels
         label = QtGui.QLabel(header)
         location = QtGui.QLabel('Location :')
         title = QtGui.QLabel('Title :')
         author = QtGui.QLabel('Author :')
         text = QtGui.QLabel('Text :')
 
-        QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
-        QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
-        QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
-        QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
+        # Text displays
+        self.locationEdit = QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
+        self.titleEdit = QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
+        self.authorEdit = QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
+        self.textEdit = QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
 
-        self.textEdit = QtGui.QTableWidget.textEdit
+        self.textEdit.setFontPointSize(10)
 
-        QtGui.QTableWidget.locationEdit.setReadOnly(True)       # set to READ-only
+        # Set all text displays to READ-only
+        QtGui.QTableWidget.locationEdit.setReadOnly(True)
         QtGui.QTableWidget.titleEdit.setReadOnly(True)
         QtGui.QTableWidget.authorEdit.setReadOnly(True)
         QtGui.QTableWidget.textEdit.setReadOnly(True)
 
         # ------------------------------------------------------
-        # Grid Layout
+        # Position on Grid Layout
 
+        # Header
         self.setSpacing(10)
         self.addWidget(label)
 
+        # Location
         self.addWidget(location, 1, 0)
         self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
 
+        # Title
         self.addWidget(title, 2, 0)
         self.addWidget(QtGui.QTableWidget.titleEdit, 2, 1)
 
+        # Author
         self.addWidget(author, 3, 0)
         self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
 
+        # Text
         self.addWidget(text, 4, 0)
         self.addWidget(QtGui.QTableWidget.textEdit, 4, 1, 10, 1)
-
-
-
 
 
 class Frame(QtGui.QFrame):
@@ -189,16 +215,23 @@ class Frame(QtGui.QFrame):
         self.setFrameShape(QtGui.QFrame.StyledPanel)
         self.setLayout(self.grid)
 
+        """
+        # Set Location, Title, Author to be displayed
+        self.grid.locationEdit.setText()
+        self.grid.titleEdit.setText()
+        self.grid.authorEdit.setText()
+        """
+
 
 class Layout(QtGui.QWidget):
     """
     Splitter layout that separates frames
     and allows to adjust the size relatively
     then puts everything in a horizontal layout
-    Theme: Cleanlooks
+    Theme: 'cleanlooks'
     """
 
-    def __init__(self,parent):
+    def __init__(self, parent):
         super(Layout, self).__init__(parent)
 
         # ------------------------------------------------------
@@ -217,14 +250,17 @@ class Layout(QtGui.QWidget):
 
         hbox = QtGui.QHBoxLayout(self)
 
+        # Splits focus and match document
         splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
         splitter1.addWidget(self.f_frame)
         splitter1.addWidget(self.m_frame)
 
+        # Splits text comparison from result table
         splitter2 = QtGui.QSplitter(QtCore.Qt.Vertical)
         splitter2.addWidget(splitter1)
         splitter2.addWidget(result_table)
 
+        # Putting splitter layouts into horizontal layout
         hbox.addWidget(splitter2)
         self.setLayout(hbox)
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('cleanlooks'))
