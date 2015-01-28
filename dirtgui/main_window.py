@@ -102,7 +102,7 @@ class Table(QtGui.QTableWidget):
         self.setColumnCount(5)
         self.populate()
 
-        headers = ['Match Title', 'Author(s)', '# of Matches',
+        headers = ['Match Title', 'Author(s)', 'Matches',
                    'Match %', 'Location']
 
         self.setColumnWidth(0,200)
@@ -116,6 +116,11 @@ class Table(QtGui.QTableWidget):
         self.setHorizontalHeaderLabels(headers)
         self.setSortingEnabled(True)
 
+        # Header and cell fonts
+        font = QtGui.QFont('', 11, QtGui.QFont.Bold)
+        self.horizontalHeader().setFont(font)
+        cell_font = QtGui.QFont('', 11, QtGui.QFont.AnyStyle)
+        self.setFont(cell_font)
 
     def populate(self):
         """
@@ -128,6 +133,7 @@ class Table(QtGui.QTableWidget):
         for i in range(10):
             for j,l in enumerate(string.letters[:5]):
                 self.setItem(i, j, QtGui.QTableWidgetItem(l))
+
 
         # Populates table using a list by column then row
         """
@@ -158,32 +164,53 @@ class Grid(QtGui.QGridLayout):
         # Widgets
 
         # Labels
-        label = QtGui.QLabel(header)
+        header = QtGui.QLabel(header)
         location = QtGui.QLabel('Location :')
-        title = QtGui.QLabel('Title :')
-        author = QtGui.QLabel('Author :')
-        text = QtGui.QLabel('Text :')
+        title = QtGui.QLabel('Title        :')
+        author = QtGui.QLabel('Author   :')
+        #text = QtGui.QLabel('Text :')
 
+        # Label Fonts
+        label_font = QtGui.QFont('', 11, QtGui.QFont.Bold)
+
+        header.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
+        header.setAlignment(QtCore.Qt.AlignCenter)
+        location.setFont(label_font)
+        title.setFont(label_font)
+        author.setFont(label_font)
+        #text.setFont(label_font)
+
+        # ------------------------------------------------------
         # Text displays
         self.locationEdit = QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
         self.titleEdit = QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
         self.authorEdit = QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
         self.textEdit = QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
 
-        self.textEdit.setFontPointSize(10)
+        # Text display font
+        display_font = QtGui.QFont('', 12)
 
-        # Set all text displays to READ-only
-        QtGui.QTableWidget.locationEdit.setReadOnly(True)
-        QtGui.QTableWidget.titleEdit.setReadOnly(True)
-        QtGui.QTableWidget.authorEdit.setReadOnly(True)
-        QtGui.QTableWidget.textEdit.setReadOnly(True)
+        self.locationEdit.setFont(display_font)
+        self.titleEdit.setFont(display_font)
+        self.authorEdit.setFont(display_font)
+        self.textEdit.setFont(display_font)
+
+        # # Set all text displays to READ-only
+        # QtGui.QTableWidget.locationEdit.setReadOnly(True)
+        # QtGui.QTableWidget.titleEdit.setReadOnly(True)
+        # QtGui.QTableWidget.authorEdit.setReadOnly(True)
+        # QtGui.QTableWidget.textEdit.setReadOnly(True)
+
+        # Cursor
+
+        #self.textEdit.setTextCursor(QtGui.QTextCursor())
 
         # ------------------------------------------------------
         # Position on Grid Layout
 
         # Header
         self.setSpacing(10)
-        self.addWidget(label)
+        self.addWidget(header, 0, 1)
 
         # Location
         self.addWidget(location, 1, 0)
@@ -198,7 +225,7 @@ class Grid(QtGui.QGridLayout):
         self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
 
         # Text
-        self.addWidget(text, 4, 0)
+        #self.addWidget(text, 4, 0)
         self.addWidget(QtGui.QTableWidget.textEdit, 4, 1, 10, 1)
 
 
@@ -215,12 +242,12 @@ class Frame(QtGui.QFrame):
         self.setFrameShape(QtGui.QFrame.StyledPanel)
         self.setLayout(self.grid)
 
-        """
+
         # Set Location, Title, Author to be displayed
-        self.grid.locationEdit.setText()
-        self.grid.titleEdit.setText()
-        self.grid.authorEdit.setText()
-        """
+        self.grid.locationEdit.setText('Here')
+        self.grid.titleEdit.setText('Hi')
+        self.grid.authorEdit.setText('Me')
+
 
 
 class Layout(QtGui.QWidget):
@@ -235,12 +262,23 @@ class Layout(QtGui.QWidget):
         super(Layout, self).__init__(parent)
 
         # ------------------------------------------------------
-        # Result Table
+        # Result Table Frame
 
         result_table = Table()
+        table_label = QtGui.QLabel('RESULTS TABLE')
+        table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
+        table_label.setAlignment(QtCore.Qt.AlignCenter)
+
+        vbox = QtGui.QVBoxLayout()
+        vbox.addWidget(table_label)
+        vbox.addWidget(result_table)
+        # vbox.setAlignment(QtCore.Qt.AlignCenter)
+        table_frame = QtGui.QFrame(self)
+        table_frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        table_frame.setLayout(vbox)
 
         # ------------------------------------------------------
-        # Frames
+        # Comparison Frames
 
         self.f_frame = Frame(self, 'FOCUS')
         self.m_frame = Frame(self, 'MATCH')
@@ -250,6 +288,7 @@ class Layout(QtGui.QWidget):
 
         hbox = QtGui.QHBoxLayout(self)
 
+
         # Splits focus and match document
         splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
         splitter1.addWidget(self.f_frame)
@@ -258,7 +297,7 @@ class Layout(QtGui.QWidget):
         # Splits text comparison from result table
         splitter2 = QtGui.QSplitter(QtCore.Qt.Vertical)
         splitter2.addWidget(splitter1)
-        splitter2.addWidget(result_table)
+        splitter2.addWidget(table_frame)
 
         # Putting splitter layouts into horizontal layout
         hbox.addWidget(splitter2)
@@ -269,7 +308,7 @@ class Layout(QtGui.QWidget):
 def main():
     app = QtGui.QApplication(sys.argv)
     mw = MainWindow()
-    mw.setGeometry(500, 200, 700, 600)
+    mw.setGeometry(200, 100, 1000, 800)
     mw.setWindowTitle('DIRT')
     mw.show()
     sys.exit(app.exec_())
