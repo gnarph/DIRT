@@ -71,6 +71,7 @@ class MainWindow(QtGui.QMainWindow):
 
             #set the text to TextEdit
             self.lay_out.f_frame.grid.textEdit.setText(data)
+            self.lay_out.f_frame.grid.textEdit.setHtml(data)
 
         self.display_match()
 
@@ -122,6 +123,7 @@ class Table(QtGui.QTableWidget):
         cell_font = QtGui.QFont('', 11, QtGui.QFont.AnyStyle)
         self.setFont(cell_font)
 
+
     def populate(self):
         """
         Populates the table with elements
@@ -132,8 +134,10 @@ class Table(QtGui.QTableWidget):
 
         for i in range(10):
             for j,l in enumerate(string.letters[:5]):
-                self.setItem(i, j, QtGui.QTableWidgetItem(l))
-
+                item = QtGui.QTableWidgetItem(l)
+                # Line below locks the item in the cells
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                self.setItem(i, j, item)
 
         # Populates table using a list by column then row
         """
@@ -151,7 +155,6 @@ class Table(QtGui.QTableWidget):
                 tableWidget.setItem(i, j, item)
         """
 
-
 class Grid(QtGui.QGridLayout):
     """
     Creates a grid with Location, Title, Author, and Text READ-only display
@@ -166,8 +169,8 @@ class Grid(QtGui.QGridLayout):
         # Labels
         header = QtGui.QLabel(header)
         location = QtGui.QLabel('Location :')
-        title = QtGui.QLabel('Title        :')
-        author = QtGui.QLabel('Author   :')
+        title = QtGui.QLabel('Title :')
+        author = QtGui.QLabel('Author :')
         #text = QtGui.QLabel('Text :')
 
         # Label Fonts
@@ -176,8 +179,11 @@ class Grid(QtGui.QGridLayout):
         header.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         header.setAlignment(QtCore.Qt.AlignCenter)
         location.setFont(label_font)
+        location.setAlignment(QtCore.Qt.AlignRight)
         title.setFont(label_font)
+        title.setAlignment(QtCore.Qt.AlignRight)
         author.setFont(label_font)
+        author.setAlignment(QtCore.Qt.AlignRight)
         #text.setFont(label_font)
 
         # ------------------------------------------------------
@@ -195,14 +201,13 @@ class Grid(QtGui.QGridLayout):
         self.authorEdit.setFont(display_font)
         self.textEdit.setFont(display_font)
 
-        # # Set all text displays to READ-only
+        # Set all text displays to READ-only
         # QtGui.QTableWidget.locationEdit.setReadOnly(True)
         # QtGui.QTableWidget.titleEdit.setReadOnly(True)
         # QtGui.QTableWidget.authorEdit.setReadOnly(True)
-        # QtGui.QTableWidget.textEdit.setReadOnly(True)
+        self.textEdit.setReadOnly(True)
 
         # Cursor
-
         #self.textEdit.setTextCursor(QtGui.QTextCursor())
 
         # ------------------------------------------------------
