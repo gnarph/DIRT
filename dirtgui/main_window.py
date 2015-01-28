@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow):
         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.dispaly_focus)
+        openFile.triggered.connect(self.display_focus)
 
         # ------------------------------------------------------
         #file menu: exit
@@ -67,6 +67,7 @@ class MainWindow(QtGui.QMainWindow):
 
             #set the text to TextEdit
             self.lay_out.f_frame.grid.textEdit.setText(data)
+
 
 
 class Table(QtGui.QTableWidget):
@@ -144,7 +145,7 @@ class Grid(QtGui.QGridLayout):
         QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
         QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
         QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
-        self.textEdit = QtGui.QTextEdit()
+        QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
 
         self.textEdit = QtGui.QTableWidget.textEdit
 
