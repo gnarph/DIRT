@@ -60,7 +60,7 @@ class MainWindow(QtGui.QMainWindow):
             data = data.decode('utf-8')
 
             #set the text to TextEdit
-            self.lay_out.reviewEdit.setText(data)
+            self.lay_out.f_textEdit.setText(data)
 
 
 class Layout(QtGui.QWidget):
