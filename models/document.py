@@ -53,10 +53,16 @@ class Document(object):
 
     @property
     def raw_body(self):
+        """
+        Get the body of the file
+        """
         return file_ops.read_utf8(self.raw_file_name)
 
     @property
     def pre_body(self):
+        """
+        Get the preprocessed body of the file
+        """
         return file_ops.read_utf8(self.pre_file_name)
 
     def clone(self):
