@@ -95,7 +95,10 @@ class MainWindow(QtGui.QMainWindow):
     
     def closeEvent(self, event):
         #message box: prevent accidently shut down
-        reply = QtGui.QMessageBox.question(self, 'Warning', "Are you sure to quit? \n Like Very Very Sure???", QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+        reply = QtGui.QMessageBox.question(self,
+                                           'Warning', "Do you want to quit?",
+                                           QtGui.QMessageBox.Yes,
+                                           QtGui.QMessageBox.No)
 
         if reply == QtGui.QMessageBox.Yes:
             event.accept()
