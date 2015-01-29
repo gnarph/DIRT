@@ -12,8 +12,8 @@ class DocumentUtil():
     DocumentPanel
     Holds and displays two documents in comparison
     """
-    def __init__(self):
-        self.documentPanel = Ui_DocumentPanel()
+    # def __init__(self):
+    #     self.documentPanel = Ui_DocumentPanel()
     pass
 
 
@@ -26,8 +26,8 @@ def focus_doc(text_area, file_path, match_file):
     with codecs.open(file_path, 'r', encoding='utf8') as focus:
         text_area.clear()
         highlighted_passage = highlight_matches(focus,
-                                    "../dirt_output/lorem__lorem2__CMP.json",
-                                    "blue", "alpha_indices", "alpha_passage")
+                                    match_file, "alpha_indices",
+                                    "alpha_passage")
         text_area.setText(highlighted_passage)
 
 
@@ -42,16 +42,15 @@ def comp_doc(text_area, file_path, match_file):
     with codecs.open(file_path, 'r', encoding='utf8') as comparison:
         text_area.clear()
         highlighted_passage = highlight_matches(comparison,
-                                                "../dirt_output/lorem__lorem2"
-                                                "__CMP.json","blue",
-                                                "beta_indices", "beta_passage")
+                                                match_file, "beta_indices",
+                                                "beta_passage")
         text_area.setText(highlighted_passage)
 
 
-def highlight_matches(document, json_file, colour, indices, passage):
-    with open("../dirt_output/lorem__lorem2__CMP.json") as json_file:
+def highlight_matches(document, match_file, indice, passage):
+    with open(match_file) as json_file:
         json_data = file_ops.read_json_utf8(json_file.name)
-        json_data = remove_whitespaces(json_data, indices, passage)
+        json_data = remove_whitespaces(json_data, indice, passage)
 
         color_suffix = '</font>'
         temp = 0
@@ -59,18 +58,17 @@ def highlight_matches(document, json_file, colour, indices, passage):
         for entry in reversed(json_data['matches']):
             color_prefix = '<font color="' + colors[temp] + '">'
 
-            test_string = insert(test_string, color_suffix, entry[indices][
+            test_string = insert(test_string, color_suffix, entry[indice][
                 1])
 
             # print entry[indices][1]
-            test_string = insert(test_string, color_prefix, entry[indices][
+            test_string = insert(test_string, color_prefix, entry[indice][
                 0])
             # print entry[indices][0]
             temp = (temp+1) % colors.__len__()
             # print indices + ": " + test_string
 
         return test_string
-
 
 
 def remove_whitespaces(json_data, indices, passage):
