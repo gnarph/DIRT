@@ -196,6 +196,22 @@ class MatchTest(unittest.TestCase):
         self.assertFalse(hash_a == hash_c)
         self.assertFalse(hash_b == hash_c)
 
+    def test_swap_alpha_beta(self):
+        alpha_passage = u'one'
+        alpha_indices = (3, 5)
+        beta_passage = u'two'
+        beta_indices = (9, 11)
+        a = Match(alpha_passage=alpha_passage,
+                  alpha_indices=alpha_indices,
+                  beta_passage=beta_passage,
+                  beta_indices=beta_indices)
+        a.swap_alpha_beta()
+
+        self.assertEqual(a.beta_passage, alpha_passage)
+        self.assertEqual(a.beta_indices, alpha_indices)
+        self.assertEqual(a.alpha_passage, beta_passage)
+        self.assertEqual(a.alpha_indices, beta_indices)
+
 
 class MatchSetTest(unittest.TestCase):
 
@@ -259,11 +275,11 @@ class MatchSetTest(unittest.TestCase):
 
 
 class MatchSetIndexTest(unittest.TestCase):
+    out_dir = 'models/test_data/out'
 
     def test_set_names_for_focus(self):
-        out_dir = 'models/test_data/out'
         focus_name = 'focus'
-        msi = MatchSetIndex(out_dir)
+        msi = MatchSetIndex(self.out_dir)
 
         gen_names = msi.set_names_for_focus(focus_name)
         names = set(gen_names)
@@ -272,6 +288,17 @@ class MatchSetIndexTest(unittest.TestCase):
                         'threedoc__focus__CMP.json']
 
         def join_path(name):
-            return os.path.join(out_dir, name)
+            return os.path.join(self.out_dir, name)
         paths = map(join_path, wanted_names)
         self.assertEqual(names, set(paths))
+
+    def test_get_all_match_sets(self):
+        focus_name = 'focus'
+        msi = MatchSetIndex(self.out_dir)
+
+        match_sets = msi.get_all_match_sets(focus_name)
+        self.assertEqual(len(match_sets), 2)
+
+        for ms in match_sets:
+            a = ms.alpha_doc
+            self.assertIn(focus_name, a.file_name)
