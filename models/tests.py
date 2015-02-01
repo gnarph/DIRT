@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import unittest
 
 import cjson
@@ -12,6 +13,7 @@ import models.match_set_factory as match_set_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
 from models.match_set import MatchSet
+from models.match_set_index import MatchSetIndex
 from utilities.fuzzer import is_fuzzy_match
 
 
@@ -254,3 +256,22 @@ class MatchSetTest(unittest.TestCase):
         a, b = self.match_set.get_match_percentage()
         self.assertEqual(a, 62.5)
         self.assertAlmostEqual(b, 58.823, places=1)
+
+
+class MatchSetIndexTest(unittest.TestCase):
+
+    def test_set_names_for_focus(self):
+        out_dir = 'models/test_data/out'
+        focus_name = 'focus'
+        msi = MatchSetIndex(out_dir)
+
+        gen_names = msi.set_names_for_focus(focus_name)
+        names = set(gen_names)
+
+        wanted_names = ['focus__otherdoc__CMP.json',
+                        'threedoc__focus__CMP.json']
+
+        def join_path(name):
+            return os.path.join(out_dir, name)
+        paths = map(join_path, wanted_names)
+        self.assertEqual(names, set(paths))

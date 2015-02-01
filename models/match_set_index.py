@@ -6,7 +6,7 @@ from models import match_set_factory
 from utilities import path
 
 
-class Index(object):
+class MatchSetIndex(object):
     """
     Class for handling a directory of output MatchSet json files
     """
