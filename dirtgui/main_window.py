@@ -82,9 +82,15 @@ class MainWindow(QtGui.QMainWindow):
         """
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/temp1')
         f = open(fname, 'r')
+        from models.document import Document
+        doc = Document.from_json(fname)
+        data = doc.raw_body
+        self.lay_out.m_frame.grid.textEdit.setText(data)
+        return
 
         with f:
             data = f.read()
+            
 
             #to avoid garbage character when decoding other languages
             data = data.decode('utf-8')
