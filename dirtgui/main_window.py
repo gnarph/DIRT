@@ -72,6 +72,7 @@ class MainWindow(QtGui.QMainWindow):
             #set the text to TextEdit
             self.lay_out.f_frame.grid.textEdit.setText(data)
             self.lay_out.f_frame.grid.textEdit.setHtml(data)
+            
 
         self.display_match()
 
