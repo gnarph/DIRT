@@ -108,4 +108,21 @@ class MatchSet(object):
             passages.add(match.beta_passage)
         return passages
 
+    def alpha_passages(self):
+        return [m.alpha_passage for m in self.matches]
+
+    def beta_passages(self):
+        return [m.beta_passage for m in self.matches]
+
+    def swap_alpha_beta(self):
+        """
+        Swap alpha and beta
+        """
+        docs = self.alpha_doc, self.beta_doc
+        self.beta_doc, self.alpha_doc = docs
+
+        for match in self.matches:
+            match.swap_alpha_beta()
+
+        self._lmatches = None
 

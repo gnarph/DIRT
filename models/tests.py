@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import unittest
 
 try:
@@ -15,6 +16,7 @@ import models.match_set_factory as match_set_factory
 from models.match import Match
 from models.match_singlet import MatchSinglet
 from models.match_set import MatchSet
+from models.match_set_index import MatchSetIndex
 from utilities.fuzzer import is_fuzzy_match
 
 
@@ -197,6 +199,22 @@ class MatchTest(unittest.TestCase):
         self.assertFalse(hash_a == hash_c)
         self.assertFalse(hash_b == hash_c)
 
+    def test_swap_alpha_beta(self):
+        alpha_passage = u'one'
+        alpha_indices = (3, 5)
+        beta_passage = u'two'
+        beta_indices = (9, 11)
+        a = Match(alpha_passage=alpha_passage,
+                  alpha_indices=alpha_indices,
+                  beta_passage=beta_passage,
+                  beta_indices=beta_indices)
+        a.swap_alpha_beta()
+
+        self.assertEqual(a.beta_passage, alpha_passage)
+        self.assertEqual(a.beta_indices, alpha_indices)
+        self.assertEqual(a.alpha_passage, beta_passage)
+        self.assertEqual(a.alpha_indices, beta_indices)
+
 
 class MatchSetTest(unittest.TestCase):
 
@@ -257,3 +275,46 @@ class MatchSetTest(unittest.TestCase):
         a, b = self.match_set.get_match_percentage()
         self.assertEqual(a, 62.5)
         self.assertAlmostEqual(b, 58.823, places=1)
+
+    def test_swap(self):
+        self.match_set.swap_alpha_beta()
+
+        # Check passages have swapped
+        a_passages = set(self.passages_a)
+        b_passages = set(self.passages_b)
+
+        ap = set(self.match_set.alpha_passages())
+        bp = set(self.match_set.beta_passages())
+
+        self.assertEqual(b_passages, ap)
+        self.assertEqual(a_passages, bp)
+
+
+class MatchSetIndexTest(unittest.TestCase):
+    out_dir = 'models/test_data/out'
+
+    def test_set_names_for_focus(self):
+        focus_name = 'focus'
+        msi = MatchSetIndex(self.out_dir)
+
+        gen_names = msi.set_names_for_focus(focus_name)
+        names = set(gen_names)
+
+        wanted_names = ['focus__otherdoc__CMP.json',
+                        'threedoc__focus__CMP.json']
+
+        def join_path(name):
+            return os.path.join(self.out_dir, name)
+        paths = map(join_path, wanted_names)
+        self.assertEqual(names, set(paths))
+
+    def test_get_all_match_sets(self):
+        focus_name = 'focus'
+        msi = MatchSetIndex(self.out_dir)
+
+        match_sets = msi.get_all_match_sets(focus_name)
+        self.assertEqual(len(match_sets), 2)
+
+        for ms in match_sets:
+            a = ms.alpha_doc
+            self.assertIn(focus_name, a.file_name)

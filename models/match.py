@@ -45,3 +45,15 @@ class Match(object):
                      alpha_indices=d['alpha_indices'],
                      beta_passage=d['beta_passage'],
                      beta_indices=d['beta_indices'])
+
+    def swap_alpha_beta(self):
+        """
+        Swap alpha and beta docs, as we want alpha as the focus
+        """
+        indices = self.alpha_indices, self.beta_indices
+        self.beta_indices, self.alpha_indices = indices
+
+        passes = self.alpha_passage, self.beta_passage
+        self.beta_passage, self.alpha_passage = passes
+
+
