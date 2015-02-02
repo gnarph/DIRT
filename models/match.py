@@ -55,5 +55,3 @@ class Match(object):
 
         passes = self.alpha_passage, self.beta_passage
         self.beta_passage, self.alpha_passage = passes
-
-
