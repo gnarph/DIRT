@@ -273,6 +273,19 @@ class MatchSetTest(unittest.TestCase):
         self.assertEqual(a, 62.5)
         self.assertAlmostEqual(b, 58.823, places=1)
 
+    def test_swap(self):
+        self.match_set.swap_alpha_beta()
+
+        # Check passages have swapped
+        a_passages = set(self.passages_a)
+        b_passages = set(self.passages_b)
+
+        ap = set(self.match_set.alpha_passages())
+        bp = set(self.match_set.beta_passages())
+
+        self.assertEqual(b_passages, ap)
+        self.assertEqual(a_passages, bp)
+
 
 class MatchSetIndexTest(unittest.TestCase):
     out_dir = 'models/test_data/out'
