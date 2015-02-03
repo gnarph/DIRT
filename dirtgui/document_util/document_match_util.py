@@ -1,3 +1,4 @@
+import codecs
 import utilities.file_ops as file_ops
 
 from PyQt4 import QtCore, QtGui
@@ -7,10 +8,12 @@ colors = ['#ED1C24', '#F7941D', '#0000FF', '#39B54A', '#00AEEF', '#662D91']
 
 class DocumentMatchUtil():
 
-    def __init__(self, match_file):
+    def __init__(self, focus, match, match_file):
+        self.focus_doc = focus
+        self.match_doc = match
         self.number_of_matches = 0
         self.match_idx = 0
-        self.json_data = ""
+        self.json_data = ''
         self.alpha_list = []
         self.beta_list = []
         self.match_file = match_file
@@ -29,6 +32,64 @@ class DocumentMatchUtil():
             print self.alpha_list
             print self.beta_list
             print self.json_data
+
+    def next_match(self):
+        """
+        Moves cursor and scrolls view of focus and comparison text area to
+        next match
+        :return:
+        """
+        prev_match_idx = self.match_idx
+        # focus_cursor = self.doc_focus.textCursor()
+        focus_cursor_pos = self.alpha_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'alpha_passage'].__len__()
+        remove_highlight(self.focus_doc, focus_cursor_pos,
+                                       length)
+        # comp_cursor = self.doc_comparison.textCursor()
+        comp_cursor_pos = self.beta_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'beta_passage'].__len__()
+        remove_highlight(self.match_doc, comp_cursor_pos,
+                                       length)
+
+        self.match_idx = (self.match_idx + 1) % self.number_of_matches
+        match_idx = self.match_idx
+        focus_cursor_pos = self.alpha_list[match_idx]
+        length = self.json_data['matches'][match_idx][
+            'alpha_passage'].__len__()
+        move_cursor(self.focus_doc, focus_cursor_pos, length)
+        comp_cursor_pos = self.beta_list[match_idx]
+        length = self.json_data['matches'][match_idx]['beta_passage'].__len__()
+        move_cursor(self.match_doc, comp_cursor_pos, length)
+
+    def prev_match(self):
+        """
+        Moves cursor and scrolls view of focus and comparison text area to
+        previous match
+        :return:
+        """
+        prev_match_idx = self.match_idx
+        # focus_cursor = self.doc_focus.textCursor()
+        focus_cursor_pos = self.alpha_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'alpha_passage'].__len__()
+        remove_highlight(self.focus_doc, focus_cursor_pos, length)
+        # comp_cursor = self.doc_comparison.textCursor()
+        comp_cursor_pos = self.beta_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'beta_passage'].__len__()
+        remove_highlight(self.match_doc, comp_cursor_pos, length)
+
+        self.match_idx = (self.match_idx - 1) % self.number_of_matches
+        match_idx = self.match_idx
+        focus_cursor_pos = self.alpha_list[match_idx]
+        length = self.json_data['matches'][match_idx][
+            'alpha_passage'].__len__()
+        move_cursor(self.focus_doc, focus_cursor_pos, length)
+        comp_cursor_pos = self.beta_list[match_idx]
+        length = self.json_data['matches'][match_idx]['beta_passage'].__len__()
+        move_cursor(self.match_doc, comp_cursor_pos, length)
 
 
 def highlight_matches(text_area, cursor, match_file, passage):
@@ -138,3 +199,13 @@ def remove_highlight(doc, pos, length):
     text_cursor.mergeCharFormat(text_format)
     doc.setTextCursor(text_cursor)
     doc.ensureCursorVisible()
+
+def find_string(self):
+    s = str(self.lineEdit.displayText())
+    length = s.__len__()
+    with codecs.open(self.focus, 'r', encoding='utf8') as focus:
+        index = focus.read().lower().index(s)
+        print s
+        print index
+        index = focus.read().index(s)
+

@@ -4,7 +4,7 @@
 import sys
 import string
 import document_util.document_util as document_util
-import document_util.document_match_util as document_match_util
+import document_util.document_match_util as match_util
 
 from PyQt4 import QtGui, QtCore
 
@@ -248,8 +248,7 @@ class Grid(QtGui.QGridLayout):
         """
         text_area = self.textEdit
         cursor = self.textEdit.textCursor()
-        document_match_util.highlight_matches(text_area, cursor,
-                                              match_data, passage)
+        match_util.highlight_matches(text_area, cursor, match_data, passage)
 
 
 class Frame(QtGui.QFrame):
@@ -288,6 +287,16 @@ class Layout(QtGui.QWidget):
         super(Layout, self).__init__(parent)
 
         # ------------------------------------------------------
+        # Comparison Frames
+
+        self.f_frame = Frame(self, 'FOCUS')
+        focus_doc_area = self.f_frame.grid.textEdit
+        self.m_frame = Frame(self, 'MATCH')
+        match_doc_area = self.m_frame.grid.textEdit
+        self.m = match_util.DocumentMatchUtil(focus_doc_area, match_doc_area,
+                                    "../dirt_output/lorem__lorem2__CMP.json")
+
+        # ------------------------------------------------------
         # Result Table Frame
 
         result_table = Table()
@@ -297,8 +306,12 @@ class Layout(QtGui.QWidget):
 
         navigation_bar = QtGui.QHBoxLayout()
         previous_button = QtGui.QPushButton()
+        previous_button.setText('Previous')
+        previous_button.clicked.connect(self.m.prev_match)
         navigation_bar.addWidget(previous_button)
         next_button = QtGui.QPushButton()
+        next_button.setText('Next')
+        next_button.clicked.connect(self.m.next_match)
         navigation_bar.addWidget(next_button)
 
         vbox = QtGui.QVBoxLayout()
@@ -311,16 +324,7 @@ class Layout(QtGui.QWidget):
         table_frame.setLayout(vbox)
 
         # ------------------------------------------------------
-        # Comparison Frames
-
-        self.f_frame = Frame(self, 'FOCUS')
-        self.m_frame = Frame(self, 'MATCH')
-        self.m = document_match_util.DocumentMatchUtil(
-            "../dirt_output/lorem__lorem2__CMP.json")
-
-        # ------------------------------------------------------
         # Splitter Layout
-
         hbox = QtGui.QHBoxLayout(self)
 
         # Splits focus and match document
