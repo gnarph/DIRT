@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import string
-
-from dirtgui.document_util import doc_util as document_util
-from dirtgui.document_util import document_match_util as match_util
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+from dirtgui.document_util import doc_util as document_util
+from dirtgui.document_util import document_match_util as match_util
+from dirtgui.main_table import MainTable
 
 
 class RunningWindow(QMainWindow):
@@ -38,44 +38,54 @@ class MainWindow(QtGui.QMainWindow):
     Includes some shortcut keys
     """
 
-    def __init__(self):
-        QtGui.QMainWindow.__init__(self)
-
-        # ------------------------------------------------------
-        #initial window size
+    def _set_initial_window_size(self):
         self.resize(350, 250)
 
-        # ------------------------------------------------------
-        #set central Widget to fill out the rest space
+    def _fill_with_central_widget(self):
         self.lay_out = Layout(self)
         self.setCentralWidget(self.lay_out)
 
-        # ------------------------------------------------------
-        #file menu: open
+    def _setup_open_file_menu(self):
         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.display_focus)
+        return openFile
 
+    def _setup_exit_file_menu(self):
         # ------------------------------------------------------
-        #file menu: exit
+        # file menu: exit
         exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
         exit.setStatusTip('Exit application')
-
         # ------------------------------------------------------
         #exit when 'exit' is triggered
         self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+        return exit
 
-        self.statusBar()
-
+    def _attach_file_menu_items(self, exit, openFile):
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
         file.addAction(openFile)
         file.addAction(exit)
 
+    def _attach_toolbar_actions(self, exit):
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exit)
+
+    def __init__(self):
+        QtGui.QMainWindow.__init__(self)
+
+        self._set_initial_window_size()
+        self._fill_with_central_widget()
+
+        openFile = self._setup_open_file_menu()
+        exit = self._setup_exit_file_menu()
+
+        self.statusBar()
+
+        self._attach_file_menu_items(exit, openFile)
+        self._attach_toolbar_actions(exit)
 
     def display_focus(self):
         """
@@ -121,7 +131,8 @@ class MainWindow(QtGui.QMainWindow):
     def closeEvent(self, event):
         #message box: prevent accidently shut down
         reply = QtGui.QMessageBox.question(self,
-                                           'Warning', "Are you sure to quit?",
+                                           'Warning',
+                                           "Are you sure you want to quit?",
                                            QtGui.QMessageBox.Yes,
                                            QtGui.QMessageBox.No)
 
@@ -129,68 +140,6 @@ class MainWindow(QtGui.QMainWindow):
             event.accept()
         else:
             event.ignore()
-
-
-class Table(QtGui.QTableWidget):
-    """
-    Creates a table that self populates
-    """
-
-    def __init__(self, parent=None):
-        super(Table, self).__init__(parent)
-        self.setColumnCount(5)
-        self.populate()
-
-        headers = ['Match Title', 'Author(s)', 'Matches',
-                   'Match %', 'Location']
-
-        self.setColumnWidth(0,200)
-        self.setColumnWidth(1,200)
-        self.setColumnWidth(2,80)
-        self.setColumnWidth(3,80)
-        self.setColumnWidth(4,80)
-
-        self.horizontalHeader().setStretchLastSection(True)
-        self.setAlternatingRowColors(True)
-        self.setHorizontalHeaderLabels(headers)
-        self.setSortingEnabled(True)
-
-        # Header and cell fonts
-        font = QtGui.QFont('', 11, QtGui.QFont.Bold)
-        self.horizontalHeader().setFont(font)
-        cell_font = QtGui.QFont('', 11, QtGui.QFont.AnyStyle)
-        self.setFont(cell_font)
-
-    def populate(self):
-        """
-        Populates the table with elements
-        """
-
-        # Populates table with alphabetical lettering
-        self.setRowCount(10)
-
-        for i in range(10):
-            for j,l in enumerate(string.letters[:5]):
-                item = QtGui.QTableWidgetItem(l)
-                # Line below locks the item in the cells
-                item.setFlags(QtCore.Qt.ItemIsEnabled)
-                self.setItem(i, j, item)
-
-        # Populates table using a list by column then row
-        """
-        entries = []
-        with open('data') as input:
-            for line in input:
-                entries.append(line.strip().split('\t'))
-
-        tableWidget.setRowCount(len(entries))
-        tableWidget.setColumnCount(len(entries[0]))
-
-        for i, row in enumerate(entries):
-            for j, col in enumerate(row):
-                item = QTableWidgetItem(col)
-                tableWidget.setItem(i, j, item)
-        """
 
 
 class Grid(QtGui.QGridLayout):
@@ -344,7 +293,7 @@ class Layout(QtGui.QWidget):
         # ------------------------------------------------------
         # Result Table Frame
 
-        result_table = Table()
+        result_table = MainTable()
         table_label = QtGui.QLabel('RESULTS TABLE')
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
