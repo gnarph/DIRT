@@ -63,29 +63,31 @@ class SuffixArrayAllTest(unittest.TestCase):
         a, b = b, a
         self.assertRaises(should_raise, to_call, a, b)
 
-    # def test_acs_large(self):
-    #     """
-    #     Test on actual documents
-    #     """
-    #     f_one = 'test_data/full_test/one.txt'
-    #     f_two = 'test_data/full_test/two.txt'
-    #     f_three = 'test_data/full_test/three.txt'
-    #
-    #     one = file_ops.read_utf8(f_one)
-    #     two = file_ops.read_utf8(f_two)
-    #     three = file_ops.read_utf8(f_three)
-    #
-    #     one_two = app.acs_all(one, two)
-    #     one_three = app.acs_all(one, three)
-    #     two_three = app.acs_all(two, three)
-    #
-    #     # TODO: replace with check for static string
-    #     strip_a = strip_set(one_two)
-    #     strip_b = strip_set(one_three)
-    #     strip_c = strip_set(two_three)
-    #
-    #     in_all = strip_a & strip_b & strip_c
-    #     self.assertGreaterEqual(len(in_all), 1)
+    # Skip this test as it is prohibitively slow
+    @unittest.skip
+    def test_acs_large(self):
+        """
+        Test on actual documents
+        """
+        f_one = 'test_data/full_test/one.txt'
+        f_two = 'test_data/full_test/two.txt'
+        f_three = 'test_data/full_test/three.txt'
+
+        one = file_ops.read_utf8(f_one)
+        two = file_ops.read_utf8(f_two)
+        three = file_ops.read_utf8(f_three)
+
+        one_two = app.acs_all(one, two)
+        one_three = app.acs_all(one, three)
+        two_three = app.acs_all(two, three)
+
+        # TODO: replace with check for static string
+        strip_a = strip_set(one_two)
+        strip_b = strip_set(one_three)
+        strip_c = strip_set(two_three)
+
+        in_all = strip_a & strip_b & strip_c
+        self.assertGreaterEqual(len(in_all), 1)
 
 
 class SuffixArrayNoSubsTest(unittest.TestCase):
