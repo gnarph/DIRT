@@ -1,11 +1,30 @@
-__author__ = 'welcome vince'
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import sys
 import string
 from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+
+class RunningWindow(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self) 
+        layout = QHBoxLayout()
+        button = QPushButton('Click me to start!', self)
+        layout.addWidget(button)
+
+        self.widget = QWidget()
+        self.widget.setLayout(layout)
+
+        self.setCentralWidget(self.widget)
+        self.setWindowTitle("Win1")
+
+        self.connect(button, SIGNAL('clicked()'), self.newWindow)
+    def newWindow(self):
+        self.myOtherWindow = MainWindow()
+        self.myOtherWindow.show()
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -83,6 +102,15 @@ class MainWindow(QtGui.QMainWindow):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/temp1')
         f = open(fname, 'r')
 
+        '''from models.document import Document
+        doc = Document.from_json(fname)
+        data = doc.raw_body
+        data = data.decode('utf-8')
+        self.lay_out.m_frame.grid.textEdit.setText(data)
+        f.close()
+        return'''
+
+
         with f:
             data = f.read()
 
@@ -95,10 +123,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def closeEvent(self, event):
         #message box: prevent accidently shut down
-        reply = QtGui.QMessageBox.question(self,
-                                           'Warning', "Do you want to quit?",
-                                           QtGui.QMessageBox.Yes,
-                                           QtGui.QMessageBox.No)
+        reply = QtGui.QMessageBox.question(self, 'Warning', "Are you sure to quit? \n Like Very Very Sure???", QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
 
         if reply == QtGui.QMessageBox.Yes:
             event.accept()
@@ -326,8 +351,8 @@ class Layout(QtGui.QWidget):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    mw = MainWindow()
-    mw.setGeometry(200, 100, 1000, 800)
+    mw = RunningWindow()
+    mw.setGeometry(300, 300, 250, 150)
     mw.setWindowTitle('DIRT')
     mw.show()
     sys.exit(app.exec_())
