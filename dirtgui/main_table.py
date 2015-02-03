@@ -1,8 +1,6 @@
 import string
 from PyQt4 import QtGui, QtCore
 
-__author__ = 'gordlarson'
-
 
 class MainTable(QtGui.QTableWidget):
     """

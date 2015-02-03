@@ -44,32 +44,32 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.lay_out)
 
     def _setup_open_file_menu(self):
-        openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
-        openFile.setShortcut('Ctrl+O')
-        openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.display_focus)
-        return openFile
+        open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
+        open_file.setShortcut('Ctrl+O')
+        open_file.setStatusTip('Open new File')
+        open_file.triggered.connect(self.display_focus)
+        return open_file
 
     def _setup_exit_file_menu(self):
         # ------------------------------------------------------
         # file menu: exit
-        exit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
-        exit.setShortcut('Ctrl+Q')
-        exit.setStatusTip('Exit application')
+        ext = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
+        ext.setShortcut('Ctrl+Q')
+        ext.setStatusTip('Exit application')
         # ------------------------------------------------------
         #exit when 'exit' is triggered
-        self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
-        return exit
+        self.connect(ext, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+        return ext
 
-    def _attach_file_menu_items(self, exit, openFile):
+    def _attach_file_menu_items(self, ext, openFile):
         menubar = self.menuBar()
-        file = menubar.addMenu('&File')
-        file.addAction(openFile)
-        file.addAction(exit)
+        f = menubar.addMenu('&File')
+        f.addAction(openFile)
+        f.addAction(ext)
 
-    def _attach_toolbar_actions(self, exit):
+    def _attach_toolbar_actions(self, ext):
         toolbar = self.addToolBar('Exit')
-        toolbar.addAction(exit)
+        toolbar.addAction(ext)
 
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
@@ -78,12 +78,12 @@ class MainWindow(QtGui.QMainWindow):
         self._fill_with_central_widget()
 
         openFile = self._setup_open_file_menu()
-        exit = self._setup_exit_file_menu()
+        ext = self._setup_exit_file_menu()
 
         self.statusBar()
 
-        self._attach_file_menu_items(exit, openFile)
-        self._attach_toolbar_actions(exit)
+        self._attach_file_menu_items(ext, openFile)
+        self._attach_toolbar_actions(ext)
 
     def display_focus(self):
         """
@@ -93,7 +93,6 @@ class MainWindow(QtGui.QMainWindow):
         fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
                                                   '../dirt_example/')
 
-        passage_type = 'alpha_passage'
         self.lay_out.f_frame.grid.set_document(fname)
         self.lay_out.f_frame.grid.locationEdit.setText(fname)
 

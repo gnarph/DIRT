@@ -1,8 +1,6 @@
 from PyQt4 import QtGui
 from dirtgui.main_grid import MainGrid
 
-__author__ = 'gordlarson'
-
 
 class MainFrame(QtGui.QFrame):
     """

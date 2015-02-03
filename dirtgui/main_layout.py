@@ -12,12 +12,7 @@ class MainLayout(QtGui.QWidget):
     Theme: 'cleanlooks'
     """
 
-    def __init__(self, parent):
-        super(MainLayout, self).__init__(parent)
-
-        # ------------------------------------------------------
-        # Comparison Frames
-
+    def _setup_comparison_frames(self):
         self.f_frame = MainFrame(self, 'FOCUS')
         focus_doc_area = self.f_frame.grid.textEdit
         self.m_frame = MainFrame(self, 'MATCH')
@@ -25,19 +20,19 @@ class MainLayout(QtGui.QWidget):
         self.m = match_util.DocumentMatchUtil(focus_doc_area,
                                               match_doc_area, '')
 
-        # ------------------------------------------------------
-        # Result Table Frame
-
+    def _setup_result_table_frame(self):
         result_table = MainTable()
         table_label = QtGui.QLabel('RESULTS TABLE')
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
 
         navigation_bar = QtGui.QHBoxLayout()
+
         previous_button = QtGui.QPushButton()
         previous_button.setText('Previous')
         previous_button.clicked.connect(self.m.prev_match)
         navigation_bar.addWidget(previous_button)
+
         next_button = QtGui.QPushButton()
         next_button.setText('Next')
         next_button.clicked.connect(self.m.next_match)
@@ -47,13 +42,14 @@ class MainLayout(QtGui.QWidget):
         vbox.addLayout(navigation_bar)
         vbox.addWidget(table_label)
         vbox.addWidget(result_table)
+
         # vbox.setAlignment(QtCore.Qt.AlignCenter)
         table_frame = QtGui.QFrame(self)
         table_frame.setFrameShape(QtGui.QFrame.StyledPanel)
         table_frame.setLayout(vbox)
+        return table_frame
 
-        # ------------------------------------------------------
-        # Splitter Layout
+    def _setup_splitter_layouts(self, table_frame):
         hbox = QtGui.QHBoxLayout(self)
 
         # Splits focus and match document
@@ -70,3 +66,10 @@ class MainLayout(QtGui.QWidget):
         hbox.addWidget(splitter2)
         self.setLayout(hbox)
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('cleanlooks'))
+
+    def __init__(self, parent):
+        super(MainLayout, self).__init__(parent)
+
+        self._setup_comparison_frames()
+        table_frame = self._setup_result_table_frame()
+        self._setup_splitter_layouts(table_frame)
