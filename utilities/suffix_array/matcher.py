@@ -40,6 +40,8 @@ class MatchBlock(MB):
         return True
 
 
+# This is very slow, and as such is inaccessible
+# should add option for using it or something similar later
 def acs_all(a, b, separator='$'):
     """
     Find all substrings in both a and b
