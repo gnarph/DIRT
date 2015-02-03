@@ -97,8 +97,9 @@ def highlight_matches(text_area, cursor, match_file, passage):
                 # Select the matched text and apply the desired format
                 cursor.setPosition(index)
                 cursor.movePosition(QtGui.QTextCursor.NextCharacter,
-                                    QtGui.QTextCursor.KeepAnchor, pattern.__len__())
-                color.setNamedColor(colors[color_index % colors.__len__()])
+                                    QtGui.QTextCursor.KeepAnchor,
+                                    len(pattern))
+                color.setNamedColor(colors[color_index % len(colors)])
                 color_index += 1
                 text_format.setForeground(QtGui.QBrush(color))
                 cursor.mergeCharFormat(text_format)
@@ -182,7 +183,7 @@ def remove_highlight(doc, pos, length):
 
 def find_string(self):
     s = str(self.lineEdit.displayText())
-    length = s.__len__()
+    length = len(s)
     with codecs.open(self.focus, 'r', encoding='utf8') as focus:
         index = focus.read().lower().index(s)
         print s
