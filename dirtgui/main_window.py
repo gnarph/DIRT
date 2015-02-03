@@ -10,7 +10,7 @@ from PyQt4.QtGui import *
 
 class RunningWindow(QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self) 
+        QMainWindow.__init__(self)
         layout = QHBoxLayout()
         button = QPushButton('Click me to start!', self)
         layout.addWidget(button)
@@ -120,17 +120,20 @@ class MainWindow(QtGui.QMainWindow):
             #set the text to TextEdit
             self.lay_out.m_frame.grid.textEdit.setText(data)
 
-    
+
     def closeEvent(self, event):
         #message box: prevent accidently shut down
-        reply = QtGui.QMessageBox.question(self, 'Warning', "Are you sure to quit? \n Like Very Very Sure???", QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+        reply = QtGui.QMessageBox.question(self,
+                                           'Warning', "Are you sure to quit?",
+                                           QtGui.QMessageBox.Yes,
+                                           QtGui.QMessageBox.No)
 
         if reply == QtGui.QMessageBox.Yes:
             event.accept()
         else:
             event.ignore()
 
-            
+
 
 class Table(QtGui.QTableWidget):
     """
@@ -187,7 +190,7 @@ class Table(QtGui.QTableWidget):
 
         tableWidget.setRowCount(len(entries))
         tableWidget.setColumnCount(len(entries[0]))
-        
+
         for i, row in enumerate(entries):
             for j, col in enumerate(row):
                 item = QTableWidgetItem(col)
