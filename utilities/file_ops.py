@@ -1,10 +1,7 @@
 import codecs
 import os
 
-try:
-    import cjson
-except ImportError:
-    import json as cjson
+import cjson
 
 
 class DIRTFileException(Exception):

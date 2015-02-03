@@ -2,10 +2,7 @@
 import os
 import unittest
 
-try:
-    import cjson
-except ImportError:
-    import json as cjson
+import cjson
 import codecs
 import mock
 
