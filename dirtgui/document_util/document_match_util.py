@@ -17,7 +17,7 @@ class DocumentMatchUtil():
         self.alpha_list = []
         self.beta_list = []
         self.match_file = match_file
-        self.setup_matches_list(self.match_file)
+        # self.setup_matches_list(self.match_file)
 
     def setup_matches_list(self, match_file):
         with open(match_file) as json_file:
@@ -36,29 +36,7 @@ class DocumentMatchUtil():
         next match
         :return:
         """
-        prev_match_idx = self.match_idx
-        # focus_cursor = self.doc_focus.textCursor()
-        focus_cursor_pos = self.alpha_list[prev_match_idx]
-        length = self.json_data['matches'][prev_match_idx][
-            'alpha_passage'].__len__()
-        remove_highlight(self.focus_doc, focus_cursor_pos,
-                                       length)
-        # comp_cursor = self.doc_comparison.textCursor()
-        comp_cursor_pos = self.beta_list[prev_match_idx]
-        length = self.json_data['matches'][prev_match_idx][
-            'beta_passage'].__len__()
-        remove_highlight(self.match_doc, comp_cursor_pos,
-                                       length)
-
-        self.match_idx = (self.match_idx + 1) % self.number_of_matches
-        match_idx = self.match_idx
-        focus_cursor_pos = self.alpha_list[match_idx]
-        length = self.json_data['matches'][match_idx][
-            'alpha_passage'].__len__()
-        move_cursor(self.focus_doc, focus_cursor_pos, length)
-        comp_cursor_pos = self.beta_list[match_idx]
-        length = self.json_data['matches'][match_idx]['beta_passage'].__len__()
-        move_cursor(self.match_doc, comp_cursor_pos, length)
+        self.highlight_match(1)
 
     def prev_match(self):
         """
@@ -66,26 +44,30 @@ class DocumentMatchUtil():
         previous match
         :return:
         """
+        self.highlight_match(-1)
+
+    def highlight_match(self, direction):
         prev_match_idx = self.match_idx
         # focus_cursor = self.doc_focus.textCursor()
         focus_cursor_pos = self.alpha_list[prev_match_idx]
-        length = self.json_data['matches'][prev_match_idx][
-            'alpha_passage'].__len__()
+        length = len(self.json_data['matches'][prev_match_idx][
+            'alpha_passage'])
         remove_highlight(self.focus_doc, focus_cursor_pos, length)
         # comp_cursor = self.doc_comparison.textCursor()
         comp_cursor_pos = self.beta_list[prev_match_idx]
-        length = self.json_data['matches'][prev_match_idx][
-            'beta_passage'].__len__()
+        length = len(self.json_data['matches'][prev_match_idx][
+            'beta_passage'])
         remove_highlight(self.match_doc, comp_cursor_pos, length)
 
-        self.match_idx = (self.match_idx - 1) % self.number_of_matches
+        self.match_idx = (self.match_idx + direction) % self.number_of_matches
         match_idx = self.match_idx
         focus_cursor_pos = self.alpha_list[match_idx]
-        length = self.json_data['matches'][match_idx][
-            'alpha_passage'].__len__()
+        length = len(self.json_data['matches'][match_idx][
+            'alpha_passage'])
         move_cursor(self.focus_doc, focus_cursor_pos, length)
         comp_cursor_pos = self.beta_list[match_idx]
-        length = self.json_data['matches'][match_idx]['beta_passage'].__len__()
+        length = len(self.json_data['matches'][match_idx][
+            'beta_passage'])
         move_cursor(self.match_doc, comp_cursor_pos, length)
 
 
@@ -196,6 +178,7 @@ def remove_highlight(doc, pos, length):
     text_cursor.mergeCharFormat(text_format)
     doc.setTextCursor(text_cursor)
     doc.ensureCursorVisible()
+
 
 def find_string(self):
     s = str(self.lineEdit.displayText())
