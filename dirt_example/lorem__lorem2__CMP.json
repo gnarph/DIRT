@@ -1,0 +1,29 @@
+{"matches": [{"alpha_passage": "Lorem ipsum dolor sit amet  consectetur adipiscing elit 
+", "beta_indices": [0, 57], "beta_passage": "Lorem ipsum dolor sit amet  consectetur adipiscing elit 
+", "alpha_indices": [0, 57]}, {"alpha_passage": " imperdiet ac leo at fermentum 
+Sed sed tincidunt lorem  ", "beta_indices": [118, 177], "beta_passage": " imperdiet ac leo h at fermentum 
+Sed sed tincidunt lorem  ", "alpha_indices": [64, 121]}, {"alpha_passage": " quis mollis elit 
+Sed nisl magna  eleifend vel ante sed  cursus scelerisque justo 
+Sed eget nisi pulvinar eros lobortis aucto", "beta_indices": [196, 325], "beta_passage": " quis mollis elit 
+Sed nisl magna  eleifend vel ante sed  cursus scelerisque justo 
+Sed eget nisi pu무한한lvinar eros lobortis aucto", "alpha_indices": [120, 246]}, {"alpha_passage": "r 
+Mauris i", "beta_indices": [330, 341], "beta_passage": "r 
+Mauris i", "alpha_indices": [246, 257]}, {"alpha_passage": "d neque luctus  ", "beta_indices": [367, 383], "beta_passage": "d neque luctus  ", "alpha_indices": [257, 273]}, {"alpha_passage": " placerat enim a", "beta_indices": [396, 412], "beta_passage": " placerat enim a", "alpha_indices": [272, 288]}, {"alpha_passage": "t  vestibulum dolor 
+Donec orci ipsum  fermentum at odio id  blandit lobortis risus 
+Vestibulum 体中文版正式公开 预定于2015年发售 并一同公开了繁 aliquet nisl 
+Duis egestas ex nec enim hendrerit porttitor 
+Duis ac arcu aliquet  pulvinar odio vel  maximus mauris 
+", "beta_indices": [416, 657], "beta_passage": "t  vestibulum dolor 
+Donec orci ipsum  fermentum at odio id  blandit lobortis risus 
+Vestibulum 体中文版正式公开 预定于2015年发售 并一同公开了繁 aliquet nisl 
+Duis egestas ex nec enim hendrerit porttitor 
+Duis ac arcu aliquet  pulvinar odio vel  maximus mauris 
+", "alpha_indices": [288, 529]}, {"alpha_passage": "Nam eget lorem dapibus  maximuwhats odio vitae  pulvinar lorem 
+Sed congue dolor nunc  non imperdiet nulla eleifend sed 
+Quisque a", "beta_indices": [657, 792], "beta_passage": "Nam eget lorem dapibus  maximus 무한한 사막이다 odio vitae  pulvinar lorem 
+Sed congue dolor nunc  non imperdiet nulla eleifend sed 
+Quisque a", "alpha_indices": [533, 663]}, {"alpha_passage": "que a dirty tableac neque a ", "beta_indices": [796, 802], "beta_passage": "que a ", "alpha_indices": [658, 686]}, {"alpha_passage": " urna cursus dictum non non nulla 
+Cras id dolor mi 
+", "beta_indices": [831, 884], "beta_passage": " urna cursus dictum non non nulla 
+Cras id dolor mi 
+", "alpha_indices": [685, 738]}], "beta_doc": "dirt_preprocessed/lorem2.json", "alpha_doc": "dirt_preprocessed/lorem.json"}
