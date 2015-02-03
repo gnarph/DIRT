@@ -40,7 +40,7 @@ class MatchBlock(MB):
         return True
 
 
-def all_common_substrings(a, b, separator='$'):
+def acs_all(a, b, separator='$'):
     """
     Find all substrings in both a and b
     :param a: first string
@@ -103,3 +103,46 @@ def all_common_substrings(a, b, separator='$'):
 
     # Hack to get things working right now
     return [x.passage for x in all_subs]
+
+
+def acs_no_substrings(a, b, separator='$'):
+    """
+    all substrings in both a and b
+    such that no substring is a substring of another substring
+    """
+    if separator in a or separator in b:
+        raise InvalidCharacterException('Separator in input strings')
+    ab = u''.join([a, separator, b])
+    sa = tks.simple_kark_sort(ab)
+    lcp = tks.LCP(ab, sa)
+    sep = ab.index(separator)
+    all_subs = set()
+
+    for i, v in enumerate(lcp):
+        # Only want something that is present in
+        # a AND b, not a AND a or b AND b
+        passage = ab[sa[i]:sa[i] + v]
+        # Checking passage in a|b in case the passage occurs twice in
+        # a or twice in b
+        if (sa[i] > sep and passage in a) or (sa[i]+v <= sep and passage in b):
+            if passage not in all_subs:
+                to_remove = set()
+                take = True
+                for s in all_subs:
+                    # Current strategy aims to keep memory use
+                    # lower, could go faster if this filtering
+                    # was done after the fact
+                    if passage in s:
+                        # If we p is a substring of s
+                        # we don't want to take it so we can leave
+                        take = False
+                        break
+                    elif s in passage:
+                        # We want to remove s if it is superseded
+                        # by p
+                        to_remove.add(s)
+                all_subs -= to_remove
+                if take:
+                    all_subs.add(passage)
+
+    return all_subs

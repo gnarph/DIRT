@@ -43,8 +43,8 @@ class Comparator(base_comparator.BaseComparator):
         :return: list of singlet pairs
         """
         # Still need to remove/re-add spaces
-        matching_passages = suffix_apps.all_common_substrings(a=self.a,
-                                                              b=self.b)
+        matching_passages = suffix_apps.acs_no_substrings(a=self.a,
+                                                          b=self.b)
 
         blocks = self._find_matching_blocks(matching_passages)
         combined_blocks = self._combine_blocks(blocks)
