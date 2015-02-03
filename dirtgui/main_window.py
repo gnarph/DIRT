@@ -1,10 +1,11 @@
-__author__ = 'welcome vince'
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import sys
 import string
+import document_util.document_util as document_util
+import document_util.document_match_util as document_match_util
+
 from PyQt4 import QtGui, QtCore
 
 
@@ -20,7 +21,6 @@ class MainWindow(QtGui.QMainWindow):
         # ------------------------------------------------------
         #initial window size
         self.resize(350, 250)
-        self.setWindowTitle('mainwindow')
 
         # ------------------------------------------------------
         #set central Widget to fill out the rest space
@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow):
         openFile = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.display_comparison)
+        openFile.triggered.connect(self.display_focus)
 
         # ------------------------------------------------------
         #file menu: exit
@@ -54,43 +54,36 @@ class MainWindow(QtGui.QMainWindow):
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exit)
 
-
-    def display_comparison(self):
+    def display_focus(self):
         """
         Displays both the focus and match document
         """
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/test')
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
+                                                  '../dirt_preprocessed/pre')
 
-        f = open(fname, 'r')
-
-        with f:
-            data = f.read()
-
-            #to avoid garbage character when decoding other languages
-            data = data.decode('utf-8')
-
-            #set the text to TextEdit
-            self.lay_out.f_frame.grid.textEdit.setText(data)
-            self.lay_out.f_frame.grid.textEdit.setHtml(data)
+        match_file = self.lay_out.m.match_file
+        passage_type = 'alpha_passage'
+        self.lay_out.f_frame.grid.set_document(fname)
+        self.lay_out.f_frame.grid.locationEdit.setText(fname)
+        self.lay_out.f_frame.grid.highlight_document(match_file,
+                                                     passage_type)
 
         self.display_match()
-
 
     def display_match(self):
         """
         Displays the match document
         """
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/temp1')
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
+                                                  './dirt_preprocessed/pre')
         f = open(fname, 'r')
 
-        with f:
-            data = f.read()
-
-            #to avoid garbage character when decoding other languages
-            data = data.decode('utf-8')
-
-            #set the text to TextEdit
-            self.lay_out.m_frame.grid.textEdit.setText(data)
+        match_file = self.lay_out.m.match_file
+        passage_type = 'beta_passage'
+        self.lay_out.m_frame.grid.set_document(fname)
+        self.lay_out.m_frame.grid.locationEdit.setText(fname)
+        self.lay_out.m_frame.grid.highlight_document(match_file,
+                                                     passage_type)
 
 
 class Table(QtGui.QTableWidget):
@@ -123,7 +116,6 @@ class Table(QtGui.QTableWidget):
         cell_font = QtGui.QFont('', 11, QtGui.QFont.AnyStyle)
         self.setFont(cell_font)
 
-
     def populate(self):
         """
         Populates the table with elements
@@ -155,12 +147,13 @@ class Table(QtGui.QTableWidget):
                 tableWidget.setItem(i, j, item)
         """
 
+
 class Grid(QtGui.QGridLayout):
     """
     Creates a grid with Location, Title, Author, and Text READ-only display
     Param: self, title of the layout
     """
-    def __init__(self, parent, header):
+    def __init__(self, parent, header, passage_type):
         super(Grid, self).__init__(parent)
 
         # ------------------------------------------------------
@@ -172,6 +165,7 @@ class Grid(QtGui.QGridLayout):
         title = QtGui.QLabel('Title :')
         author = QtGui.QLabel('Author :')
         #text = QtGui.QLabel('Text :')
+        self.passage_type = passage_type
 
         # Label Fonts
         label_font = QtGui.QFont('', 11, QtGui.QFont.Bold)
@@ -202,10 +196,10 @@ class Grid(QtGui.QGridLayout):
         self.textEdit.setFont(display_font)
 
         # Set all text displays to READ-only
-        # QtGui.QTableWidget.locationEdit.setReadOnly(True)
-        # QtGui.QTableWidget.titleEdit.setReadOnly(True)
-        # QtGui.QTableWidget.authorEdit.setReadOnly(True)
-        self.textEdit.setReadOnly(True)
+        QtGui.QTableWidget.locationEdit.setReadOnly(True)
+        QtGui.QTableWidget.titleEdit.setReadOnly(True)
+        QtGui.QTableWidget.authorEdit.setReadOnly(True)
+        QtGui.QTableWidget.textEdit.setReadOnly(True)
 
         # Cursor
         #self.textEdit.setTextCursor(QtGui.QTextCursor())
@@ -231,7 +225,31 @@ class Grid(QtGui.QGridLayout):
 
         # Text
         #self.addWidget(text, 4, 0)
-        self.addWidget(QtGui.QTableWidget.textEdit, 4, 1, 10, 1)
+        self.addWidget(QtGui.QTableWidget.textEdit, 4, 0, 10, -1)
+
+        self.file_path = ''
+        self.match_file = ''
+
+    def set_document(self, doc):
+        """
+        Set the document for the grid text area
+        :param doc: file path of document
+        :return:
+        """
+        text_area = self.textEdit
+        document_util.open_doc(text_area, doc)
+
+    def highlight_document(self, match_data, passage):
+        """"
+        Highlight the matches in a document
+        :param match_data:
+        :param passage:
+        :return:
+        """
+        text_area = self.textEdit
+        cursor = self.textEdit.textCursor()
+        document_match_util.highlight_matches(text_area, cursor,
+                                              match_data, passage)
 
 
 class Frame(QtGui.QFrame):
@@ -242,17 +260,20 @@ class Frame(QtGui.QFrame):
     def __init__(self, parent, header):
         super(Frame, self).__init__(parent)
 
-        self.grid = Grid(self, header)
+        if header == 'FOCUS':
+            passage_type = 'alpha_passage'
+        elif header == 'MATCH':
+            passage_type = 'beta_passage'
+
+        self.grid = Grid(self, header, passage_type)
 
         self.setFrameShape(QtGui.QFrame.StyledPanel)
         self.setLayout(self.grid)
 
-
         # Set Location, Title, Author to be displayed
-        self.grid.locationEdit.setText('Here')
-        self.grid.titleEdit.setText('Hi')
-        self.grid.authorEdit.setText('Me')
-
+        # self.grid.locationEdit.setText('Here')
+        # self.grid.titleEdit.setText('Hi')
+        # self.grid.authorEdit.setText('Me')
 
 
 class Layout(QtGui.QWidget):
@@ -274,7 +295,14 @@ class Layout(QtGui.QWidget):
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
 
+        navigation_bar = QtGui.QHBoxLayout()
+        previous_button = QtGui.QPushButton()
+        navigation_bar.addWidget(previous_button)
+        next_button = QtGui.QPushButton()
+        navigation_bar.addWidget(next_button)
+
         vbox = QtGui.QVBoxLayout()
+        vbox.addLayout(navigation_bar)
         vbox.addWidget(table_label)
         vbox.addWidget(result_table)
         # vbox.setAlignment(QtCore.Qt.AlignCenter)
@@ -287,12 +315,13 @@ class Layout(QtGui.QWidget):
 
         self.f_frame = Frame(self, 'FOCUS')
         self.m_frame = Frame(self, 'MATCH')
+        self.m = document_match_util.DocumentMatchUtil(
+            "../dirt_output/lorem__lorem2__CMP.json")
 
         # ------------------------------------------------------
         # Splitter Layout
 
         hbox = QtGui.QHBoxLayout(self)
-
 
         # Splits focus and match document
         splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
@@ -310,12 +339,27 @@ class Layout(QtGui.QWidget):
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('cleanlooks'))
 
 
+def center_window(window):
+    desktop = QtGui.QApplication.desktop()
+    screen_dimension = QtCore.QRect(desktop.screenGeometry())
+    window_width = 700
+    window_height = 700
+    x = (screen_dimension.width() - window_width)/2
+    y = (screen_dimension.height() - window_height)/2
+    window.setGeometry(x, y, window_width, window_height)
+
+
+def setup_window(window):
+    center_window(window)
+    window.setWindowTitle('DIRT')
+    window.show()
+    window.raise_()
+
+
 def main():
     app = QtGui.QApplication(sys.argv)
     mw = MainWindow()
-    mw.setGeometry(200, 100, 1000, 800)
-    mw.setWindowTitle('DIRT')
-    mw.show()
+    setup_window(mw)
     sys.exit(app.exec_())
 
 

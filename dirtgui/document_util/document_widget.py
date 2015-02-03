@@ -9,6 +9,7 @@
 
 from PyQt4 import QtCore, QtGui
 import document_util
+import codecs
 import utilities.file_ops as file_ops
 
 try:
@@ -30,6 +31,19 @@ class Ui_DocumentPanel(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         self.setupUi(self)
 
+        #test
+        self.focus = "../dirt_preprocessed/pre/lorem.txt"
+        self.comp = "../dirt_preprocessed/pre/lorem2.txt"
+        self.match = "../dirt_output/lorem__lorem2__CMP.json"
+        self.set_focus_doc(self.focus, self.match)
+        self.set_comp_doc(self.comp, self.match)
+        self.number_of_matches = 0
+        self.match_idx = 0
+        self.json_data = ""
+        self.alpha_list = []
+        self.beta_list = []
+        self.setup_matches_list(self.match)
+
     def setupUi(self, documentPanel):
         documentPanel.setObjectName(_fromUtf8("DocumentPanel"))
         documentPanel.resize(588, 419)
@@ -38,9 +52,11 @@ class Ui_DocumentPanel(QtGui.QWidget):
         self.document_holder = QtGui.QHBoxLayout()
         self.document_holder.setObjectName(_fromUtf8("document_holder"))
         self.doc_focus = QtGui.QTextEdit(documentPanel)
+        self.doc_focus.setReadOnly(True)
         self.doc_focus.setObjectName(_fromUtf8("doc_focus"))
         self.document_holder.addWidget(self.doc_focus)
         self.doc_comparison = QtGui.QTextEdit(documentPanel)
+        self.doc_comparison.setReadOnly(True)
         self.doc_comparison.setObjectName(_fromUtf8("doc_comparison"))
         self.document_holder.addWidget(self.doc_comparison)
         self.verticalLayout.addLayout(self.document_holder)
@@ -62,25 +78,13 @@ class Ui_DocumentPanel(QtGui.QWidget):
         QtCore.QMetaObject.connectSlotsByName(documentPanel)
         documentPanel.setTabOrder(self.doc_focus, self.doc_comparison)
 
-        #test
-        focus = "../dirt_preprocessed/pre/lorem.txt"
-        comp = "../dirt_preprocessed/pre/lorem2.txt"
-        match = "../dirt_output/lorem__lorem2__CMP.json"
-        self.set_focus_doc(focus, match)
-        self.set_comp_doc(comp, match)
-        self.number_of_matches = 0
-        self.match_idx = 0
-        self.json_data = ""
-        self.alpha_list = []
-        self.beta_list = []
-        self.setup_matches(match)
-
     def retranslateUi(self, documentPanel):
         documentPanel.setWindowTitle(_translate("DocumentPanel", "Form", None))
         self.previous_button.setText(_translate("DocumentPanel", "Previous", None))
         self.next_button.setText(_translate("DocumentPanel", "Next", None))
         self.next_button.clicked.connect(self.next_match)
         self.previous_button.clicked.connect(self.prev_match)
+        self.lineEdit.editingFinished.connect(self.find_string)
 
     def set_focus_doc(self, doc, match_doc):
         """
@@ -90,7 +94,7 @@ class Ui_DocumentPanel(QtGui.QWidget):
         :param match_doc:
         :return:
         """
-        document_util.focus_doc(self.doc_focus, doc, match_doc)
+        document_util.open_doc(self.doc_focus, doc, match_doc)
 
     def set_comp_doc(self, comp_doc, match_doc):
         """
@@ -102,9 +106,10 @@ class Ui_DocumentPanel(QtGui.QWidget):
         """
         document_util.comp_doc(self.doc_comparison, comp_doc, match_doc)
 
-    def setup_matches(self, match_file):
+    def setup_matches_list(self, match_file):
         with open(match_file) as json_file:
             self.json_data = file_ops.read_json_utf8(json_file.name)
+            document_util.trim_whitespaces(self.json_data,"","")
             self.number_of_matches = len(self.json_data['matches'])
             for i in range (0, self.number_of_matches):
                 self.alpha_list.append(self.json_data['matches'][i][
@@ -114,27 +119,35 @@ class Ui_DocumentPanel(QtGui.QWidget):
             print self.alpha_list
             print self.beta_list
 
-
-    def next_match(self):
+    def next_match(self, idx):
         """
         Moves cursor and scrolls view of focus and comparison text area to
         next match
         :return:
         """
-        match_idx = self.match_idx
-
-        focus_cursor = self.doc_focus.textCursor()
-        # focus_cursor.position = self.alpha_list[match_idx]
-        focus_cursor.setPosition(self.alpha_list[match_idx],
-                                 QtGui.QTextCursor.KeepAnchor)
-        self.move_cursor(self.doc_focus, focus_cursor.position())
-
-        comp_cursor = self.doc_comparison.textCursor()
-        comp_cursor.setPosition(self.beta_list[match_idx],
-                                 QtGui.QTextCursor.KeepAnchor)
-        self.move_cursor(self.doc_comparison, comp_cursor.position())
+        prev_match_idx = self.match_idx
+        # focus_cursor = self.doc_focus.textCursor()
+        focus_cursor_pos = self.alpha_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'alpha_passage'].__len__()
+        document_util.remove_highlight(self.doc_focus, focus_cursor_pos,
+                                       length)
+        # comp_cursor = self.doc_comparison.textCursor()
+        comp_cursor_pos = self.beta_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'beta_passage'].__len__()
+        document_util.remove_highlight(self.doc_comparison, comp_cursor_pos,
+                                       length)
 
         self.match_idx = (self.match_idx + 1) % self.number_of_matches
+        match_idx = self.match_idx
+        focus_cursor_pos = self.alpha_list[match_idx]
+        length = self.json_data['matches'][match_idx][
+            'alpha_passage'].__len__()
+        document_util.move_cursor(self.doc_focus, focus_cursor_pos, length)
+        comp_cursor_pos = self.beta_list[match_idx]
+        length = self.json_data['matches'][match_idx]['beta_passage'].__len__()
+        document_util.move_cursor(self.doc_comparison, comp_cursor_pos, length)
 
     def prev_match(self):
         """
@@ -142,29 +155,35 @@ class Ui_DocumentPanel(QtGui.QWidget):
         previous match
         :return:
         """
-        match_idx = self.match_idx
-
-        focus_cursor = self.doc_focus.textCursor()
-        # focus_cursor.position = self.alpha_list[match_idx]
-        focus_cursor.setPosition(self.alpha_list[match_idx],
-                                 QtGui.QTextCursor.KeepAnchor)
-        self.move_cursor(self.doc_focus, focus_cursor.position())
-
-        comp_cursor = self.doc_comparison.textCursor()
-        comp_cursor.setPosition(self.beta_list[match_idx],
-                                 QtGui.QTextCursor.KeepAnchor)
-        self.move_cursor(self.doc_comparison, comp_cursor.position())
+        prev_match_idx = self.match_idx
+        # focus_cursor = self.doc_focus.textCursor()
+        focus_cursor_pos = self.alpha_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'alpha_passage'].__len__()
+        document_util.remove_highlight(self.doc_focus, focus_cursor_pos,
+                                       length)
+        # comp_cursor = self.doc_comparison.textCursor()
+        comp_cursor_pos = self.beta_list[prev_match_idx]
+        length = self.json_data['matches'][prev_match_idx][
+            'beta_passage'].__len__()
+        document_util.remove_highlight(self.doc_comparison, comp_cursor_pos,
+                                       length)
 
         self.match_idx = (self.match_idx - 1) % self.number_of_matches
+        match_idx = self.match_idx
+        focus_cursor_pos = self.alpha_list[match_idx]
+        length = self.json_data['matches'][match_idx][
+            'alpha_passage'].__len__()
+        document_util.move_cursor(self.doc_focus, focus_cursor_pos, length)
+        comp_cursor_pos = self.beta_list[match_idx]
+        length = self.json_data['matches'][match_idx]['beta_passage'].__len__()
+        document_util.move_cursor(self.doc_comparison, comp_cursor_pos, length)
 
-    def move_cursor(self, doc, pos):
-        """
-        Moves cursor
-        :param doc:
-        :param pos:
-        :return:
-        """
-        text_cursor = doc.textCursor()
-        text_cursor.setPosition(pos, QtGui.QTextCursor.MoveAnchor)
-        doc.setTextCursor(text_cursor)
-        doc.ensureCursorVisible()
+    def find_string(self):
+        s = str(self.lineEdit.displayText())
+        length = s.__len__()
+        with codecs.open(self.focus, 'r', encoding='utf8') as focus:
+            index = focus.read().lower().index(s)
+            print s
+            print index
+            index = focus.read().index(s)
