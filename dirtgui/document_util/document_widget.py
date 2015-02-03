@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Documents/LearnPythonTheHardWay/projects/QT_Dirt/Dirt_Document_Comparison.ui'
-#
-# Created: Wed Jan 21 12:30:39 2015
-#      by: PyQt4 UI code generator 4.11.1
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt4 import QtCore, QtGui
 from dirtgui.document_util import doc_util
 import codecs
@@ -25,6 +18,7 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_DocumentPanel(QtGui.QWidget):
     def __init__(self):
