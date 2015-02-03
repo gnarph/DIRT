@@ -81,15 +81,13 @@ class MainWindow(QtGui.QMainWindow):
         """
         Displays both the focus and match document
         """
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
-                                                  '../dirt_preprocessed/pre')
+        window_title = "Open Focus Document"
+        fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
+                                                  '../dirt_example/')
 
-        match_file = self.lay_out.m.match_file
         passage_type = 'alpha_passage'
         self.lay_out.f_frame.grid.set_document(fname)
         self.lay_out.f_frame.grid.locationEdit.setText(fname)
-        self.lay_out.f_frame.grid.highlight_document(match_file,
-                                                     passage_type)
 
         self.display_match()
 
@@ -97,15 +95,28 @@ class MainWindow(QtGui.QMainWindow):
         """
         Displays the match document
         """
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
-                                                  './dirt_preprocessed/pre')
+        window_title = "Open Match Document"
+        fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
+                                                  './dirt_example/')
 
-        match_file = self.lay_out.m.match_file
-        passage_type = 'beta_passage'
         self.lay_out.m_frame.grid.set_document(fname)
         self.lay_out.m_frame.grid.locationEdit.setText(fname)
-        self.lay_out.m_frame.grid.highlight_document(match_file,
-                                                     passage_type)
+
+        self.highlight_documents()
+
+    def highlight_documents(self):
+        window_title = "Open Json Match File"
+        fname = QtGui.QFileDialog.getOpenFileName(self, window_title, '')
+
+        match = self.lay_out.m
+        match.match_file = fname
+        match.setup_matches_list(fname)
+
+        print self.lay_out.m.match_file
+        alpha = 'alpha_passage'
+        beta = 'beta_passage'
+        self.lay_out.f_frame.grid.highlight_document(fname, alpha)
+        self.lay_out.m_frame.grid.highlight_document(fname, beta)
 
     def closeEvent(self, event):
         #message box: prevent accidently shut down
@@ -118,7 +129,6 @@ class MainWindow(QtGui.QMainWindow):
             event.accept()
         else:
             event.ignore()
-
 
 
 class Table(QtGui.QTableWidget):
@@ -328,8 +338,8 @@ class Layout(QtGui.QWidget):
         focus_doc_area = self.f_frame.grid.textEdit
         self.m_frame = Frame(self, 'MATCH')
         match_doc_area = self.m_frame.grid.textEdit
-        self.m = match_util.DocumentMatchUtil(focus_doc_area, match_doc_area,
-                                    "dirt_example/lorem__lorem2__CMP.json")
+        self.m = match_util.DocumentMatchUtil(focus_doc_area,
+                                              match_doc_area, '')
 
         # ------------------------------------------------------
         # Result Table Frame
