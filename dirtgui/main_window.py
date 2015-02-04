@@ -47,7 +47,7 @@ class MainWindow(QtGui.QMainWindow):
         open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         open_file.setShortcut('Ctrl+O')
         open_file.setStatusTip('Open new File')
-        open_file.triggered.connect(self.display_focus)
+        open_file.triggered.connect(self.display_match_set)
         return open_file
 
     def _setup_exit_file_menu(self):
@@ -85,13 +85,38 @@ class MainWindow(QtGui.QMainWindow):
         self._attach_file_menu_items(ext, openFile)
         self._attach_toolbar_actions(ext)
 
+    def display_match_set(self):
+        window_title = "Select match set"
+        file_name = QtGui.QFileDialog.getOpenFileName(self,
+                                                      window_title,
+                                                      '')
+        from models import match_set_factory
+        ms = match_set_factory.from_json(file_name)
+        focus = ms.alpha_doc
+        self.lay_out.f_frame.grid.set_document(focus.raw_file_name)
+        self.lay_out.f_frame.grid.locationEdit.setText(focus.file_name)
+        match = ms.beta_doc
+        self.lay_out.m_frame.grid.set_document(match.raw_file_name)
+        self.lay_out.m_frame.grid.locationEdit.setText(match.file_name)
+
+        # Load matches
+        match_layout = self.lay_out.m
+        match_layout.match_file = file_name
+        match_layout.setup_matches_list(file_name)
+
+        print self.lay_out.m.match_file
+        alpha = 'alpha_passage'
+        beta = 'beta_passage'
+        self.lay_out.f_frame.grid.highlight_document(file_name, alpha)
+        self.lay_out.m_frame.grid.highlight_document(file_name, beta)
+
     def display_focus(self):
         """
         Displays both the focus and match document
         """
         window_title = "Open Focus Document"
         fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
-                                                  '../dirt_example/')
+                                                  '')
 
         self.lay_out.f_frame.grid.set_document(fname)
         self.lay_out.f_frame.grid.locationEdit.setText(fname)
@@ -104,7 +129,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         window_title = "Open Match Document"
         fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
-                                                  './dirt_example/')
+                                                  '')
 
         self.lay_out.m_frame.grid.set_document(fname)
         self.lay_out.m_frame.grid.locationEdit.setText(fname)
