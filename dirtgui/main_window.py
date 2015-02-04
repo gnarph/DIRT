@@ -110,45 +110,6 @@ class MainWindow(QtGui.QMainWindow):
         self.lay_out.f_frame.grid.highlight_document(file_name, alpha)
         self.lay_out.m_frame.grid.highlight_document(file_name, beta)
 
-    def display_focus(self):
-        """
-        Displays both the focus and match document
-        """
-        window_title = "Open Focus Document"
-        fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
-                                                  '')
-
-        self.lay_out.f_frame.grid.set_document(fname)
-        self.lay_out.f_frame.grid.locationEdit.setText(fname)
-
-        self.display_match()
-
-    def display_match(self):
-        """
-        Displays the match document
-        """
-        window_title = "Open Match Document"
-        fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
-                                                  '')
-
-        self.lay_out.m_frame.grid.set_document(fname)
-        self.lay_out.m_frame.grid.locationEdit.setText(fname)
-
-        self.highlight_documents()
-
-    def highlight_documents(self):
-        window_title = "Open Json Match File"
-        fname = QtGui.QFileDialog.getOpenFileName(self, window_title, '')
-
-        match = self.lay_out.m
-        match.match_file = fname
-        match.setup_matches_list(fname)
-
-        print self.lay_out.m.match_file
-        alpha = 'alpha_passage'
-        beta = 'beta_passage'
-        self.lay_out.f_frame.grid.highlight_document(fname, alpha)
-        self.lay_out.m_frame.grid.highlight_document(fname, beta)
 
     def closeEvent(self, event):
         #message box: prevent accidently shut down
