@@ -133,7 +133,7 @@ class MainWindow(QtGui.QMainWindow):
         file_name = QtGui.QFileDialog.getOpenFileName(self,
                                                       window_title,
                                                       '')
-        self.display_match_set(file_name)
+        self.display_match_set(str(file_name))
 
     def closeEvent(self, event):
         #message box: prevent accidently shut down
