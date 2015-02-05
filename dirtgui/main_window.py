@@ -104,11 +104,12 @@ class MainWindow(QtGui.QMainWindow):
             ms_names = msi.set_names_for_focus(focus)
             to_view, accepted = SelectFromListDialog.get_selected(ms_names)
             if accepted:
+                # TODO: display first matchset
+                # allow others to be selected from the results table
                 self.display_match_set(to_view)
                 all_docs = msi.get_all_matched_documents(focus)
                 results = self.layout.results_table
                 results.populate(all_docs)
-
 
     def display_match_set(self, file_name):
         ms = match_set_factory.from_json(file_name)
