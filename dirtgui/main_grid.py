@@ -1,5 +1,6 @@
+import utilities.file_ops as file_ops
+
 from PyQt4 import QtGui, QtCore
-from dirtgui.document_util import doc_util as document_util
 from dirtgui.document_util import document_match_util as match_util
 
 
@@ -85,14 +86,16 @@ class MainGrid(QtGui.QGridLayout):
         self.file_path = ''
         self.match_file = ''
 
-    def set_document(self, doc):
+    def set_document(self, file_path):
         """
         Set the document for the grid text area
         :param doc: file path of document
         :return:
         """
-        text_area = self.textEdit
-        document_util.open_doc(text_area, doc)
+        passage = file_ops.read_utf8(file_path)
+
+        self.textEdit.clear()
+        self.textEdit.setText(passage)
 
     def highlight_document(self, match_data, passage):
         """"

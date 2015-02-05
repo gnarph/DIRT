@@ -1,5 +1,5 @@
-import codecs
 import utilities.file_ops as file_ops
+import models.match_set_index as match_set_index
 
 from PyQt4 import QtCore, QtGui
 
@@ -12,12 +12,17 @@ class DocumentMatchUtil():
         self.focus_doc = focus
         self.match_doc = match
         self.number_of_matches = 0
-        self.match_idx = 0
+        self.match_idx = -1
         self.json_data = ''
         self.alpha_list = []
         self.beta_list = []
         self.match_file = match_file
         # self.setup_matches_list(self.match_file)
+        self.match_set = match_set_index.MatchSetIndex("./dirt_example/")
+        self.match_set.set_names_for_focus("lorem")
+        print self.match_set.get_all_match_sets(
+            "./dirt_example/lorem__lorem2__CMP.json")
+        # TODO: make a first and last index
 
     def setup_matches_list(self, match_file):
         with open(match_file) as json_file:
@@ -47,7 +52,7 @@ class DocumentMatchUtil():
         self.highlight_match(-1)
 
     def highlight_match(self, direction):
-        prev_match_idx = self.match_idx
+        prev_match_idx = self.match_idx % self.number_of_matches
         # focus_cursor = self.doc_focus.textCursor()
         focus_cursor_pos = self.alpha_list[prev_match_idx]
         length = len(self.json_data['matches'][prev_match_idx][
@@ -62,13 +67,11 @@ class DocumentMatchUtil():
         self.match_idx = (self.match_idx + direction) % self.number_of_matches
         match_idx = self.match_idx
         focus_cursor_pos = self.alpha_list[match_idx]
-        length = len(self.json_data['matches'][match_idx][
-            'alpha_passage'])
-        move_cursor(self.focus_doc, focus_cursor_pos, length)
+        length = len(self.json_data['matches'][match_idx]['alpha_passage'])
+        move_cursor(self.focus_doc, focus_cursor_pos, length, direction)
         comp_cursor_pos = self.beta_list[match_idx]
-        length = len(self.json_data['matches'][match_idx][
-            'beta_passage'])
-        move_cursor(self.match_doc, comp_cursor_pos, length)
+        length = len(self.json_data['matches'][match_idx]['beta_passage'])
+        move_cursor(self.match_doc, comp_cursor_pos, length, direction)
 
 
 def highlight_matches(text_area, cursor, match_file, passage):
@@ -134,9 +137,12 @@ def trim_whitespace(entry, indices, passage):
     if entry[passage].startswith(" "):
         entry[passage] = entry[passage][1:]
         entry[indices][0] += 1
+    if entry[passage].endswith("\n"):
+        entry[passage] = entry[passage][:-2]
+        entry[indices][1] -= 2
 
 
-def move_cursor(doc, pos, length):
+def move_cursor(doc, pos, length, direction):
     """
     Moves cursor
     :param doc: QTextEdit
@@ -149,11 +155,15 @@ def move_cursor(doc, pos, length):
     text_format = QtGui.QTextCharFormat()
     text_format.setBackground(QtGui.QBrush(color))
     text_cursor = doc.textCursor()
-    if pos == 0:
-        doc.moveCursor(QtGui.QTextCursor.Start, QtGui.QTextCursor.KeepAnchor)
-    text_cursor.setPosition(pos)
-    text_cursor.movePosition(QtGui.QTextCursor.NextCharacter,
-                             QtGui.QTextCursor.KeepAnchor, length)
+    if direction == 1 or direction == -1:
+        text_cursor.setPosition(pos)
+        text_cursor.movePosition(QtGui.QTextCursor.NextCharacter,
+                                 QtGui.QTextCursor.KeepAnchor, length)
+    if direction == -1 or pos == 0:
+        text_cursor.setPosition(pos + length)
+        text_cursor.movePosition(QtGui.QTextCursor.PreviousCharacter,
+                                 QtGui.QTextCursor.KeepAnchor, length)
+
     text_cursor.mergeCharFormat(text_format)
     doc.setTextCursor(text_cursor)
 
@@ -184,9 +194,9 @@ def remove_highlight(doc, pos, length):
 def find_string(self):
     s = str(self.lineEdit.displayText())
     length = len(s)
-    with codecs.open(self.focus, 'r', encoding='utf8') as focus:
-        index = focus.read().lower().index(s)
-        print s
-        print index
-        index = focus.read().index(s)
+    # with codecs.open(self.focus, 'r', encoding='utf8') as focus:
+    #     index = focus.read().lower().index(s)
+    #     print s
+    #     print index
+    #     index = focus.read().index(s)
 

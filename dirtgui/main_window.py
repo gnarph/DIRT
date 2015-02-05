@@ -127,6 +127,7 @@ class MainWindow(QtGui.QMainWindow):
         match_layout = self.layout.m
         match_layout.match_file = file_name
         match_layout.setup_matches_list(file_name)
+
         alpha = 'alpha_passage'
         beta = 'beta_passage'
         self.layout.f_frame.grid.highlight_document(file_name, alpha)
