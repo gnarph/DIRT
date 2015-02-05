@@ -9,6 +9,7 @@ from PyQt4.QtGui import *
 
 from dirtgui.main_layout import MainLayout
 from models.match_set_index import MatchSetIndex
+from dirtgui.focus_from_match_index_dialog import FocusIndexSelectDialog
 
 
 class RunningWindow(QMainWindow):
@@ -98,6 +99,8 @@ class MainWindow(QtGui.QMainWindow):
         names = msi.get_all_file_names()
         print names
         # TODO: show something
+        focus, accepted = FocusIndexSelectDialog.get_focus(msi)
+        print focus
 
     def display_match_set(self):
         window_title = "Select match set"
