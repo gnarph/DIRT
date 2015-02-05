@@ -7,6 +7,7 @@ def respace(body, stripped_body, passages):
     for p in passages:
         offset = stripped_body.index(p)
         np = add_spaces(spaces, offset, p)
+        np = np.strip(u' \t\r\n')
         new_passages.append(np)
     return new_passages
 
@@ -43,7 +44,9 @@ def add_spaces(space_locs, offset, target):
 
     chunks = []
     for point in insert_points:
-        chunks += [target[last:point]]
+        if last != point:
+            chunks += [target[last:point]]
         last = point
-    chunks += [target[last:]]
+    if target[last:]:
+        chunks += [target[last:]]
     return u' '.join(chunks)
