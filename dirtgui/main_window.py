@@ -101,19 +101,24 @@ class MainWindow(QtGui.QMainWindow):
         focus, accepted = SelectFromListDialog.get_selected(names)
         if accepted:
             # chose a focus document
-            applicable_ms = msi.set_names_for_focus(focus)
-            to_view, accepted = SelectFromListDialog.get_selected(applicable_ms)
+            ms_names = msi.set_names_for_focus(focus)
+            to_view, accepted = SelectFromListDialog.get_selected(ms_names)
             if accepted:
                 self.display_match_set(to_view)
 
     def display_match_set(self, file_name):
         ms = match_set_factory.from_json(file_name)
+        if file_name not in ms.alpha_doc.raw_file_name:
+            ms.swap_alpha_beta()
+
         focus = ms.alpha_doc
         self.lay_out.f_frame.grid.set_document(focus.raw_file_name)
         self.lay_out.f_frame.grid.locationEdit.setText(focus.file_name)
+
         match = ms.beta_doc
         self.lay_out.m_frame.grid.set_document(match.raw_file_name)
         self.lay_out.m_frame.grid.locationEdit.setText(match.file_name)
+
         # Load matches
         match_layout = self.lay_out.m
         match_layout.match_file = file_name
