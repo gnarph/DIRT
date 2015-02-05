@@ -16,7 +16,7 @@ class MainGrid(QtGui.QGridLayout):
 
         # Labels
         header = QtGui.QLabel(header)
-        location = QtGui.QLabel('Location :')
+        location = QtGui.QLabel('Path :')
         title = QtGui.QLabel('Title :')
         author = QtGui.QLabel('Author :')
         #text = QtGui.QLabel('Text :')
@@ -66,7 +66,7 @@ class MainGrid(QtGui.QGridLayout):
         self.setSpacing(10)
         self.addWidget(header, 0, 1)
 
-        # Location
+        # Path
         self.addWidget(location, 1, 0)
         self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
 
