@@ -8,6 +8,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from dirtgui.main_layout import MainLayout
+from dirtgui.select_from_list_dialog import SelectFromListDialog
+from models.match_set_index import MatchSetIndex
+from models import match_set_factory
 
 
 class RunningWindow(QMainWindow):
@@ -26,8 +29,8 @@ class RunningWindow(QMainWindow):
         self.connect(button, SIGNAL('clicked()'), self.newWindow)
 
     def newWindow(self):
-        self.myOtherWindow = MainWindow()
-        self.myOtherWindow.show()
+        self.other_window = MainWindow()
+        self.other_window.show()
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -44,11 +47,15 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.lay_out)
 
     def _setup_open_file_menu(self):
-        open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
+        open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open MatchSet', self)
         open_file.setShortcut('Ctrl+O')
         open_file.setStatusTip('Open new File')
-        open_file.triggered.connect(self.display_focus)
-        return open_file
+        open_file.triggered.connect(self.select_match_set)
+
+        open_index = QtGui.QAction(QtGui.QIcon('nope.png'), 'Open MatchIndex', self)
+        open_index.setStatusTip('Open matchindex')
+        open_index.triggered.connect(self.select_match_index)
+        return open_file, open_index
 
     def _setup_exit_file_menu(self):
         # ------------------------------------------------------
@@ -61,11 +68,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(ext, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
         return ext
 
-    def _attach_file_menu_items(self, ext, openFile):
-        menubar = self.menuBar()
-        f = menubar.addMenu('&File')
-        f.addAction(openFile)
-        f.addAction(ext)
+    def _attach_file_menu_items(self, *args):
+        menu_bar = self.menuBar()
+        f = menu_bar.addMenu('&File')
+        for a in args:
+            f.addAction(a)
 
     def _attach_toolbar_actions(self, ext):
         toolbar = self.addToolBar('Exit')
@@ -77,53 +84,56 @@ class MainWindow(QtGui.QMainWindow):
         self._set_initial_window_size()
         self._fill_with_central_widget()
 
-        openFile = self._setup_open_file_menu()
+        open_file, open_index = self._setup_open_file_menu()
         ext = self._setup_exit_file_menu()
 
         self.statusBar()
 
-        self._attach_file_menu_items(ext, openFile)
+        self._attach_file_menu_items(ext, open_file, open_index)
         self._attach_toolbar_actions(ext)
 
-    def display_focus(self):
-        """
-        Displays both the focus and match document
-        """
-        window_title = "Open Focus Document"
-        fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
-                                                  '../dirt_example/')
+    def select_match_index(self):
+        window_title = "Select match index"
+        dir_name = QtGui.QFileDialog.getExistingDirectory(self,
+                                                          window_title)
+        msi = MatchSetIndex(str(dir_name))
+        names = msi.get_all_file_names()
+        focus, accepted = SelectFromListDialog.get_selected(names)
+        if accepted:
+            # chose a focus document
+            ms_names = msi.set_names_for_focus(focus)
+            to_view, accepted = SelectFromListDialog.get_selected(ms_names)
+            if accepted:
+                self.display_match_set(to_view)
 
-        self.lay_out.f_frame.grid.set_document(fname)
-        self.lay_out.f_frame.grid.locationEdit.setText(fname)
+    def display_match_set(self, file_name):
+        ms = match_set_factory.from_json(file_name)
+        if file_name not in ms.alpha_doc.raw_file_name:
+            ms.swap_alpha_beta()
 
-        self.display_match()
+        focus = ms.alpha_doc
+        self.lay_out.f_frame.grid.set_document(focus.raw_file_name)
+        self.lay_out.f_frame.grid.locationEdit.setText(focus.file_name)
 
-    def display_match(self):
-        """
-        Displays the match document
-        """
-        window_title = "Open Match Document"
-        fname = QtGui.QFileDialog.getOpenFileName(self, window_title,
-                                                  './dirt_example/')
+        match = ms.beta_doc
+        self.lay_out.m_frame.grid.set_document(match.raw_file_name)
+        self.lay_out.m_frame.grid.locationEdit.setText(match.file_name)
 
-        self.lay_out.m_frame.grid.set_document(fname)
-        self.lay_out.m_frame.grid.locationEdit.setText(fname)
-
-        self.highlight_documents()
-
-    def highlight_documents(self):
-        window_title = "Open Json Match File"
-        fname = QtGui.QFileDialog.getOpenFileName(self, window_title, '')
-
-        match = self.lay_out.m
-        match.match_file = fname
-        match.setup_matches_list(fname)
-
-        print self.lay_out.m.match_file
+        # Load matches
+        match_layout = self.lay_out.m
+        match_layout.match_file = file_name
+        match_layout.setup_matches_list(file_name)
         alpha = 'alpha_passage'
         beta = 'beta_passage'
-        self.lay_out.f_frame.grid.highlight_document(fname, alpha)
-        self.lay_out.m_frame.grid.highlight_document(fname, beta)
+        self.lay_out.f_frame.grid.highlight_document(file_name, alpha)
+        self.lay_out.m_frame.grid.highlight_document(file_name, beta)
+
+    def select_match_set(self):
+        window_title = "Select match set"
+        file_name = QtGui.QFileDialog.getOpenFileName(self,
+                                                      window_title,
+                                                      '')
+        self.display_match_set(file_name)
 
     def closeEvent(self, event):
         #message box: prevent accidently shut down
@@ -161,7 +171,3 @@ def main():
     mw = MainWindow()
     setup_window(mw)
     sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    main()
