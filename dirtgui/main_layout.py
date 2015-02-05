@@ -21,7 +21,7 @@ class MainLayout(QtGui.QWidget):
                                               match_doc_area, '')
 
     def _setup_result_table_frame(self):
-        result_table = MainTable()
+        self.results_table = MainTable()
         table_label = QtGui.QLabel('RESULTS TABLE')
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -41,7 +41,7 @@ class MainLayout(QtGui.QWidget):
         vbox = QtGui.QVBoxLayout()
         vbox.addLayout(navigation_bar)
         vbox.addWidget(table_label)
-        vbox.addWidget(result_table)
+        vbox.addWidget(self.results_table)
 
         # vbox.setAlignment(QtCore.Qt.AlignCenter)
         table_frame = QtGui.QFrame(self)
@@ -69,6 +69,7 @@ class MainLayout(QtGui.QWidget):
 
     def __init__(self, parent):
         super(MainLayout, self).__init__(parent)
+        self.results_table = None
 
         self._setup_comparison_frames()
         table_frame = self._setup_result_table_frame()

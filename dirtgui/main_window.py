@@ -43,8 +43,8 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(350, 250)
 
     def _fill_with_central_widget(self):
-        self.lay_out = MainLayout(self)
-        self.setCentralWidget(self.lay_out)
+        self.layout = MainLayout(self)
+        self.setCentralWidget(self.layout)
 
     def _setup_open_file_menu(self):
         open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open MatchSet', self)
@@ -105,6 +105,10 @@ class MainWindow(QtGui.QMainWindow):
             to_view, accepted = SelectFromListDialog.get_selected(ms_names)
             if accepted:
                 self.display_match_set(to_view)
+                all_docs = msi.get_all_matched_documents(focus)
+                results = self.layout.results_table
+                results.populate(all_docs)
+
 
     def display_match_set(self, file_name):
         ms = match_set_factory.from_json(file_name)
@@ -112,21 +116,21 @@ class MainWindow(QtGui.QMainWindow):
             ms.swap_alpha_beta()
 
         focus = ms.alpha_doc
-        self.lay_out.f_frame.grid.set_document(focus.raw_file_name)
-        self.lay_out.f_frame.grid.locationEdit.setText(focus.file_name)
+        self.layout.f_frame.grid.set_document(focus.raw_file_name)
+        self.layout.f_frame.grid.locationEdit.setText(focus.file_name)
 
         match = ms.beta_doc
-        self.lay_out.m_frame.grid.set_document(match.raw_file_name)
-        self.lay_out.m_frame.grid.locationEdit.setText(match.file_name)
+        self.layout.m_frame.grid.set_document(match.raw_file_name)
+        self.layout.m_frame.grid.locationEdit.setText(match.file_name)
 
         # Load matches
-        match_layout = self.lay_out.m
+        match_layout = self.layout.m
         match_layout.match_file = file_name
         match_layout.setup_matches_list(file_name)
         alpha = 'alpha_passage'
         beta = 'beta_passage'
-        self.lay_out.f_frame.grid.highlight_document(file_name, alpha)
-        self.lay_out.m_frame.grid.highlight_document(file_name, beta)
+        self.layout.f_frame.grid.highlight_document(file_name, alpha)
+        self.layout.m_frame.grid.highlight_document(file_name, beta)
 
     def select_match_set(self):
         window_title = "Select match set"

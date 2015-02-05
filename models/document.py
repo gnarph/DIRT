@@ -88,3 +88,13 @@ class Document(object):
         if self.raw_file_name != other.raw_file_name:
             return False
         return True
+
+    def get_metadata(self):
+        # TODO: hack, so fix, should move to match set
+        expected = ['title', 'author', 'ml', 'mp']
+        result = []
+        for ex in expected:
+            value = self.metadata.get(ex, '')
+            result.append(value)
+        result.append(self.file_name)
+        return result

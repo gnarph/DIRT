@@ -56,5 +56,15 @@ class MatchSetIndex(object):
             names.add(beta_name)
         return names
 
+    def get_all_matched_documents(self, focus_name):
+        all_match_sets = self.get_all_match_sets(focus_name)
+        docs = set()
+        for ms in all_match_sets:
+            if focus_name not in ms.alpha_doc.file_name:
+                docs.add(ms.alpha_doc)
+            else:
+                docs.add(ms.beta_doc)
+        return docs
+
 
 

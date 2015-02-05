@@ -37,42 +37,21 @@ class MainTable(QtGui.QTableWidget):
 
         self._set_fonts()
 
-        # Code to populate table
-
-        self.matches = []
-        self.entries = []
-        self.match_list(fname, self.matches)
-        self.datalist(self.matches, self.entries)
-        self.populate(self.entries)
-
     def populate(self, entries):
         """
         Populates the table with elements
         """
-
-        # # Populates table with alphabetical lettering
-        # self.setRowCount(10)
-        #
-        # for i in range(10):
-        #     for j,l in enumerate(string.letters[:5]):
-        #         item = QtGui.QTableWidgetItem(l)
-        #         # Line below locks the item in the cells
-        #         item.setFlags(QtCore.Qt.ItemIsEnabled)
-        #         self.setItem(i, j, item)
-
-        # Populates table using a list by column then row
-
-        # entries = []
-        # with open('data') as input:
-        #     for line in input:
-        #         entries.append(line.strip().split('\t'))
-
+        cols = 5
         self.setRowCount(len(entries))
-        # self.setColumnCount(len(entries[0]))
+        self.setColumnCount(cols)
 
-        for i, row in enumerate(entries):
-            for j, col in range(5):
-                item = QtGui.QTableWidgetItem(col)
+        for i, entry in enumerate(entries):
+            # TODO: this should be a match set to get all
+            #       applicable metadata
+            fields = entry.get_metadata()
+            for j, field in enumerate(fields):
+                item = QtGui.QTableWidgetItem(j)
+                item.setText(unicode(field))
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.setItem(i, j, item)
 
@@ -96,27 +75,3 @@ class MainTable(QtGui.QTableWidget):
         match_percent = 'match percentage'
         path = 'path'
         entries.extend([title, author, match_len, match_percent, path])
-
-    def match_list(self, focus, matches):
-        """
-        Retrieves all matches of the focus document
-        and appends them to a list
-        :param focus: focus document name
-        :param matches: list to store the matches
-        """
-        match = self.lay_out.m
-        match.match_file = fname
-        match.setup_matches_list(focus)
-
-        matches.extend([])
-
-
-    def data_list(self, matches, entries):
-        """
-        Appends the metadata from all matches to a list
-        :param matches: List of all matches
-        :param entries: List of metadata
-        """
-
-        for match in len(matches):
-            self.add_data(match, entries)
