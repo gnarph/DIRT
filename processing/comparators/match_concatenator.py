@@ -5,17 +5,6 @@ MatchTuple = namedtuple(typename='MatchTuple',
                         field_names=['a', 'b', 'a_end', 'b_end'])
 
 
-def difflib_blocks_to_match_tuples(blocks):
-    tuples = []
-    for tup in blocks:
-        mt = MatchTuple(a=tup.a,
-                        b=tup.b,
-                        a_end=tup.a+tup.size,
-                        b_end=tup.b+tup.size)
-        tuples.append(mt)
-    return tuples
-
-
 class MatchConcatenator(object):
     """
     Class for combining match blocks based on their locations
