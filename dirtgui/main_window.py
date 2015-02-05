@@ -11,7 +11,7 @@ from dirtgui.main_layout import MainLayout
 from dirtgui.select_from_list_dialog import SelectFromListDialog
 from models.match_set_index import MatchSetIndex
 from models import match_set_factory
-
+from dirtgui.main_table import MainTable
 
 class RunningWindow(QMainWindow):
     def __init__(self):
