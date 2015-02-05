@@ -1,7 +1,5 @@
 import string
 from PyQt4 import QtGui, QtCore
-from dirtgui.main_window import MainWindow
-
 
 class MainTable(QtGui.QTableWidget):
     """
