@@ -23,16 +23,15 @@ class Comparator(base_comparator.BaseComparator):
                  they appear in document a
         """
         blocks = set()
-        for a_passage, b_passage in matching_passages:
-            a_matches = re.finditer(a_passage, self.a)
+        for passage in matching_passages:
+            a_matches = re.finditer(passage, self.a_strip)
             a_starts = (i.start() for i in a_matches)
-            b_matches = re.finditer(b_passage, self.b)
+            b_matches = re.finditer(passage, self.b_strip)
             b_starts = (j.start() for j in b_matches)
 
-            l_a = len(a_passage)
-            l_b = len(b_passage)
+            l = len(passage)
             for i, j in itertools.product(a_starts, b_starts):
-                new_block = concatenator.MatchTuple(i, j, i+l_a, j+l_b)
+                new_block = concatenator.MatchTuple(i, j, i+l, j+l)
                 blocks.add(new_block)
         # Concerned that sorting on a may adversely impact
         # concat on the b side
@@ -41,14 +40,9 @@ class Comparator(base_comparator.BaseComparator):
 
     def get_matching_passages(self):
         # Still need to remove/re-add spaces
-        a_strip = self.a.replace(' ', '')
-        b_strip = self.b.replace(' ', '')
-        matching_passages = suffix_apps.acs_no_substrings(a=a_strip,
-                                                          b=b_strip)
-        a_passages = spacer.respace(self.a, a_strip, matching_passages)
-        b_passages = spacer.respace(self.b, b_strip, matching_passages)
-        passage_pairs = zip(a_passages, b_passages)
-        return passage_pairs
+        matching_passages = suffix_apps.acs_no_substrings(a=self.a_strip,
+                                                          b=self.b_strip)
+        return matching_passages
 
     def compare(self):
         """
@@ -58,8 +52,14 @@ class Comparator(base_comparator.BaseComparator):
         matching_passages = self.get_matching_passages()
 
         blocks = self._find_matching_blocks(matching_passages)
+
+        # Concatenate blocks by gap length
         combined_blocks = self._combine_blocks(blocks)
+
+        # Filter blocks by length
         filtered_blocks = self._filter_blocks(combined_blocks)
+
+        # Get actual blocks
         passage_blocks = self._tuples_to_passages(filtered_blocks)
 
         return self._get_singlet_pairs(passage_blocks)
@@ -92,13 +92,28 @@ class Comparator(base_comparator.BaseComparator):
         :return: list of tuples containing the passage
                  in a and in b
         """
+        # a_passages = spacer.respace(self.a, a_strip, matching_passages)
+        # b_passages = spacer.respace(self.b, b_strip, matching_passages)
+        # passage_pairs = zip(a_passages, b_passages)
+        # return passage_pairs
+
+        a_spaces = spacer.space_locations(self.a)
+        b_spaces = spacer.space_locations(self.b)
         passages = []
         for tup in filtered_blocks:
-            a = self.a[tup.a:tup.a_end]
-            b = self.b[tup.b:tup.b_end]
+            a = self.a_strip[tup.a:tup.a_end]
+            b = self.b_strip[tup.b:tup.b_end]
+
+            na = spacer.add_spaces(a_spaces, tup.a, a)
+            nb = spacer.add_spaces(b_spaces, tup.b, b)
             # TODO: consider namedtuple for clarity
-            passages.append((a, b))
+            passages.append((na, nb))
         return passages
+
+    @staticmethod
+    def _pass_gen(strip_body, blocks):
+        for b in blocks:
+            yield strip_body[b.tup]
 
     @staticmethod
     def _get_singlet_pairs(passage_blocks):

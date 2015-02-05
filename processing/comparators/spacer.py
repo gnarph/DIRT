@@ -1,17 +1,6 @@
 from array import array
 
 
-def respace(body, stripped_body, passages):
-    spaces = space_locations(body)
-    new_passages = []
-    for p in passages:
-        offset = stripped_body.index(p)
-        np = add_spaces(spaces, offset, p)
-        np = np.strip(u' \t\r\n')
-        new_passages.append(np)
-    return new_passages
-
-
 def space_locations(s):
     """
     Get the locations to insert spaces to restore original string
@@ -42,11 +31,15 @@ def add_spaces(space_locs, offset, target):
     last = 0
     insert_points = (i - offset for i in space_locs if offset <= i <= end)
 
+    started = False
     chunks = []
     for point in insert_points:
-        if last != point:
+        # Avoid spaces at the start
+        if started or last != point:
+            started = True
             chunks += [target[last:point]]
         last = point
+    # Avoid a space at the end
     if target[last:]:
         chunks += [target[last:]]
     return u' '.join(chunks)
