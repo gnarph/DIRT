@@ -4,6 +4,7 @@ Module for handling a directory of reports
 
 from models import match_set_factory
 from utilities import path
+from utilities import file_ops
 
 
 class MatchSetIndex(object):
@@ -40,4 +41,20 @@ class MatchSetIndex(object):
                 ms.swap_alpha_beta()
 
         return all_sets
+
+    def get_all_file_names(self):
+        names = set()
+        files = path.iter_files_in(self.out_dir)
+        for full_path in files:
+            file_name = file_ops.get_file_name_only(full_path)
+            # Bit of hack
+            # regex probably better
+            split = file_name.split('__')
+            alpha_name = split[0]
+            beta_name = split[1]
+            names.add(alpha_name)
+            names.add(beta_name)
+        return names
+
+
 
