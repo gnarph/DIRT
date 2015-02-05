@@ -7,6 +7,7 @@ import processing.comparators.base_comparator as base_comparator
 from models.match_singlet import MatchSinglet
 import processing.comparators.match_concatenator as concatenator
 from utilities.suffix_array import matcher as suffix_apps
+from processing.comparators import spacer
 
 MatchBlock = namedtuple('MatchBlock', ['a', 'b', 'size'])
 
@@ -18,33 +19,43 @@ class Comparator(base_comparator.BaseComparator):
         Find matchblocks from matching passages
         :param matching_passages: strings representing matching
                                   passages in both docs
-        :return: list of MatchBlocks sorted by where they appear
-                 in document a
+        :return: list of concatenator.MatchTuples sorted by where
+                 they appear in document a
         """
         blocks = set()
-        for passage in matching_passages:
-            a_matches = re.finditer(passage, self.a)
+        for a_passage, b_passage in matching_passages:
+            a_matches = re.finditer(a_passage, self.a)
             a_starts = (i.start() for i in a_matches)
-            b_matches = re.finditer(passage, self.b)
+            b_matches = re.finditer(b_passage, self.b)
             b_starts = (j.start() for j in b_matches)
 
-            l = len(passage)
+            l_a = len(a_passage)
+            l_b = len(b_passage)
             for i, j in itertools.product(a_starts, b_starts):
-                new_block = MatchBlock(i, j, l)
+                new_block = concatenator.MatchTuple(i, j, i+l_a, j+l_b)
                 blocks.add(new_block)
         # Concerned that sorting on a may adversely impact
         # concat on the b side
         blocks = sorted(blocks, key=operator.attrgetter('a'))
         return blocks
 
+    def get_matching_passages(self):
+        # Still need to remove/re-add spaces
+        a_strip = self.a.replace(' ', '')
+        b_strip = self.b.replace(' ', '')
+        matching_passages = suffix_apps.acs_no_substrings(a=a_strip,
+                                                          b=b_strip)
+        a_passages = spacer.respace(self.a, a_strip, matching_passages)
+        b_passages = spacer.respace(self.b, b_strip, matching_passages)
+        passage_pairs = zip(a_passages, b_passages)
+        return passage_pairs
+
     def compare(self):
         """
         Compare texts
         :return: list of singlet pairs
         """
-        # Still need to remove/re-add spaces
-        matching_passages = suffix_apps.acs_no_substrings(a=self.a,
-                                                          b=self.b)
+        matching_passages = self.get_matching_passages()
 
         blocks = self._find_matching_blocks(matching_passages)
         combined_blocks = self._combine_blocks(blocks)
@@ -57,8 +68,7 @@ class Comparator(base_comparator.BaseComparator):
         """
         :param matching_blocks: list of tuples (i, j, n)
         """
-        blocks = concatenator.difflib_blocks_to_match_tuples(matching_blocks)
-        cat = concatenator.MatchConcatenator(blocks, self.gap_length)
+        cat = concatenator.MatchConcatenator(matching_blocks, self.gap_length)
         return cat.concatenate()
 
     def _filter_blocks(self, combined_blocks):
