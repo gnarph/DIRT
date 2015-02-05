@@ -27,7 +27,7 @@ class MainTable(QtGui.QTableWidget):
         self.populate()
 
         headers = ['Match Title', 'Author(s)', 'Matches',
-                   'Match %', 'Location']
+                   'Match %', 'Path']
 
         self._set_initial_column_widths()
 
@@ -86,7 +86,7 @@ class MainTable(QtGui.QTableWidget):
         :param file: the match file
         :param entries: the list to append to
         """
-        fname = QtGui.QFileDialog.getOpenFileName(self, window_title, '')
+        fname = QtGui.QFileDialog.getOpenFileName(self, file, '')
 
         match = self.lay_out.m
         match.match_file = fname
