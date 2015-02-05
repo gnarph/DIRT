@@ -1,11 +1,14 @@
 import string
 from PyQt4 import QtGui, QtCore
+from dirtgui.main_window import MainWindow
 
 
 class MainTable(QtGui.QTableWidget):
     """
     Creates a table that self populates
     """
+
+    self.cellDoubleClicked.connect(self.click_display)
 
     def _set_initial_column_widths(self):
         self.setColumnWidth(0, 200)
@@ -75,3 +78,11 @@ class MainTable(QtGui.QTableWidget):
         match_percent = 'match percentage'
         path = 'path'
         entries.extend([title, author, match_len, match_percent, path])
+
+    def click_display(self, row):
+        """
+        When clicked, displays the match document in the text box
+        """
+        item = self.itemAt(row, 5)
+        self.path = item.text()
+        MainWindow.display_match_set(self.path)
