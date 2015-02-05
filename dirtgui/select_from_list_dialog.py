@@ -1,17 +1,20 @@
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+"""
+Thanks to
+https://stackoverflow.com/questions/18196799/how-can-i-show-a-pyqt-modal-dialog-and-get-data-out-of-its-controls-once-its-clo
+"""
+
+from PyQt4.QtGui import QDialog, QVBoxLayout, QDialogButtonBox, QListWidget
+from PyQt4.QtCore import Qt
 
 
-class FocusIndexSelectDialog(QDialog):
-    def __init__(self, match_index, parent=None):
-        super(FocusIndexSelectDialog, self).__init__(parent)
-        self.match_index = match_index
+class SelectFromListDialog(QDialog):
+    def __init__(self, options, parent=None):
+        super(SelectFromListDialog, self).__init__(parent)
         layout = QVBoxLayout(self)
 
         # nice widget for editing the date
         self.selector = QListWidget(self)
-        focus_candidates = list(match_index.get_all_file_names())
-        self.selector.addItems(focus_candidates)
+        self.selector.addItems(list(options))
         layout.addWidget(self.selector)
 
         # OK and Cancel buttons
@@ -23,14 +26,14 @@ class FocusIndexSelectDialog(QDialog):
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
 
-    def get_focus_name(self):
+    def selected(self):
         items = self.selector.selectedItems()
         q_text = items[0].text()
         return str(q_text)
 
     @staticmethod
-    def get_focus(match_index, parent=None):
-        dialog = FocusIndexSelectDialog(match_index, parent)
+    def get_selected(options, parent=None):
+        dialog = SelectFromListDialog(options, parent)
         result = dialog.exec_()
-        focus = dialog.get_focus_name()
+        focus = dialog.selected()
         return focus, result == QDialog.Accepted

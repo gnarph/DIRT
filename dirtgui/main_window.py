@@ -8,8 +8,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from dirtgui.main_layout import MainLayout
+from dirtgui.select_from_list_dialog import SelectFromListDialog
 from models.match_set_index import MatchSetIndex
-from dirtgui.focus_from_match_index_dialog import FocusIndexSelectDialog
+from models import match_set_factory
 
 
 class RunningWindow(QMainWindow):
@@ -49,11 +50,11 @@ class MainWindow(QtGui.QMainWindow):
         open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open MatchSet', self)
         open_file.setShortcut('Ctrl+O')
         open_file.setStatusTip('Open new File')
-        open_file.triggered.connect(self.display_match_set)
+        open_file.triggered.connect(self.select_match_set)
 
         open_index = QtGui.QAction(QtGui.QIcon('nope.png'), 'Open MatchIndex', self)
         open_index.setStatusTip('Open matchindex')
-        open_index.triggered.connect(self.display_match_index)
+        open_index.triggered.connect(self.select_match_index)
         return open_file, open_index
 
     def _setup_exit_file_menu(self):
@@ -91,23 +92,21 @@ class MainWindow(QtGui.QMainWindow):
         self._attach_file_menu_items(ext, open_file, open_index)
         self._attach_toolbar_actions(ext)
 
-    def display_match_index(self):
+    def select_match_index(self):
         window_title = "Select match index"
         dir_name = QtGui.QFileDialog.getExistingDirectory(self,
                                                           window_title)
         msi = MatchSetIndex(str(dir_name))
         names = msi.get_all_file_names()
-        print names
-        # TODO: show something
-        focus, accepted = FocusIndexSelectDialog.get_focus(msi)
-        print focus
+        focus, accepted = SelectFromListDialog.get_selected(names)
+        if accepted:
+            # chose a focus document
+            applicable_ms = msi.set_names_for_focus(focus)
+            to_view, accepted = SelectFromListDialog.get_selected(applicable_ms)
+            if accepted:
+                self.display_match_set(to_view)
 
-    def display_match_set(self):
-        window_title = "Select match set"
-        file_name = QtGui.QFileDialog.getOpenFileName(self,
-                                                      window_title,
-                                                      '')
-        from models import match_set_factory
+    def display_match_set(self, file_name):
         ms = match_set_factory.from_json(file_name)
         focus = ms.alpha_doc
         self.lay_out.f_frame.grid.set_document(focus.raw_file_name)
@@ -115,17 +114,21 @@ class MainWindow(QtGui.QMainWindow):
         match = ms.beta_doc
         self.lay_out.m_frame.grid.set_document(match.raw_file_name)
         self.lay_out.m_frame.grid.locationEdit.setText(match.file_name)
-
         # Load matches
         match_layout = self.lay_out.m
         match_layout.match_file = file_name
         match_layout.setup_matches_list(file_name)
-
-        print self.lay_out.m.match_file
         alpha = 'alpha_passage'
         beta = 'beta_passage'
         self.lay_out.f_frame.grid.highlight_document(file_name, alpha)
         self.lay_out.m_frame.grid.highlight_document(file_name, beta)
+
+    def select_match_set(self):
+        window_title = "Select match set"
+        file_name = QtGui.QFileDialog.getOpenFileName(self,
+                                                      window_title,
+                                                      '')
+        self.display_match_set(file_name)
 
 
     def closeEvent(self, event):
