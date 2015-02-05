@@ -24,7 +24,6 @@ class MainTable(QtGui.QTableWidget):
     def __init__(self, parent=None):
         super(MainTable, self).__init__(parent)
         self.setColumnCount(5)
-        self.populate()
 
         headers = ['Match Title', 'Author(s)', 'Matches',
                    'Match %', 'Path']
@@ -45,7 +44,6 @@ class MainTable(QtGui.QTableWidget):
         self.match_list(fname, self.matches)
         self.datalist(self.matches, self.entries)
         self.populate(self.entries)
-
 
     def populate(self, entries):
         """
@@ -78,15 +76,14 @@ class MainTable(QtGui.QTableWidget):
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.setItem(i, j, item)
 
-
-    def add_data(self, file, entries):
+    def add_data(self, match_file, entries):
         """
         Adds json metadata from a match file
         to a list used to populate the table
-        :param file: the match file
+        :param match_file: the match file
         :param entries: the list to append to
         """
-        fname = QtGui.QFileDialog.getOpenFileName(self, file, '')
+        fname = QtGui.QFileDialog.getOpenFileName(self, match_file, '')
 
         match = self.lay_out.m
         match.match_file = fname
