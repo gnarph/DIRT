@@ -11,7 +11,7 @@ from dirtgui.main_layout import MainLayout
 from dirtgui.select_from_list_dialog import SelectFromListDialog
 from models.match_set_index import MatchSetIndex
 from models import match_set_factory
-
+from dirtgui.main_table import MainTable
 
 class RunningWindow(QMainWindow):
     def __init__(self):
@@ -27,6 +27,8 @@ class RunningWindow(QMainWindow):
         self.setWindowTitle("Win1")
 
         self.connect(button, SIGNAL('clicked()'), self.newWindow)
+        MainTable.connect.cellDoubleClicked.connect(self.click_display)
+
 
     def newWindow(self):
         self.other_window = MainWindow()
@@ -152,6 +154,14 @@ class MainWindow(QtGui.QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def click_display(self, row):
+        """
+        When clicked, displays the match document in the text box
+        """
+        item = QtGui.QTableWidget.itemAt(row, 5)
+        self.path = item.text()
+        self.display_match_set(self.path)
 
 
 def center_window(window):

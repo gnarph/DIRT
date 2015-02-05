@@ -1,7 +1,6 @@
 import string
 from PyQt4 import QtGui, QtCore
 
-
 class MainTable(QtGui.QTableWidget):
     """
     Creates a table that self populates
@@ -75,3 +74,4 @@ class MainTable(QtGui.QTableWidget):
         match_percent = 'match percentage'
         path = 'path'
         entries.extend([title, author, match_len, match_percent, path])
+
