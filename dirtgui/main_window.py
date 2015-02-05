@@ -8,6 +8,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from dirtgui.main_layout import MainLayout
+from models.match_set_index import MatchSetIndex
 
 
 class RunningWindow(QMainWindow):
@@ -44,11 +45,15 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.lay_out)
 
     def _setup_open_file_menu(self):
-        open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
+        open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open MatchSet', self)
         open_file.setShortcut('Ctrl+O')
         open_file.setStatusTip('Open new File')
         open_file.triggered.connect(self.display_match_set)
-        return open_file
+
+        open_index = QtGui.QAction(QtGui.QIcon('nope.png'), 'Open MatchIndex', self)
+        open_index.setStatusTip('Open matchindex')
+        open_index.triggered.connect(self.display_match_index)
+        return open_file, open_index
 
     def _setup_exit_file_menu(self):
         # ------------------------------------------------------
@@ -61,11 +66,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(ext, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
         return ext
 
-    def _attach_file_menu_items(self, ext, openFile):
-        menubar = self.menuBar()
-        f = menubar.addMenu('&File')
-        f.addAction(openFile)
-        f.addAction(ext)
+    def _attach_file_menu_items(self, *args):
+        menu_bar = self.menuBar()
+        f = menu_bar.addMenu('&File')
+        for a in args:
+            f.addAction(a)
 
     def _attach_toolbar_actions(self, ext):
         toolbar = self.addToolBar('Exit')
@@ -77,13 +82,22 @@ class MainWindow(QtGui.QMainWindow):
         self._set_initial_window_size()
         self._fill_with_central_widget()
 
-        openFile = self._setup_open_file_menu()
+        open_file, open_index = self._setup_open_file_menu()
         ext = self._setup_exit_file_menu()
 
         self.statusBar()
 
-        self._attach_file_menu_items(ext, openFile)
+        self._attach_file_menu_items(ext, open_file, open_index)
         self._attach_toolbar_actions(ext)
+
+    def display_match_index(self):
+        window_title = "Select match index"
+        dir_name = QtGui.QFileDialog.getExistingDirectory(self,
+                                                          window_title)
+        msi = MatchSetIndex(str(dir_name))
+        names = msi.get_all_file_names()
+        print names
+        # TODO: show something
 
     def display_match_set(self):
         window_title = "Select match set"

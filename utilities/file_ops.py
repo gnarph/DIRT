@@ -80,3 +80,8 @@ def write_utf8(file_name, text):
         os.makedirs(os.path.dirname(file_name))
     with codecs.open(file_name, 'w+', encoding='utf8') as f:
         f.write(text)
+
+
+def get_file_name_only(full_path):
+    file_name = os.path.basename(full_path)
+    return file_name
