@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # TODO: add parameters to allow only pre/processing/postprocessing
     parser.add_argument('-i', '--input',
                         help='Directory containing input corpus',
-                        required=True,
+                        # required=True,
                         type=str)
     parser.add_argument('-pre', '--preprocessed_dir',
                         default='dirt_preprocessed',
@@ -122,10 +122,18 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--verbose',
                         help='Verbose',
                         action='count')
+    parser.add_argument('-gui',
+                        help='Run Gui',
+                        action='store_const',
+                        const=True)
 
     parsed = parser.parse_args()
     if parsed.verbose:
         from utilities import logger
         logger.show_info()
 
-    main(parsed)
+    if parsed.gui:
+        from dirtgui import main_window
+        main_window.main()
+    else:
+        main(parsed)

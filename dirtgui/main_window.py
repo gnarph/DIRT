@@ -29,8 +29,8 @@ class RunningWindow(QMainWindow):
         self.connect(button, SIGNAL('clicked()'), self.newWindow)
 
     def newWindow(self):
-        self.myOtherWindow = MainWindow()
-        self.myOtherWindow.show()
+        self.other_window = MainWindow()
+        self.other_window.show()
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -135,7 +135,6 @@ class MainWindow(QtGui.QMainWindow):
                                                       '')
         self.display_match_set(file_name)
 
-
     def closeEvent(self, event):
         #message box: prevent accidently shut down
         reply = QtGui.QMessageBox.question(self,
@@ -172,7 +171,3 @@ def main():
     mw = MainWindow()
     setup_window(mw)
     sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    main()
