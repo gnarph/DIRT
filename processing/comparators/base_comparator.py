@@ -14,6 +14,8 @@ class BaseComparator(object):
     def __init__(self, a, b, name_a, name_b, match_length=10, gap_length=3):
         self.a = a
         self.b = b
+        self.a_strip = a.replace(' ', '')
+        self.b_strip = b.replace(' ', '')
         self.name_a = name_a
         self.name_b = name_b
         self.match_length = match_length

@@ -5,17 +5,6 @@ MatchTuple = namedtuple(typename='MatchTuple',
                         field_names=['a', 'b', 'a_end', 'b_end'])
 
 
-def difflib_blocks_to_match_tuples(blocks):
-    tuples = []
-    for tup in blocks:
-        mt = MatchTuple(a=tup.a,
-                        b=tup.b,
-                        a_end=tup.a+tup.size,
-                        b_end=tup.b+tup.size)
-        tuples.append(mt)
-    return tuples
-
-
 class MatchConcatenator(object):
     """
     Class for combining match blocks based on their locations
@@ -133,10 +122,10 @@ class MatchConcatenator(object):
         :param second: second block in list
         :return: boolean indicating if blocks can be combined
         """
-        mismatch_ab = (first.a_end < second.a
-                       and second.b_end < first.b)
-        mismatch_ba = (second.a_end < first.a
-                       and first.b_end < second.b)
+        mismatch_ab = (first.a_end <= second.a
+                       and second.b_end <= first.b)
+        mismatch_ba = (second.a_end <= first.a
+                       and first.b_end <= second.b)
         out_of_order = mismatch_ab or mismatch_ba
         return not out_of_order and self.jump_gap(second)
 

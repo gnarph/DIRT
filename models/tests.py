@@ -315,3 +315,17 @@ class MatchSetIndexTest(unittest.TestCase):
         for ms in match_sets:
             a = ms.alpha_doc
             self.assertIn(focus_name, a.file_name)
+
+    def test_get_all_file_names(self):
+        # TODO: this is pretty naive
+        # should handle file names that are substrings of
+        # other file names
+        expected = {'focus', 'otherdoc', 'threedoc'}
+        msi = MatchSetIndex(self.out_dir)
+
+        files = msi.get_all_file_names()
+        self.assertEqual(files, expected)
+
+    def test_get_all_matched_documents(self):
+        # TODO
+        pass
