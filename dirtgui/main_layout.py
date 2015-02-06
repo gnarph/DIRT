@@ -22,6 +22,7 @@ class MainLayout(QtGui.QWidget):
 
     def _setup_result_table_frame(self):
         self.results_table = MainTable()
+        self.results_table.cellDoubleClicked.connect(self.click_display)
         table_label = QtGui.QLabel('RESULTS TABLE')
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -66,6 +67,18 @@ class MainLayout(QtGui.QWidget):
         hbox.addWidget(splitter2)
         self.setLayout(hbox)
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('cleanlooks'))
+
+    def click_display(self, row, column):
+        """
+        When clicked, displays the match document in the text box
+        """
+
+        print("Row %d and Column %d was clicked" % (row, column))
+        item = self.results_table.item(row, 4)
+        self.path = item.text()
+        print self.path
+
+        self.display_match_set(self.path)
 
     def __init__(self, parent):
         super(MainLayout, self).__init__(parent)

@@ -27,8 +27,6 @@ class RunningWindow(QMainWindow):
         self.setWindowTitle("Win1")
 
         self.connect(button, SIGNAL('clicked()'), self.newWindow)
-        MainTable.connect.cellDoubleClicked.connect(self.click_display)
-
 
     def newWindow(self):
         self.other_window = MainWindow()
