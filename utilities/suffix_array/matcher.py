@@ -114,6 +114,7 @@ def acs_no_substrings(a, b, separator='$'):
     """
     if separator in a or separator in b:
         raise InvalidCharacterException('Separator in input strings')
+
     ab = u''.join([a, separator, b])
     sa = tks.simple_kark_sort(ab)
     lcp = tks.LCP(ab, sa)
