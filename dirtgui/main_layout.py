@@ -78,11 +78,14 @@ class MainLayout(QtGui.QWidget):
         self.path = item.text()
         print self.path
 
+        # TODO: bug - this path is to a document json file
+        #       it needs to be the path to a match set json file
         self.display_match_set(self.path)
 
-    def __init__(self, parent):
-        super(MainLayout, self).__init__(parent)
+    def __init__(self, main_window):
+        super(MainLayout, self).__init__(main_window)
         self.results_table = None
+        self.display_match_set = main_window.display_match_set
 
         self._setup_comparison_frames()
         table_frame = self._setup_result_table_frame()
