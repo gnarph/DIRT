@@ -132,8 +132,9 @@ if __name__ == '__main__':
         from utilities import logger
         logger.show_info()
 
+    if parsed.input:
+        main(parsed)
     if parsed.gui:
         from dirtgui import main_window
-        main_window.main()
-    else:
-        main(parsed)
+        main_window.main(parsed.output_dir)
+        # TODO: open just-processed matchset

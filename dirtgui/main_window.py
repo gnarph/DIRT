@@ -78,7 +78,7 @@ class MainWindow(QtGui.QMainWindow):
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(ext)
 
-    def __init__(self):
+    def __init__(self, index_dir=None):
         QtGui.QMainWindow.__init__(self)
 
         self._set_initial_window_size()
@@ -92,10 +92,11 @@ class MainWindow(QtGui.QMainWindow):
         self._attach_file_menu_items(ext, open_file, open_index)
         self._attach_toolbar_actions(ext)
 
-    def select_match_index(self):
-        window_title = "Select match index"
-        dir_name = QtGui.QFileDialog.getExistingDirectory(self,
-                                                          window_title)
+        self.raise_()
+        if index_dir:
+            self.display_match_index(index_dir)
+
+    def display_match_index(self, dir_name):
         msi = MatchSetIndex(str(dir_name))
         names = msi.get_all_file_names()
         focus, accepted = SelectFromListDialog.get_selected(names)
@@ -110,6 +111,12 @@ class MainWindow(QtGui.QMainWindow):
                 all_docs = msi.get_all_matched_documents(focus)
                 results = self.layout.results_table
                 results.populate(all_docs)
+
+    def select_match_index(self):
+        window_title = "Select match index"
+        dir_name = QtGui.QFileDialog.getExistingDirectory(self,
+                                                          window_title)
+        self.display_match_index(dir_name)
 
     def display_match_set(self, file_name):
         ms = match_set_factory.from_json(file_name)
@@ -177,11 +184,10 @@ def setup_window(window):
     center_window(window)
     window.setWindowTitle('DIRT')
     window.show()
-    window.raise_()
 
 
-def main():
+def main(index_dir):
     app = QtGui.QApplication(sys.argv)
-    mw = MainWindow()
+    mw = MainWindow(index_dir)
     setup_window(mw)
     sys.exit(app.exec_())
