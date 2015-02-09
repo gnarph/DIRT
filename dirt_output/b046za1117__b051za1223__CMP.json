@@ -1,1 +1,0 @@
-{"matches": [{"alpha_passage": "佛說此經已 諸比丘聞佛所說 歡喜奉行", "beta_indices": [348, 366], "beta_passage": "佛說此經已 諸比丘聞佛所說 歡喜奉行", "alpha_indices": [743, 761]}, {"alpha_passage": "如是我聞 一時佛住舍", "beta_indices": [0, 11], "beta_passage": "如是我聞 一時佛住王舍", "alpha_indices": [0, 10]}], "beta_doc": "./dirt_preprocessed/b051za1223.json", "alpha_doc": "./dirt_preprocessed/b046za1117.json"}

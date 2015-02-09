@@ -1,1 +1,0 @@
-{"matches": [{"alpha_passage": "如是我聞 一時佛住舍", "beta_indices": [0, 11], "beta_passage": "如是我聞 一時佛住王舍", "alpha_indices": [0, 10]}], "beta_doc": "./dirt_preprocessed/b052za1225.json", "alpha_doc": "./dirt_preprocessed/b048za1120.json"}

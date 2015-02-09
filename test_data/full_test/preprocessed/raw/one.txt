@@ -1,5 +1,0 @@
-This test file consists of multiple paragraphs. This paragraph in particular occurs in multiple test files. DIRT should be able to determine this and create the appropriate matches.
-
-This paragraph is unique to the first test file. DIRT is an open souce program. It runs on Python. It's purpose is to find reused passage in a corpus of text (in any language).
-
-A third paragraph for the sake of length. Yep.

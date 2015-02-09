@@ -1,3 +1,0 @@
-test_data/full_test/three.txt
-test_data/full_test/one.txt
-test_data/full_test/two.txt
