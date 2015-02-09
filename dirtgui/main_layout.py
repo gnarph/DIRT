@@ -1,7 +1,7 @@
 from PyQt4 import QtGui, QtCore
-from dirtgui.document_util import document_match_util as match_util
 from dirtgui.main_frame import MainFrame
 from dirtgui.main_table import MainTable
+import document_util.document_match_util as dmu
 
 
 class MainLayout(QtGui.QWidget):
@@ -17,8 +17,6 @@ class MainLayout(QtGui.QWidget):
         focus_doc_area = self.f_frame.grid.textEdit
         self.m_frame = MainFrame(self, 'MATCH')
         match_doc_area = self.m_frame.grid.textEdit
-        self.m = match_util.DocumentMatchUtil(focus_doc_area,
-                                              match_doc_area, '')
 
     def _setup_result_table_frame(self):
         self.results_table = MainTable()
@@ -31,12 +29,12 @@ class MainLayout(QtGui.QWidget):
 
         previous_button = QtGui.QPushButton()
         previous_button.setText('Previous')
-        previous_button.clicked.connect(self.m.prev_match)
+        previous_button.clicked.connect(self.prev_match)
         navigation_bar.addWidget(previous_button)
 
         next_button = QtGui.QPushButton()
         next_button.setText('Next')
-        next_button.clicked.connect(self.m.next_match)
+        next_button.clicked.connect(self.next_match)
         navigation_bar.addWidget(next_button)
 
         vbox = QtGui.QVBoxLayout()
@@ -80,10 +78,17 @@ class MainLayout(QtGui.QWidget):
 
         self.display_match_set(self.path)
 
-    def __init__(self, parent):
+    def __init__(self, parent, ):
         super(MainLayout, self).__init__(parent)
         self.results_table = None
 
         self._setup_comparison_frames()
         table_frame = self._setup_result_table_frame()
         self._setup_splitter_layouts(table_frame)
+        self.highlighter = ''
+
+    def next_match(self):
+        self.highlighter.highlight_match(1)
+
+    def prev_match(self):
+        self.highlighter.highlight_match(-1)
