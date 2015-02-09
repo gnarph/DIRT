@@ -88,8 +88,8 @@ class MainGrid(QtGui.QGridLayout):
 
     def set_document(self, file_path):
         """
-        Set the document for the grid text area
-        :param doc: file path of document
+
+        :param file_path:
         :return:
         """
         passage = file_ops.read_utf8(file_path)
@@ -97,13 +97,13 @@ class MainGrid(QtGui.QGridLayout):
         self.textEdit.clear()
         self.textEdit.setText(passage)
 
-    def highlight_document(self, match_data, passage):
-        """"
-        Highlight the matches in a document
-        :param match_data:
+    def highlight_document(self, match_set, passage):
+        """
+
+        :param match_set:
         :param passage:
         :return:
         """
         text_area = self.textEdit
-        cursor = self.textEdit.textCursor()
-        match_util.highlight_matches(text_area, cursor, match_data, passage)
+        cursor = text_area.textCursor()
+        match_util.highlight_document(text_area, cursor, match_set, passage)

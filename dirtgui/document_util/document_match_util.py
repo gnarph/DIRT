@@ -6,34 +6,14 @@ from PyQt4 import QtCore, QtGui
 colors = ['#ED1C24', '#F7941D', '#0000FF', '#39B54A', '#00AEEF', '#662D91']
 
 
-class DocumentMatchUtil():
+class Highlighter():
 
-    def __init__(self, focus, match, match_file):
-        self.focus_doc = focus
-        self.match_doc = match
-        self.number_of_matches = 0
-        self.match_idx = -1
-        self.json_data = ''
-        self.alpha_list = []
-        self.beta_list = []
-        self.match_file = match_file
-        # self.setup_matches_list(self.match_file)
-        self.match_set = match_set_index.MatchSetIndex("./dirt_example/")
-        self.match_set.set_names_for_focus("lorem")
-        print self.match_set.get_all_match_sets(
-            "./dirt_example/lorem__lorem2__CMP.json")
-        # TODO: make a first and last index
-
-    def setup_matches_list(self, match_file):
-        with open(match_file) as json_file:
-            self.json_data = file_ops.read_json_utf8(json_file.name)
-            trim_sentences(self.json_data)
-            self.number_of_matches = len(self.json_data['matches'])
-            for i in range(0, self.number_of_matches):
-                self.alpha_list.append(self.json_data['matches'][i][
-                    'alpha_indices'][0])
-                self.beta_list.append(self.json_data['matches'][i][
-                    'beta_indices'][0])
+    def __init__(self, focus, match, ms):
+        self.focus_text_area = focus
+        self.match_text_area = match
+        self.ms = ms
+        self.number_of_matches = len(ms.get_indices())
+        self.match_idx = 0
 
     def next_match(self):
         """
@@ -52,29 +32,36 @@ class DocumentMatchUtil():
         self.highlight_match(-1)
 
     def highlight_match(self, direction):
-        prev_match_idx = self.match_idx % self.number_of_matches
-        # focus_cursor = self.doc_focus.textCursor()
-        focus_cursor_pos = self.alpha_list[prev_match_idx]
-        length = len(self.json_data['matches'][prev_match_idx][
-            'alpha_passage'])
-        remove_highlight(self.focus_doc, focus_cursor_pos, length)
-        # comp_cursor = self.doc_comparison.textCursor()
-        comp_cursor_pos = self.beta_list[prev_match_idx]
-        length = len(self.json_data['matches'][prev_match_idx][
-            'beta_passage'])
-        remove_highlight(self.match_doc, comp_cursor_pos, length)
+        number_of_matches = len(self.ms.get_indices())
+        if number_of_matches != 0:
+            array = self.ms.get_indices()
+            prev_match_idx = self.match_idx
 
-        self.match_idx = (self.match_idx + direction) % self.number_of_matches
-        match_idx = self.match_idx
-        focus_cursor_pos = self.alpha_list[match_idx]
-        length = len(self.json_data['matches'][match_idx]['alpha_passage'])
-        move_cursor(self.focus_doc, focus_cursor_pos, length, direction)
-        comp_cursor_pos = self.beta_list[match_idx]
-        length = len(self.json_data['matches'][match_idx]['beta_passage'])
-        move_cursor(self.match_doc, comp_cursor_pos, length, direction)
+            focus_pair = array[prev_match_idx][0]
+            focus_cursor_pos = focus_pair[0]
+            length = focus_pair[1] - focus_pair[0]
+            remove_highlight(self.focus_text_area, focus_cursor_pos, length)
+
+            match_pair = array[prev_match_idx][1]
+            comp_cursor_pos = match_pair[0]
+            length = match_pair[1] - match_pair[0]
+            remove_highlight(self.match_text_area, comp_cursor_pos, length)
+
+            self.match_idx = (self.match_idx + direction) % number_of_matches
+            match_idx = self.match_idx
+
+            current_focus_pair = array[match_idx][0]
+            focus_cursor_pos = current_focus_pair[0]
+            length = current_focus_pair[1] - current_focus_pair[0]
+            move_cursor(self.focus_text_area, focus_cursor_pos, length)
+
+            current_match_pair = array[match_idx][1]
+            comp_cursor_pos = current_match_pair[0]
+            length = current_match_pair[1] - current_match_pair[0]
+            move_cursor(self.match_text_area, comp_cursor_pos, length)
 
 
-def highlight_matches(text_area, cursor, match_file, passage):
+def highlight_document(text_area, cursor, match_set, passage):
     """
 
     :param text_area:
@@ -86,29 +73,31 @@ def highlight_matches(text_area, cursor, match_file, passage):
     text_format = QtGui.QTextCharFormat()
     color = QtGui.QColor()
     color_index = 0
-    with open(match_file) as json_file:
-        json_data = file_ops.read_json_utf8(json_file.name)
 
-        for entry in json_data['matches']:
-            pattern = entry[passage]
+    if passage == 'alpha':
+        passages = match_set.alpha_passages()
+    else:
+        passages = match_set.beta_passages()
 
-            regex = QtCore.QRegExp(pattern)
+    for entry in passages:
+        pattern = entry
+        regex = QtCore.QRegExp(pattern)
 
-            pos = 0
+        pos = 0
+        index = regex.indexIn(text_area.toPlainText(), pos)
+        while index != -1:
+            # Select the matched text and apply the desired format
+            cursor.setPosition(index)
+            cursor.movePosition(QtGui.QTextCursor.NextCharacter,
+                                QtGui.QTextCursor.KeepAnchor,
+                                len(pattern))
+            color.setNamedColor(colors[color_index % len(colors)])
+            color_index += 1
+            text_format.setForeground(QtGui.QBrush(color))
+            cursor.mergeCharFormat(text_format)
+            # Move to the next match
+            pos = index + regex.matchedLength()
             index = regex.indexIn(text_area.toPlainText(), pos)
-            while index != -1:
-                # Select the matched text and apply the desired format
-                cursor.setPosition(index)
-                cursor.movePosition(QtGui.QTextCursor.NextCharacter,
-                                    QtGui.QTextCursor.KeepAnchor,
-                                    len(pattern))
-                color.setNamedColor(colors[color_index % len(colors)])
-                color_index += 1
-                text_format.setForeground(QtGui.QBrush(color))
-                cursor.mergeCharFormat(text_format)
-                # Move to the next match
-                pos = index + regex.matchedLength()
-                index = regex.indexIn(text_area.toPlainText(), pos)
 
 
 def trim_sentences(match_file):
@@ -142,12 +131,12 @@ def trim_whitespace(entry, indices, passage):
         entry[indices][1] -= 2
 
 
-def move_cursor(doc, pos, length, direction):
+def move_cursor(doc, pos, length):
     """
-    Moves cursor
-    :param doc: QTextEdit
-    :param pos: int
-    :param length: int
+
+    :param doc:
+    :param pos:
+    :param length:
     :return:
     """
     color = QtGui.QColor()
@@ -155,17 +144,16 @@ def move_cursor(doc, pos, length, direction):
     text_format = QtGui.QTextCharFormat()
     text_format.setBackground(QtGui.QBrush(color))
     text_cursor = doc.textCursor()
-    if direction == 1 or direction == -1:
-        text_cursor.setPosition(pos)
-        text_cursor.movePosition(QtGui.QTextCursor.NextCharacter,
-                                 QtGui.QTextCursor.KeepAnchor, length)
-    if direction == -1 or pos == 0:
-        text_cursor.setPosition(pos + length)
-        text_cursor.movePosition(QtGui.QTextCursor.PreviousCharacter,
-                                 QtGui.QTextCursor.KeepAnchor, length)
-
+    text_cursor.setPosition(pos)
+    text_cursor.movePosition(QtGui.QTextCursor.NextCharacter,
+                             QtGui.QTextCursor.KeepAnchor, length)
     text_cursor.mergeCharFormat(text_format)
     doc.setTextCursor(text_cursor)
+
+    cursor = doc.cursorRect()
+    cursor_top = cursor.top()
+    vbar = doc.verticalScrollBar()
+    vbar.setSliderPosition(vbar.value() + cursor_top - length)
 
     doc.ensureCursorVisible()
     doc.clearFocus()
@@ -173,9 +161,10 @@ def move_cursor(doc, pos, length, direction):
 
 def remove_highlight(doc, pos, length):
     """
-    Moves cursor to remove highlight
+
     :param doc:
     :param pos:
+    :param length:
     :return:
     """
     color = QtGui.QColor()
@@ -189,14 +178,3 @@ def remove_highlight(doc, pos, length):
     text_cursor.mergeCharFormat(text_format)
     doc.setTextCursor(text_cursor)
     doc.ensureCursorVisible()
-
-
-def find_string(self):
-    s = str(self.lineEdit.displayText())
-    length = len(s)
-    # with codecs.open(self.focus, 'r', encoding='utf8') as focus:
-    #     index = focus.read().lower().index(s)
-    #     print s
-    #     print index
-    #     index = focus.read().index(s)
-

@@ -34,6 +34,7 @@ class SelectFromListDialog(QDialog):
     @staticmethod
     def get_selected(options, parent=None):
         dialog = SelectFromListDialog(options, parent)
+        dialog.selector.setItemSelected(dialog.selector.item(0),True)
         result = dialog.exec_()
         focus = dialog.selected()
         return focus, result == QDialog.Accepted

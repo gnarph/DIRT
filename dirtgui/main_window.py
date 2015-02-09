@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import document_util.document_match_util as dmu
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
@@ -53,6 +54,7 @@ class MainWindow(QtGui.QMainWindow):
         open_file.triggered.connect(self.select_match_set)
 
         open_index = QtGui.QAction(QtGui.QIcon('nope.png'), 'Open MatchIndex', self)
+        open_index.setShortcut('Ctrl+I')
         open_index.setStatusTip('Open matchindex')
         open_index.triggered.connect(self.select_match_index)
         return open_file, open_index
@@ -124,22 +126,23 @@ class MainWindow(QtGui.QMainWindow):
             ms.swap_alpha_beta()
 
         focus = ms.alpha_doc
-        self.layout.f_frame.grid.set_document(focus.raw_file_name)
+        self.layout.f_frame.grid.set_document(focus.pre_file_name)
         self.layout.f_frame.grid.locationEdit.setText(focus.file_name)
 
         match = ms.beta_doc
-        self.layout.m_frame.grid.set_document(match.raw_file_name)
+        self.layout.m_frame.grid.set_document(match.pre_file_name)
         self.layout.m_frame.grid.locationEdit.setText(match.file_name)
 
         # Load matches
-        match_layout = self.layout.m
-        match_layout.match_file = file_name
-        match_layout.setup_matches_list(file_name)
+        focus_text_area = self.layout.f_frame.grid.textEdit
+        match_text_area = self.layout.m_frame.grid.textEdit
+        self.layout.highlighter = dmu.Highlighter(focus_text_area,
+                                                  match_text_area, ms)
 
-        alpha = 'alpha_passage'
-        beta = 'beta_passage'
-        self.layout.f_frame.grid.highlight_document(file_name, alpha)
-        self.layout.m_frame.grid.highlight_document(file_name, beta)
+        alpha = 'alpha'
+        beta = 'beta'
+        self.layout.f_frame.grid.highlight_document(ms, alpha)
+        self.layout.m_frame.grid.highlight_document(ms, beta)
 
     def select_match_set(self):
         window_title = "Select match set"
