@@ -40,12 +40,12 @@ class Highlighter():
             focus_pair = array[prev_match_idx][0]
             focus_cursor_pos = focus_pair[0]
             length = focus_pair[1] - focus_pair[0]
-            remove_highlight(self.focus_text_area, focus_cursor_pos, length)
+            remove_match_highlight(self.focus_text_area, focus_cursor_pos, length)
 
             match_pair = array[prev_match_idx][1]
             comp_cursor_pos = match_pair[0]
             length = match_pair[1] - match_pair[0]
-            remove_highlight(self.match_text_area, comp_cursor_pos, length)
+            remove_match_highlight(self.match_text_area, comp_cursor_pos, length)
 
             self.match_idx = (self.match_idx + direction) % number_of_matches
             match_idx = self.match_idx
@@ -92,12 +92,12 @@ def highlight_document(text_area, cursor, match_set, passage):
                                 QtGui.QTextCursor.KeepAnchor,
                                 len(pattern))
             color.setNamedColor(colors[color_index % len(colors)])
-            color_index += 1
             text_format.setForeground(QtGui.QBrush(color))
             cursor.mergeCharFormat(text_format)
             # Move to the next match
             pos = index + regex.matchedLength()
             index = regex.indexIn(text_area.toPlainText(), pos)
+        color_index += 1
 
 
 def trim_sentences(match_file):
@@ -159,7 +159,7 @@ def move_cursor(doc, pos, length):
     doc.clearFocus()
 
 
-def remove_highlight(doc, pos, length):
+def remove_match_highlight(doc, pos, length):
     """
 
     :param doc:
@@ -175,6 +175,27 @@ def remove_highlight(doc, pos, length):
     text_cursor.setPosition(pos)
     text_cursor.movePosition(QtGui.QTextCursor.NextCharacter,
                              QtGui.QTextCursor.KeepAnchor, length)
+    text_cursor.mergeCharFormat(text_format)
+    doc.setTextCursor(text_cursor)
+    doc.ensureCursorVisible()
+
+
+def clear_highlight(doc):
+    """
+
+    :param doc:
+    :param pos:
+    :param length:
+    :return:
+    """
+    color = QtGui.QColor()
+    color.setNamedColor("#FFFFFF")
+    text_format = QtGui.QTextCharFormat()
+    text_format.setBackground(QtGui.QBrush(color))
+    text_cursor = doc.textCursor()
+    text_cursor.setPosition(QtGui.QTextCursor.End)
+    text_cursor.movePosition(QtGui.QTextCursor.Start,
+                             QtGui.QTextCursor.MoveAnchor)
     text_cursor.mergeCharFormat(text_format)
     doc.setTextCursor(text_cursor)
     doc.ensureCursorVisible()

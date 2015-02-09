@@ -136,6 +136,8 @@ class MainWindow(QtGui.QMainWindow):
         # Load matches
         focus_text_area = self.layout.f_frame.grid.textEdit
         match_text_area = self.layout.m_frame.grid.textEdit
+        dmu.clear_highlight(focus_text_area)
+        dmu.clear_highlight(match_text_area)
         self.layout.highlighter = dmu.Highlighter(focus_text_area,
                                                   match_text_area, ms)
 
