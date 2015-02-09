@@ -1,0 +1,1 @@
+{"matches": [{"alpha_passage": "如是我聞 一時佛住王舍城耆闍崛山中", "beta_indices": [0, 20], "beta_passage": "如是我聞 一時佛住王舍城耆闍崛山中   ", "alpha_indices": [0, 17]}], "beta_doc": "./dirt_preprocessed/b052za1225.json", "alpha_doc": "./dirt_preprocessed/b052za1224.json"}

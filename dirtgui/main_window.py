@@ -13,6 +13,7 @@ from dirtgui.select_from_list_dialog import SelectFromListDialog
 from models.match_set_index import MatchSetIndex
 from models import match_set_factory
 
+
 class RunningWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
