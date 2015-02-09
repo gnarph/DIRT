@@ -93,6 +93,7 @@ def highlight_document(text_area, cursor, match_set, passage):
                                 len(pattern))
             color.setNamedColor(colors[color_index % len(colors)])
             text_format.setForeground(QtGui.QBrush(color))
+            text_format.setBackground(QtGui.QBrush("black"))
             cursor.mergeCharFormat(text_format)
             # Move to the next match
             pos = index + regex.matchedLength()
@@ -153,10 +154,8 @@ def move_cursor(doc, pos, length):
     cursor = doc.cursorRect()
     cursor_top = cursor.top()
     vbar = doc.verticalScrollBar()
-    vbar.setSliderPosition(vbar.value() + cursor_top - length)
-
+    vbar.setSliderPosition(vbar.value() + cursor_top - length*2)
     doc.ensureCursorVisible()
-    doc.clearFocus()
 
 
 def remove_match_highlight(doc, pos, length):
@@ -193,9 +192,16 @@ def clear_highlight(doc):
     text_format = QtGui.QTextCharFormat()
     text_format.setBackground(QtGui.QBrush(color))
     text_cursor = doc.textCursor()
-    text_cursor.setPosition(QtGui.QTextCursor.End)
+    # Remove any highlighted text
+    text_cursor.setPosition(0)
+    text_cursor.movePosition(QtGui.QTextCursor.End,
+                             QtGui.QTextCursor.KeepAnchor)
+    text_cursor.setCharFormat(text_format)
+    doc.setTextCursor(text_cursor)
+    # Return cursor position to start of document
+    text_cursor.setPosition(0)
     text_cursor.movePosition(QtGui.QTextCursor.Start,
                              QtGui.QTextCursor.MoveAnchor)
-    text_cursor.mergeCharFormat(text_format)
+    text_cursor.setCharFormat(text_format)
     doc.setTextCursor(text_cursor)
     doc.ensureCursorVisible()
