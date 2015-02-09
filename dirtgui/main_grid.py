@@ -43,6 +43,8 @@ class MainGrid(QtGui.QGridLayout):
         self.authorEdit = QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
         self.textEdit = QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
 
+        self.textEdit.setStyleSheet("background-color: rgb(255,255,255);")
+
         # Text display font
         display_font = QtGui.QFont('', 12)
 

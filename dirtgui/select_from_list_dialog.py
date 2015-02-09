@@ -12,6 +12,8 @@ class SelectFromListDialog(QDialog):
         super(SelectFromListDialog, self).__init__(parent)
         layout = QVBoxLayout(self)
 
+        self.setStyleSheet("background-color: rgb(245,247,255);")
+
         # nice widget for editing the date
         self.selector = QListWidget(self)
         self.selector.addItems(list(options))

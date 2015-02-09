@@ -186,7 +186,9 @@ def center_window(window):
 def setup_window(window):
     center_window(window)
     window.setWindowTitle('DIRT')
+    window.setStyleSheet("background-color: rgb(245,247,255);")
     window.show()
+    window.raise_()
 
 
 def main(index_dir):
