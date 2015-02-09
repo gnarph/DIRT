@@ -136,5 +136,5 @@ if __name__ == '__main__':
         main(parsed)
     if parsed.gui:
         from dirtgui import main_window
-        main_window.main()
+        main_window.main(parsed.output_dir)
         # TODO: open just-processed matchset
