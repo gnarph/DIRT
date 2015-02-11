@@ -9,6 +9,9 @@ class DIRTFileException(Exception):
 
 
 def unicode_error_handler(fn):
+    """
+    Capture and present unicode errors
+    """
     def wrapped(*args, **kwargs):
         try:
             val = fn(*args, **kwargs)
@@ -83,5 +86,10 @@ def write_utf8(file_name, text):
 
 
 def get_file_name_only(full_path):
+    """
+    Get onlu the file name part of a full path
+    :param full_path: full path
+    :return: filename part of the input
+    """
     file_name = os.path.basename(full_path)
     return file_name

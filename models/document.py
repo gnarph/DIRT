@@ -72,6 +72,10 @@ class Document(object):
                         raw_file_name=self.raw_file_name)
 
     def to_dict(self):
+        """
+        Covert to dictionary representation
+        :return: dict
+        """
         return {'file_name': self.file_name,
                 'raw_file_name': self.raw_file_name,
                 'metadata': self.metadata,
