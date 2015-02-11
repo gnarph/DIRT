@@ -1,7 +1,7 @@
 from array import array
 
 
-def space_locations(s):
+def get_space_locations(s):
     """
     Get the locations to insert spaces to restore original string
     after spaces are stripped out
@@ -19,17 +19,18 @@ def space_locations(s):
     return spaces
 
 
-def add_spaces(space_locs, offset, target):
+def add_spaces(space_locations, offset, target):
     """
     Put spaces back into stripped string
-    :param space_locs: where to insert spaces into body to restore it
+    :param space_locations: where to insert spaces into body to restore it
     :param offset: location of target within it's body
     :param target: passage from a body
     :return:
     """
     end = offset + len(target)
     last = 0
-    insert_points = (i - offset for i in space_locs if offset <= i <= end)
+    insert_points = (i - offset for i in space_locations
+                     if offset <= i <= end)
 
     started = False
     chunks = []

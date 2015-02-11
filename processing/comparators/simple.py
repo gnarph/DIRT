@@ -97,8 +97,8 @@ class Comparator(base_comparator.BaseComparator):
         # passage_pairs = zip(a_passages, b_passages)
         # return passage_pairs
 
-        a_spaces = spacer.space_locations(self.a)
-        b_spaces = spacer.space_locations(self.b)
+        a_spaces = spacer.get_space_locations(self.a)
+        b_spaces = spacer.get_space_locations(self.b)
         passages = []
         for tup in filtered_blocks:
             a = self.a_strip[tup.a:tup.a_end]

@@ -64,8 +64,8 @@ def acs_all(a, b, separator='$'):
         end = start + v
         p = ab[start:end]
 
-        # if end - start < min_match:
-        #     continue
+        # Sanity check
+        # Also p can't be an empty string
         if not p or p not in a or p not in b:
             continue
 
