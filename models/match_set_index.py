@@ -47,7 +47,7 @@ class MatchSetIndex(object):
         files = path.iter_files_in(self.out_dir)
         for full_path in files:
             file_name = file_ops.get_file_name_only(full_path)
-            # Bit of hack
+            # TODO: Bit of hack
             # regex probably better
             split = file_name.split('__')
             alpha_name = split[0]

@@ -1,6 +1,7 @@
 import string
 from PyQt4 import QtGui, QtCore
 
+
 class MainTable(QtGui.QTableWidget):
     """
     Creates a table that self populates
