@@ -59,3 +59,6 @@ target/
 # Test folders
 test_preprocessed/
 test_output/
+
+# Profiling output
+profile_output
