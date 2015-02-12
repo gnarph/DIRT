@@ -5,6 +5,10 @@ import utilities.file_ops as file_reading
 from models.match_set import MatchSet
 
 
+class NoMatchSetFoundException(Exception):
+    pass
+
+
 def from_json(file_name):
     data = file_reading.read_json_utf8(file_name)
     return MatchSet.from_dict(data)
@@ -29,6 +33,12 @@ def find_in_dir(name_a, name_b, directory):
         ms = from_json(full)
     except IOError:
         full = _get_report_name(directory, name_b, name_a)
-        ms = from_json(full)
-        ms.swap_alpha_beta()
+        try:
+            ms = from_json(full)
+        except IOError:
+            template = "Could not find match for {} and {} in {}"
+            message = template.format(name_a, name_b, directory)
+            raise NoMatchSetFoundException(message)
+        else:
+            ms.swap_alpha_beta()
     return ms
