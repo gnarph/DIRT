@@ -4,7 +4,13 @@ Module for standardizing Chinese text
 
 from unicodedata import category
 
+from cjklib import characterlookup
 import mafan
+
+# Unicode categories
+PUNCTUATION_CATS = {'Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'}
+SYMBOL_CATS = {'Sc', 'Sk', 'Sm', 'So'}
+SEPARATOR_CATS = {'Zi', 'Zp', 'Zs'}
 
 
 def standardize(text):
@@ -56,13 +62,26 @@ def strip(text):
 
 
 def chunk_gen(text, sub=' '):
-    punctuation_cats = {'Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'}
-    symbol_cats = {'Sc', 'Sk', 'Sm', 'So'}
-    separator_cats = {'Zi', 'Zp', 'Zs'}
-    sub_cats = punctuation_cats | symbol_cats | separator_cats
+    """
+    Iterator over characters in text, replacing them as needed
+    Replaces punctuation, symbols, separators with spaces
+    Reduces characters to their variant with the lowest code point
+    :param text: input text
+    :param sub: thing to substitute for unwanted characters
+    :return: generator
+    """
+    # Unicode categories we don't want
+    sub_cats = PUNCTUATION_CATS | SYMBOL_CATS | SEPARATOR_CATS
+
+    # Lookup characters in chinese locale
+    lookup = characterlookup.CharacterLookup(locale='C')
 
     for char in text:
         if category(char) in sub_cats:
             yield sub
         else:
-            yield char
+            # Only want Z-variants, as they indicate no change in
+            # meaning
+            variants = lookup.getCharacterVariants(char, 'Z')
+            variants.append(char)
+            yield min(variants)
