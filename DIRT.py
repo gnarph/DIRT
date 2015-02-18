@@ -66,22 +66,39 @@ def process(args):
     start = time.time()
     alpha_iter = path.iter_files_in(args.preprocessed_dir)
     beta_iter = path.iter_files_in(args.preprocessed_dir)
-    p = Pool()
-    compared = []
-    for a, b in itertools.product(alpha_iter, beta_iter):
-        this_set = sorted([a, b])
-        if a != b and this_set not in compared:
-            p.apply_async(process_parallel, (a,
-                                             args.output_dir,
-                                             args.gap_length,
-                                             args.match_length,
-                                             args.percentage_match_length,
-                                             b,
-                                             args.comparator))
-            compared.append(this_set)
+    if args.parallel:
+        p = Pool()
+        compared = []
+        for a, b in itertools.product(alpha_iter, beta_iter):
+            this_set = sorted([a, b])
+            if a != b and this_set not in compared:
+                p.apply_async(process_parallel, (a,
+                                                 args.output_dir,
+                                                 args.gap_length,
+                                                 args.match_length,
+                                                 args.percentage_match_length,
+                                                 b,
+                                                 args.comparator))
+                compared.append(this_set)
+        p.close()
+        p.join()
+    else:
+        comparator_path = COMPARATOR_PATH.format(args.comparator)
+        comparator = importlib.import_module(comparator_path)
+        pro = processor.Processor(output_dir=args.output_dir,
+                                  comparator=comparator,
+                                  gap_length=args.gap_length,
+                                  match_length=args.match_length,
+                                  percentage_match_length=args.percentage_match_length)
+        compared = []
+        for a, b in itertools.product(alpha_iter, beta_iter):
+            this_set = sorted([a, b])
+            if a != b and this_set not in compared:
+                alpha = Document.from_json(a)
+                beta = Document.from_json(b)
+                pro.process(alpha_document=alpha, beta_document=beta)
+
     cnt = len(compared)
-    p.close()
-    p.join()
     duration = time.time() - start
     comparisons_per_sec = cnt/duration
     logger.info('Processed {} files per second'.format(comparisons_per_sec))
@@ -143,6 +160,10 @@ if __name__ == '__main__':
                         action='count')
     parser.add_argument('-gui',
                         help='Run Gui',
+                        action='store_const',
+                        const=True)
+    parser.add_argument('-p', '--parallel',
+                        help='Run on multiple threads/processes',
                         action='store_const',
                         const=True)
 

@@ -69,7 +69,6 @@ def acs_all(a, b, separator='$'):
         if not p or p not in a or p not in b:
             continue
 
-        # TODO: p could occur twice in a and/or b
         p_esc = re.escape(p)
         a_starts = (m.start() for m in re.finditer(p_esc, a))
         b_starts = (m.start() for m in re.finditer(p_esc, b))
