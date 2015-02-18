@@ -34,6 +34,9 @@ def iter_files_in_file(filename):
 
 
 def preprocess(args):
+    """
+    Run processing step
+    """
     standardizer_path = STANDARDIZER_PATH.format(args.language)
     standardizer = importlib.import_module(standardizer_path)
     if os.path.isdir(args.input):
@@ -48,8 +51,11 @@ def preprocess(args):
         pre.process()
 
 
-def process_parallel(a, output_dir, gap_length, match_length,
-                     percentage_match_length, b, comparator):
+def process_parallel_worker(a, output_dir, gap_length, match_length,
+                            percentage_match_length, b, comparator):
+    """
+    Worker for processing two files at a time in parallel
+    """
     comparator_path = COMPARATOR_PATH.format(comparator)
     comparator = importlib.import_module(comparator_path)
     pro = processor.Processor(output_dir=output_dir,
@@ -62,63 +68,76 @@ def process_parallel(a, output_dir, gap_length, match_length,
     pro.process(alpha_document=alpha, beta_document=beta)
 
 
-def process(args):
-    start = time.time()
-    alpha_iter = path.iter_files_in(args.preprocessed_dir)
-    beta_iter = path.iter_files_in(args.preprocessed_dir)
-    if args.parallel:
-        p = Pool()
-        compared = []
-        for a, b in itertools.product(alpha_iter, beta_iter):
-            this_set = sorted([a, b])
-            if a != b and this_set not in compared:
-                p.apply_async(process_parallel, (a,
-                                                 args.output_dir,
-                                                 args.gap_length,
-                                                 args.match_length,
-                                                 args.percentage_match_length,
-                                                 b,
-                                                 args.comparator))
-                compared.append(this_set)
-        p.close()
-        p.join()
-    else:
-        comparator_path = COMPARATOR_PATH.format(args.comparator)
-        comparator = importlib.import_module(comparator_path)
-        pro = processor.Processor(output_dir=args.output_dir,
-                                  comparator=comparator,
-                                  gap_length=args.gap_length,
-                                  match_length=args.match_length,
-                                  percentage_match_length=args.percentage_match_length)
-        compared = []
-        for a, b in itertools.product(alpha_iter, beta_iter):
-            this_set = sorted([a, b])
-            if a != b and this_set not in compared:
-                alpha = Document.from_json(a)
-                beta = Document.from_json(b)
-                pro.process(alpha_document=alpha, beta_document=beta)
+def process_parallel(args, alpha_files, beta_files):
+    """
+    Process on multiple threads/processes
+    """
+    p = Pool()
+    compared = []
+    for a, b in itertools.product(alpha_files, beta_files):
+        this_set = sorted([a, b])
+        if a != b and this_set not in compared:
+            p.apply_async(process_parallel_worker, (a,
+                                                    args.output_dir,
+                                                    args.gap_length,
+                                                    args.match_length,
+                                                    args.percentage_match_length,
+                                                    b,
+                                                    args.comparator))
+            compared.append(this_set)
+    p.close()
+    p.join()
+    return len(compared)
 
-    cnt = len(compared)
+
+def process_serial(args, alpha_files, beta_files):
+    """
+    Process on a single thread
+    """
+    comparator_path = COMPARATOR_PATH.format(args.comparator)
+    comparator = importlib.import_module(comparator_path)
+    pro = processor.Processor(output_dir=args.output_dir,
+                              comparator=comparator,
+                              gap_length=args.gap_length,
+                              match_length=args.match_length,
+                              percentage_match_length=args.percentage_match_length)
+    compared = []
+    for a, b in itertools.product(alpha_files, beta_files):
+        this_set = sorted([a, b])
+        if a != b and this_set not in compared:
+            alpha = Document.from_json(a)
+            beta = Document.from_json(b)
+            pro.process(alpha_document=alpha, beta_document=beta)
+    return len(compared)
+
+
+def process(args):
+    """
+    Run processing step
+    """
+    start = time.time()
+    alpha_files = path.iter_files_in(args.preprocessed_dir)
+    beta_files = path.iter_files_in(args.preprocessed_dir)
+    if args.parallel:
+        cnt = process_parallel(args, alpha_files, beta_files)
+    else:
+        cnt = process_serial(args, alpha_files, beta_files)
+
     duration = time.time() - start
     comparisons_per_sec = cnt/duration
     logger.info('Processed {} files per second'.format(comparisons_per_sec))
 
 
-def postprocess(args):
-    return
-
-
 def main(parsed_args):
     preprocess(parsed_args)
     process(parsed_args)
-    postprocess(parsed_args)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='DIRT.py',
                                      description='Find reused text in a corpus of text')
 
-    # TODO: add parameters to allow only pre/processing/postprocessing
+    # TODO: add parameters to allow only pre/processing
     parser.add_argument('-i', '--input',
                         help='Directory containing input corpus',
                         # required=True,

@@ -5,7 +5,6 @@ import mock
 import DIRT
 from models import match_set_factory
 import utilities.path
-from preprocessing.preprocessor import Preprocessor
 
 
 def iter_match_passages(match_set):
@@ -36,40 +35,6 @@ class SmokeTest(unittest.TestCase):
     def tearDown(self):
         self._reset_dirs()
 
-    # def test_a(self):
-    #     args = mock.Mock()
-    #     args.input = 'test_data'
-    #     args.preprocessed_dir = self.pre_dir
-    #     args.output_dir = self.out_dir
-    #     args.language = 'eng'
-    #     args.comparator = 'simple'
-    #     args.gap_length = 3
-    #     args.match_length = 10
-    #     DIRT.main(args)
-    #     # TODO: test the outputs
-    #
-    # def test_b(self):
-    #     args = mock.Mock()
-    #     args.input = 'other_test_files/input_list.txt'
-    #     args.preprocessed_dir = self.pre_dir
-    #     args.output_dir = self.out_dir
-    #     args.language = 'eng'
-    #     args.comparator = 'simple'
-    #     args.gap_length = 3
-    #     args.match_length = 10
-    #     DIRT.main(args)
-    #
-    # def test_z(self):
-    #     args = mock.Mock()
-    #     args.input = 'test_data/zhi'
-    #     args.preprocessed_dir = self.pre_dir
-    #     args.output_dir = self.out_dir
-    #     args.language = 'zhi'
-    #     args.comparator = 'simple'
-    #     args.gap_length = 3
-    #     args.match_length = 10
-    #     DIRT.main(args)
-
     def _no_matchset_dupes(self, ms):
         found = set()
         for match in ms:
@@ -81,6 +46,7 @@ class SmokeTest(unittest.TestCase):
         args.input = 'test_data/full_test/files_to_process.txt'
         args.preprocessed_dir = 'test_data/full_test/preprocessed'
         args.output_dir = self.out_dir
+        # TODO: use zhi
         args.language = 'eng'
         args.comparator = 'simple'
         args.gap_length = 10
