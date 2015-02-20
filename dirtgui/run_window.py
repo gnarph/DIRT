@@ -11,7 +11,7 @@ class RunningWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         layout = QHBoxLayout()
-        button = QPushButton('Click me to start!', self)
+        button = QPushButton('DiRT Start!', self)
         layout.addWidget(button)
 
         self.widget = QWidget()
@@ -28,12 +28,13 @@ class RunningWindow(QMainWindow):
         self.other_window.show()
 
 
-def main(index_dir):
+def main():
     app = QtGui.QApplication(sys.argv)
-    rw = RunnningWindow()
-    setup_window(rw)
+    rw = RunningWindow()
     rw.show()
     
     sys.exit(app.exec_())
 
+if __name__ == '__main__':
+    main() 
     
