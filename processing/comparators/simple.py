@@ -92,11 +92,6 @@ class Comparator(base_comparator.BaseComparator):
         :return: list of tuples containing the passage
                  in a and in b
         """
-        # a_passages = spacer.respace(self.a, a_strip, matching_passages)
-        # b_passages = spacer.respace(self.b, b_strip, matching_passages)
-        # passage_pairs = zip(a_passages, b_passages)
-        # return passage_pairs
-
         a_spaces = spacer.get_space_locations(self.a)
         b_spaces = spacer.get_space_locations(self.b)
         passages = []
@@ -104,10 +99,10 @@ class Comparator(base_comparator.BaseComparator):
             a = self.a_strip[tup.a:tup.a_end]
             b = self.b_strip[tup.b:tup.b_end]
 
-            na = spacer.add_spaces(a_spaces, tup.a, a)
-            nb = spacer.add_spaces(b_spaces, tup.b, b)
-            # TODO: consider namedtuple for clarity
-            passages.append((na, nb))
+            a_passage = spacer.add_spaces(a_spaces, tup.a, a)
+            b_passage = spacer.add_spaces(b_spaces, tup.b, b)
+            passage_tup = (a_passage, b_passage)
+            passages.append(passage_tup)
         return passages
 
     @staticmethod

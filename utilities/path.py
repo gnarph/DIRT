@@ -3,9 +3,12 @@ import shutil
 
 
 def iter_files_in(directory):
-    # TODO: Consider os.walk for finding recursively
-    # however, then the processing naming would probably need
-    # to be adjusted
+    """
+    Iterate over all filenames in a directory
+    Does not descend into sub-directories
+    :param directory: directory to look for
+    :return: generator
+    """
     for item_name in os.listdir(directory):
         full_name = os.path.join(directory, item_name)
         if should_use_file(full_name):
@@ -13,6 +16,11 @@ def iter_files_in(directory):
 
 
 def should_use_file(name):
+    """
+    Should DIRT use the file?
+    :param name: name of file
+    :return: boolean
+    """
     if is_hidden_file(name):
         return False
     return os.path.isfile(name)

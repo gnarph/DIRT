@@ -104,8 +104,6 @@ class MatchSingletTest(unittest.TestCase):
         self.assertFalse(singlet_a == singlet_c)
         self.assertFalse(singlet_b == singlet_c)
 
-    # TODO: test eq
-
 
 class MatchTest(unittest.TestCase):
 
@@ -259,7 +257,7 @@ class MatchSetIndexTest(unittest.TestCase):
         names = set(gen_names)
 
         wanted_names = ['focus__otherdoc__CMP.json',
-                        'threedoc__focus__CMP.json']
+                        'nototherdoc__focus__CMP.json']
 
         def join_path(name):
             return os.path.join(self.out_dir, name)
@@ -278,15 +276,13 @@ class MatchSetIndexTest(unittest.TestCase):
             self.assertIn(focus_name, a.file_name)
 
     def test_get_all_file_names(self):
-        # TODO: this is pretty naive
-        # should handle file names that are substrings of
-        # other file names
-        expected = {'focus', 'otherdoc', 'threedoc'}
+        expected = {'focus', 'otherdoc', 'nototherdoc'}
         msi = MatchSetIndex(self.out_dir)
 
         files = msi.get_all_file_names()
         self.assertEqual(files, expected)
 
     def test_get_all_matched_documents(self):
-        # TODO
-        pass
+        msi = MatchSetIndex(self.out_dir)
+        all_docs = msi.get_all_matched_documents('focus')
+        self.assertEqual(len(all_docs), 2)

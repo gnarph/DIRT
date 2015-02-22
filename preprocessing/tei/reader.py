@@ -11,7 +11,6 @@ class TEIReader(object):
         Read TEI xml document into a more useful form
         :return: unicode text body, metadata dictionary
         """
-        # TODO: is this module necessary?
         doc = tei_document.TEIDocument(self.file_name)
         data_dict = doc.get_data()
         body = data_dict['body']
