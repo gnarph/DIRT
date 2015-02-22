@@ -17,11 +17,14 @@ class Match(object):
         self.beta_indices = tuple(beta_indices)
 
     def __eq__(self, other):
-        # TODO: check indices
         if self.alpha_passage == other.alpha_passage:
-            return self.beta_passage == other.beta_passage
+            if self.beta_passage == other.beta_passage:
+                if self.alpha_indices == other.alpha_indices:
+                    return self.beta_indices == other.beta_indices
         elif self.alpha_passage == other.beta_passage:
-            return self.beta_passage == other.alpha_passage
+            if self.beta_passage == other.alpha_passage:
+                if self.alpha_indices == other.beta_indices:
+                    return self.beta_indices == other.alpha_indices
         return False
 
     def __hash__(self):

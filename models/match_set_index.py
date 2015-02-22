@@ -1,10 +1,13 @@
 """
 Module for handling a directory of reports
 """
+import re
 
 from models import match_set_factory
 from utilities import path
 from utilities import file_ops
+
+FILE_NAME_REGEX = r'^(?P<alpha>.+)__(?P<beta>.+)__CMP\.json$'
 
 
 class MatchSetIndex(object):
@@ -43,15 +46,14 @@ class MatchSetIndex(object):
         return all_sets
 
     def get_all_file_names(self):
+        regex = re.compile(FILE_NAME_REGEX)
         names = set()
         files = path.iter_files_in(self.out_dir)
         for full_path in files:
             file_name = file_ops.get_file_name_only(full_path)
-            # TODO: Bit of hack
-            # regex probably better
-            split = file_name.split('__')
-            alpha_name = split[0]
-            beta_name = split[1]
+            match = regex.search(file_name)
+            alpha_name = match.group('alpha')
+            beta_name = match.group('beta')
             names.add(alpha_name)
             names.add(beta_name)
         return names
