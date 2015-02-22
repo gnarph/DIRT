@@ -126,3 +126,19 @@ class MatchSet(object):
 
         self._lmatches = None
 
+    def _get_meta(self, doc):
+        meta = doc.get_metadata()
+        meta['match_count'] = len(self.matches)
+        return meta
+
+    def get_alpha_metadata(self):
+        """
+        Passthrough to get metadata
+        """
+        return self._get_meta(self.alpha_doc)
+
+    def get_beta_metadata(self):
+        """
+        Passthrough to get metadata
+        """
+        return self._get_meta(self.beta_doc)

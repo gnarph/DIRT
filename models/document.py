@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from utilities import file_ops
 
 
@@ -94,11 +96,12 @@ class Document(object):
         return True
 
     def get_metadata(self):
-        # TODO: hack, so fix, should move to match set
-        expected = ['title', 'author', 'ml', 'mp']
-        result = []
-        for ex in expected:
-            value = self.metadata.get(ex, '')
-            result.append(value)
-        result.append(self.file_name)
+        """
+        Get document metadata as dictionary
+        :return: defaultdict of metadata, returning '' if
+                 the field is not known
+        """
+        result = defaultdict(str)
+        result.update(self.metadata)
+        result['file_name'] = self.file_name
         return result

@@ -135,9 +135,9 @@ def main(parsed_args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='DIRT.py',
-                                     description='Find reused text in a corpus of text')
+                                     description='Find reused passages in a corpus of unicode text')
 
-    # TODO: add parameters to allow only pre/processing
+    # TODO: avoid reprocessing
     parser.add_argument('-i', '--input',
                         help='Directory containing input corpus',
                         # required=True,

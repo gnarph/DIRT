@@ -1,6 +1,9 @@
 import string
+
 from PyQt4 import QtGui, QtCore
 
+COLUMNS = ['file_name',
+           'match_count']
 
 class MainTable(QtGui.QTableWidget):
     """
@@ -41,17 +44,18 @@ class MainTable(QtGui.QTableWidget):
         """
         Populates the table with elements
         """
-        cols = 5
+        cols = len(COLUMNS)
         self.setRowCount(len(entries))
         self.setColumnCount(cols)
 
+        # TODO: should use matchsets as entries, not documents
+        #       otherwise we don't have the info we need
         for i, entry in enumerate(entries):
-            # TODO: this should be a match set to get all
-            #       applicable metadata
-            fields = entry.get_metadata()
-            for j, field in enumerate(fields):
+            meta = entry.get_metadata()
+            for j, col_name in enumerate(COLUMNS):
                 item = QtGui.QTableWidgetItem(j)
-                item.setText(unicode(field))
+                uni_val = unicode(meta[col_name])
+                item.setText(uni_val)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.setItem(i, j, item)
 
