@@ -11,7 +11,7 @@ from models.document import Document
 from models.document import InvalidDocumentException
 import models.match_set_factory as match_set_factory
 from models.match import Match
-from models.match_singlet import MatchSinglet
+from models.match_singlet import MatchHalf
 from models.match_set import MatchSet
 from models.match_set_index import MatchSetIndex
 from utilities.fuzzer import is_fuzzy_match
@@ -93,55 +93,16 @@ class MatchSingletTest(unittest.TestCase):
         self.doc.body = fmt.format(self.with_context)
         self.doc.file_name = self.file_name
         self.body = self.doc.body
-        self.singlet = MatchSinglet(passage=self.match)
-
-    def test_get_context(self):
-        """
-        Test that get_context returns the match and appropriate context
-        """
-        pad_chars = len(self.context_pad)
-        match_with_context = self.singlet.get_context(self.body,
-                                                      context_chars=pad_chars)
-        self.assertTrue(is_fuzzy_match(match_with_context, self.with_context))
-
-        # Test match at end of body
-        loc = self.body.find(self.match)
-        end_match = loc + len(self.match)
-        self.doc.body = self.doc.body[:end_match]
-        end_singlet = MatchSinglet(passage=self.match)
-        end_match_context = end_singlet.get_context(self.doc.body,
-                                                    context_chars=pad_chars)
-        self.assertIn(self.match, end_match_context)
-
-        # Test match at start of body
-        self.doc.body = self.body[loc:]
-        beg_singlet = MatchSinglet(passage=self.match)
-        beg_match_context = beg_singlet.get_context(self.doc.body,
-                                                    context_chars=pad_chars)
-        self.assertIn(self.match, beg_match_context)
-
-    def test_to_dict(self):
-        """
-        Test conversion to dict representation
-        """
-        sing_dict = self.singlet.to_dict()
-        self.assertEqual(sing_dict['passage'], self.match)
+        self.singlet = MatchHalf(passage=self.match)
 
     def test_eq(self):
-        singlet_a = MatchSinglet(passage="test")
-        singlet_b = MatchSinglet(passage="test")
-        singlet_c = MatchSinglet(passage="nope")
+        singlet_a = MatchHalf(passage="test")
+        singlet_b = MatchHalf(passage="test")
+        singlet_c = MatchHalf(passage="nope")
 
         self.assertTrue(singlet_a == singlet_b)
         self.assertFalse(singlet_a == singlet_c)
         self.assertFalse(singlet_b == singlet_c)
-
-    def test_from_dict(self):
-        singlet_a = MatchSinglet(passage=u'hey')
-        singlet_a_dict = singlet_a.to_dict()
-        singlet_from_dict = MatchSinglet.from_dict(singlet_a_dict)
-
-        self.assertTrue(singlet_a == singlet_from_dict)
 
     # TODO: test eq
 
@@ -226,8 +187,8 @@ class MatchSetTest(unittest.TestCase):
         self.matches = []
         self.singlet_pairs = []
         for i in xrange(len(self.passages_a)):
-            a = MatchSinglet(passage=self.passages_a[i])
-            b = MatchSinglet(passage=self.passages_b[i])
+            a = MatchHalf(passage=self.passages_a[i])
+            b = MatchHalf(passage=self.passages_b[i])
             s_pair = (a, b)
             self.singlet_pairs.append(s_pair)
             # Alpha/beta need to be actual documents, not names

@@ -4,7 +4,7 @@ import operator
 import re
 
 import processing.comparators.base_comparator as base_comparator
-from models.match_singlet import MatchSinglet
+from models.match_singlet import MatchHalf
 import processing.comparators.match_concatenator as concatenator
 from utilities.suffix_array import matcher as suffix_apps
 from processing.comparators import spacer
@@ -124,7 +124,7 @@ class Comparator(base_comparator.BaseComparator):
         """
         singlet_pairs = []
         for p_a, p_b in passage_blocks:
-            s_a = MatchSinglet(passage=p_a)
-            s_b = MatchSinglet(passage=p_b)
+            s_a = MatchHalf(passage=p_a)
+            s_b = MatchHalf(passage=p_b)
             singlet_pairs.append((s_a, s_b))
         return singlet_pairs
