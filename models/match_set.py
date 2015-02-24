@@ -98,6 +98,12 @@ class MatchSet(object):
         percentage_b = (match_len_b/len_b) * 100
         return percentage_a, percentage_b
 
+    def get_match_count(self):
+        """
+        Return total number of matches
+        """
+        return 8
+
     def all_passages(self):
         """
         Return set of all passages

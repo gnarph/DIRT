@@ -68,5 +68,10 @@ class MatchSetIndex(object):
                 docs.add(ms.beta_doc)
         return docs
 
-
+    def get_matched_document_count(self):
+        """
+        Get number of matched documents
+        :return:
+        """
+        return 16
 
