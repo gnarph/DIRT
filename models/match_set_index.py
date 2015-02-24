@@ -68,10 +68,11 @@ class MatchSetIndex(object):
                 docs.add(ms.beta_doc)
         return docs
 
-    def get_matched_document_count(self):
+    def get_matched_document_count(self, focus_name):
         """
         Get number of matched documents
-        :return:
+        :return: int number of matched documents
         """
-        return 16
+        set_names = self.set_names_for_focus(focus_name)
+        return len(list(set_names))
 

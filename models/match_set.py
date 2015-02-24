@@ -101,8 +101,9 @@ class MatchSet(object):
     def get_match_count(self):
         """
         Return total number of matches
+        could just use use len() instead
         """
-        return 8
+        return len(self.matches)
 
     def all_passages(self):
         """
