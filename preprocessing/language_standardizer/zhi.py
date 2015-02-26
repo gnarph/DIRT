@@ -1,16 +1,10 @@
 """
 Module for standardizing Chinese text
 """
-
-from unicodedata import category
-
 from cjklib import characterlookup
 import mafan
 
-# Unicode categories
-PUNCTUATION_CATS = {'Pc', 'Pd', 'Ps', 'Pe', 'Pi', 'Pf', 'Po'}
-SYMBOL_CATS = {'Sc', 'Sk', 'Sm', 'So'}
-SEPARATOR_CATS = {'Zi', 'Zp', 'Zs'}
+from preprocessing.language_standardizer import base_standardizer
 
 
 def standardize(text):
@@ -70,15 +64,13 @@ def chunk_gen(text, sub=' '):
     :param sub: thing to substitute for unwanted characters
     :return: generator
     """
-    # Unicode categories we don't want
-    sub_cats = PUNCTUATION_CATS | SYMBOL_CATS | SEPARATOR_CATS
 
     # Lookup characters in chinese locale
     lookup = characterlookup.CharacterLookup(locale='C')
 
-    for char in text:
-        if category(char) in sub_cats:
-            yield sub
+    for char in base_standardizer.remove_unwanted_gen(text, sub):
+        if char == sub:
+            yield char
         else:
             # Only want Z-variants, as they indicate no change in
             # meaning

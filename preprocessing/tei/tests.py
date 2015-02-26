@@ -44,10 +44,16 @@ class TEITest(unittest.TestCase):
         self.assertEqual(output['body'], body)
 
     def test_get_data(self):
+        """
+        Test extraction of data from TEI xml
+        """
         self._test_get_data(TEI_ZHI, JSON_ZHI, RAW_ZHI)
         self._test_get_data(TEI_ENG, JSON_ENG, RAW_ENG)
 
     def test_read(self):
+        """
+        Test reading of TEI xml file
+        """
         real_data_file = self._get_test_file_name(TEI_ZHI)
         tei_doc = tei_document.TEIDocument(real_data_file)
         tei_data = tei_doc.get_data()
@@ -61,6 +67,9 @@ class TEITest(unittest.TestCase):
         self.assertEqual(read_metadata, global_doc.metadata)
 
     def test_invalid_data(self):
+        """
+        Test how invalid data is handled
+        """
         file_name = 'preprocessing/tei/test_data/invalid_tei.xml'
         tei_doc = tei_document.TEIDocument(file_name)
         tei_data = tei_doc.get_data()

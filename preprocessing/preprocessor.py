@@ -41,6 +41,11 @@ class Preprocessor(object):
         logger.info(message)
 
     def process(self):
+        """
+        Perform processing
+        Creates raw and preprocessed versions of the input file
+        as well as a json file representing the models.Document
+        """
         start_time = time.time()
         name = path.get_name(self.file_name, extension=False)
         output_name = name + PREPROCESS_SUFFIX

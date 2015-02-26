@@ -13,6 +13,9 @@ class PreprocessorTest(unittest.TestCase):
     output_dir = 'test_preprocessed'
 
     def test_smoke(self):
+        """
+        Smoke test - check that the preprocessor runs without exploding
+        """
         pp = Preprocessor(file_name=self.file_name,
                           input_dir=self.input_dir,
                           output_dir=self.output_dir)

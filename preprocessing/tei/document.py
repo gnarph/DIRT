@@ -16,6 +16,9 @@ TAG_BODY = 'body'
 
 
 class TEIDocument(object):
+    """
+    Class used to represent a TEI encoded xml file
+    """
 
     query_template = '//{namespace}{tag}'
     no_tag_error_template = 'Could not find <{tag}>'

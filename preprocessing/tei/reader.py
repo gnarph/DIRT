@@ -2,8 +2,15 @@ import preprocessing.tei.document as tei_document
 
 
 class TEIReader(object):
+    """
+    Class for reading useful information from a TEI encoded
+    xml file
+    """
 
     def __init__(self, file_name):
+        """
+        :param file_name: Name of TEI encoded xml file
+        """
         self.file_name = file_name
 
     def read(self):

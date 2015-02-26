@@ -8,6 +8,9 @@ from preprocessing.language_standardizer import zhi
 class ZhiTest(unittest.TestCase):
 
     def test_translate(self):
+        """
+        Test simplified to tradiational translation
+        """
         simplified = u'来自Bandai Namco Games TW/HK 官方FACEBOOK情报' \
                      u'，PS3/PSV平台动漫改编作品《刀剑神域：失落之歌》繁' \
                      u'体中文版正式公开!预定于2015年发售，并一同公开了繁' \
