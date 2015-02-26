@@ -46,6 +46,10 @@ class MatchSetIndex(object):
         return all_sets
 
     def get_all_file_names(self):
+        """
+        Get all files names in the index
+        :return: list of MatchSet json file names
+        """
         regex = re.compile(FILE_NAME_REGEX)
         names = set()
         files = path.iter_files_in(self.out_dir)
@@ -59,6 +63,12 @@ class MatchSetIndex(object):
         return names
 
     def get_all_matched_documents(self, focus_name):
+        """
+        Get a list of all documents matched in the index with the
+        focus document
+        :param focus_name: name of the focus document
+        :return: list of Documents matched with focus
+        """
         all_match_sets = self.get_all_match_sets(focus_name)
         docs = set()
         for ms in all_match_sets:

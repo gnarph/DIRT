@@ -116,9 +116,15 @@ class MatchSet(object):
         return passages
 
     def alpha_passages(self):
+        """
+        Get a list of matches in the alpha document
+        """
         return [m.alpha_passage for m in self.matches]
 
     def beta_passages(self):
+        """
+        Get a list of matches in the beta document
+        """
         return [m.beta_passage for m in self.matches]
 
     def swap_alpha_beta(self):
@@ -134,6 +140,9 @@ class MatchSet(object):
         self._lmatches = None
 
     def _get_meta(self, doc):
+        """
+        Get metadata from a document
+        """
         meta = doc.get_metadata()
         meta['match_count'] = len(self.matches)
         return meta

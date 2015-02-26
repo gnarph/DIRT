@@ -72,6 +72,9 @@ class DocumentTest(unittest.TestCase):
         # TODO check raw
 
     def test_open(self):
+        """
+        Test opening a Document json
+        """
         self.assertRaises(InvalidDocumentException,
                           Document.from_json,
                           'models/test_data/invalid.json')
@@ -96,6 +99,9 @@ class MatchSingletTest(unittest.TestCase):
         self.singlet = MatchHalf(passage=self.match)
 
     def test_eq(self):
+        """
+        Test MatchSinglet equality
+        """
         singlet_a = MatchHalf(passage="test")
         singlet_b = MatchHalf(passage="test")
         singlet_c = MatchHalf(passage="nope")
@@ -130,6 +136,9 @@ class MatchTest(unittest.TestCase):
         self.assertEqual(self.beta_indices, match_dict['beta_indices'])
 
     def test_eq(self):
+        """
+        Test match equality
+        """
         a = Match(alpha_passage=u'one',
                   alpha_indices=(3, 5),
                   beta_passage=u'two',
@@ -156,6 +165,9 @@ class MatchTest(unittest.TestCase):
         self.assertFalse(hash_b == hash_c)
 
     def test_swap_alpha_beta(self):
+        """
+        Test swapping alpha and beta documents
+        """
         alpha_passage = u'one'
         alpha_indices = (3, 5)
         beta_passage = u'two'
@@ -198,6 +210,9 @@ class MatchSetTest(unittest.TestCase):
                                   matches=self.matches)
 
     def test_serialize(self):
+        """
+        Test serialization i.e. to_dict
+        """
         match_set_dict = self.match_set.to_dict()
         match_set_json = cjson.encode(match_set_dict)
         deserialized_dict = cjson.decode(match_set_json)
@@ -228,11 +243,17 @@ class MatchSetTest(unittest.TestCase):
     # TODO: test eq
 
     def test_percentage(self):
+        """
+        Test get match percentage
+        """
         a, b = self.match_set.get_match_percentage()
         self.assertEqual(a, 62.5)
         self.assertAlmostEqual(b, 58.823, places=1)
 
     def test_swap(self):
+        """
+        Test swapping alpha and beta docs
+        """
         self.match_set.swap_alpha_beta()
 
         # Check passages have swapped
@@ -250,6 +271,9 @@ class MatchSetIndexTest(unittest.TestCase):
     out_dir = 'models/test_data/out'
 
     def test_set_names_for_focus(self):
+        """
+        Test set names for focus
+        """
         focus_name = 'focus'
         msi = MatchSetIndex(self.out_dir)
 

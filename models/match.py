@@ -44,6 +44,11 @@ class Match(object):
 
     @staticmethod
     def from_dict(d):
+        """
+        Create a match from it's dictionary representation
+        :param d: dict representation of a Match
+        :return: Match
+        """
         return Match(alpha_passage=d['alpha_passage'],
                      alpha_indices=d['alpha_indices'],
                      beta_passage=d['beta_passage'],

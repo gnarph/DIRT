@@ -43,6 +43,11 @@ class Document(object):
     @staticmethod
     @error_handler
     def from_json(file_name):
+        """
+        Create a Document from a json file
+        :param file_name: name of json file
+        :return: Document
+        """
         if not file_name.endswith('.json'):
             template = 'Need json file, got {}'
             message = template.format(file_name)
@@ -68,6 +73,10 @@ class Document(object):
         return file_ops.read_utf8(self.pre_file_name)
 
     def clone(self):
+        """
+        Make a copy
+        :return: return a copy of the document object
+        """
         return Document(file_name=self.file_name,
                         metadata=self.metadata,
                         pre_file_name=self.pre_file_name,
