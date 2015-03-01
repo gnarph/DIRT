@@ -40,6 +40,13 @@ class Document(object):
         self.pre_file_name = pre_file_name
         self.metadata = metadata if metadata else {}
 
+    def __hash__(self):
+        important_elements = [self.file_name,
+                              self.raw_file_name,
+                              self.pre_file_name]
+        to_hash = u''.join(important_elements)
+        return hash(to_hash)
+
     @staticmethod
     @error_handler
     def from_json(file_name):
