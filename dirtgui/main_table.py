@@ -1,9 +1,11 @@
 import string
 
 from PyQt4 import QtGui, QtCore
+from models.match_set_index import MatchSetIndex
+from models.match_set import MatchSet
 
-COLUMNS = ['file_name',
-           'match_count']
+COLUMNS = ['Match Title', 'Author(s)', 'Matches',
+           'Match %', 'Path']
 
 class MainTable(QtGui.QTableWidget):
     """
@@ -27,31 +29,28 @@ class MainTable(QtGui.QTableWidget):
     def __init__(self, parent=None):
         super(MainTable, self).__init__(parent)
         self.setColumnCount(5)
-
-        headers = ['Match Title', 'Author(s)', 'Matches',
-                   'Match %', 'Path']
-
         self._set_initial_column_widths()
-
         self.horizontalHeader().setStretchLastSection(True)
         self.setAlternatingRowColors(True)
-        self.setHorizontalHeaderLabels(headers)
+        self.setHorizontalHeaderLabels(COLUMNS)
         self.setSortingEnabled(True)
 
         self._set_fonts()
 
-    def populate(self, entries):
+    def populate(self, focus):
         """
-        Populates the table with elements
+        Populates the table with metadata
         """
+
+        match_list = self._get_match_list(focus)
         cols = len(COLUMNS)
-        self.setRowCount(len(entries))
+        self.setRowCount(len(match_list))
         self.setColumnCount(cols)
 
         # TODO: should use matchsets as entries, not documents
         #       otherwise we don't have the info we need
-        for i, entry in enumerate(entries):
-            meta = entry.get_metadata()
+        for i, match in enumerate(match_list):
+            meta = match.get_metadata()
             for j, col_name in enumerate(COLUMNS):
                 item = QtGui.QTableWidgetItem(j)
                 uni_val = unicode(meta[col_name])
@@ -59,24 +58,23 @@ class MainTable(QtGui.QTableWidget):
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.setItem(i, j, item)
 
-    def add_data(self, match_file, entries):
+    def _get_match_list(self, focus_doc):
         """
-        Adds json metadata from a match file
-        to a list used to populate the table
+        List of all matches found to the focus
         :param match_file: the match file
         :param entries: the list to append to
         """
-        fname = QtGui.QFileDialog.getOpenFileName(self, match_file, '')
+        msi = MatchSetIndex()
+        self.focus = focus_doc
+        match_list = msi.get_all_matched_documents(self.focus)
+        return match_list
 
-        match = self.lay_out.m
-        match.match_file = fname
-        match.setup_matches_list(fname)
-
-        print self.lay_out.m.match_file
-        title = 'title'
-        author = 'author'
-        match_len = 'match length'
-        match_percent = 'match percentage'
-        path = 'path'
-        entries.extend([title, author, match_len, match_percent, path])
-
+    def _get_sorted_metadata(self, metadata):
+        sorted_metadata = []
+        title = metadata.get('title')
+        author = metadata.get('author')
+        match_len = metadata.get('match_len')
+        match_percent = metadata.get('match_percent')
+        path = metadata.get('path')
+        sorted_metadata.extend([title, author, match_len, match_percent, path])
+        return sorted_metadata
