@@ -40,6 +40,26 @@ class GridLayout(QtGui.QWidget):
 
         # Add the form layout to the main VBox layout
         self.layout.addLayout(self.form_layout)
+
+        # The skipping character options
+        self.gap_option = ['0','1','2','3','4','5']
+
+        # Create and fill the combo box to choose the skipping character
+        self.gap_length = QComboBox(self)
+        self.gap_length.addItems(self.gap_option)
+
+        # Add it to the form layout with a label
+        self.form_layout.addRow('Gap Length:', self.gap_length)
+
+        # The mimimum match lengths option
+        self.match_option = ['1','2','3','4','5','6','7','8','9']
+
+        # Create and fill the combo box to choose the skipping character
+        self.minimum_match_length = QComboBox(self)
+        self.minimum_match_length.addItems(self.match_option)
+
+        # Add it to the form layout with a label
+        self.form_layout.addRow('Minimum Match Length:', self.minimum_match_length)
  
         # Add stretch to separate the form layout from the button
         self.layout.addStretch(1)
@@ -62,6 +82,7 @@ class GridLayout(QtGui.QWidget):
         
         self.setLayout(self.layout)
 
+        # Link to the MainWindow
         self.connect(self.startButton, SIGNAL('clicked()'), self.newWindow)
 
     def newWindow(self):

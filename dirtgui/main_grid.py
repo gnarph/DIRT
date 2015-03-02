@@ -16,10 +16,10 @@ class MainGrid(QtGui.QGridLayout):
         # Widgets
 
         # Labels
-        header = QtGui.QLabel(header)
+        header = QtGui.QLabel(header + ' DOCUMENT')
         location = QtGui.QLabel('Path :')
-        title = QtGui.QLabel('Title :')
-        author = QtGui.QLabel('Author :')
+        title = QtGui.QLabel('Title')
+        author = QtGui.QLabel('Author')
         #text = QtGui.QLabel('Text :')
         self.passage_type = passage_type
 
@@ -29,11 +29,11 @@ class MainGrid(QtGui.QGridLayout):
         header.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         header.setAlignment(QtCore.Qt.AlignCenter)
         location.setFont(label_font)
-        location.setAlignment(QtCore.Qt.AlignRight)
+        location.setAlignment(QtCore.Qt.AlignLeft)
         title.setFont(label_font)
-        title.setAlignment(QtCore.Qt.AlignRight)
+        title.setAlignment(QtCore.Qt.AlignLeft)
         author.setFont(label_font)
-        author.setAlignment(QtCore.Qt.AlignRight)
+        author.setAlignment(QtCore.Qt.AlignLeft)
         #text.setFont(label_font)
 
         # ------------------------------------------------------
@@ -67,11 +67,12 @@ class MainGrid(QtGui.QGridLayout):
 
         # Header
         self.setSpacing(10)
-        self.addWidget(header, 0, 1)
+        self.addWidget(header, 0, 1, QtCore.Qt.AlignCenter)
+        self.verticalSpacing()
 
         # Path
-        self.addWidget(location, 1, 0)
-        self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
+        # self.addWidget(location, 1, 0)
+        # self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
 
         # Title
         self.addWidget(title, 2, 0)
@@ -82,8 +83,8 @@ class MainGrid(QtGui.QGridLayout):
         self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
 
         # Text
-        #self.addWidget(text, 4, 0)
         self.addWidget(QtGui.QTableWidget.textEdit, 4, 0, 10, -1)
+        self.setRowStretch(4, 2)
 
         self.file_path = ''
         self.match_file = ''
