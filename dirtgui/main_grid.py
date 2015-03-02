@@ -15,6 +15,12 @@ class MainGrid(QtGui.QGridLayout):
         # ------------------------------------------------------
         # Widgets
 
+        if header == 'FOCUS':
+            button = "Previous"
+
+        else:
+            button = "Next"
+
         # Labels
         header = QtGui.QLabel(header)
         location = QtGui.QLabel('Path :')
@@ -22,6 +28,7 @@ class MainGrid(QtGui.QGridLayout):
         author = QtGui.QLabel('Author :')
         #text = QtGui.QLabel('Text :')
         self.passage_type = passage_type
+
 
         # Label Fonts
         label_font = QtGui.QFont('', 11, QtGui.QFont.Bold)
@@ -62,6 +69,13 @@ class MainGrid(QtGui.QGridLayout):
         # Cursor
         #self.textEdit.setTextCursor(QtGui.QTextCursor())
 
+        # Button
+
+        self.navi_button = QtGui.QPushButton()
+        self.navi_button.setText(button)
+        self.navi_button.setMinimumHeight(40)
+
+
         # ------------------------------------------------------
         # Position on Grid Layout
 
@@ -70,8 +84,8 @@ class MainGrid(QtGui.QGridLayout):
         self.addWidget(header, 0, 1)
 
         # Path
-        self.addWidget(location, 1, 0)
-        self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
+        # self.addWidget(location, 1, 0)
+        # self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
 
         # Title
         self.addWidget(title, 2, 0)
@@ -82,8 +96,11 @@ class MainGrid(QtGui.QGridLayout):
         self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
 
         # Text
-        #self.addWidget(text, 4, 0)
         self.addWidget(QtGui.QTableWidget.textEdit, 4, 0, 10, -1)
+        self.setRowStretch(4, 2)
+
+        # Navi Button
+        self.addWidget(self.navi_button, 14, 1)
 
         self.file_path = ''
         self.match_file = ''

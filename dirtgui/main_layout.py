@@ -1,6 +1,7 @@
 from PyQt4 import QtGui, QtCore
 from dirtgui.main_frame import MainFrame
 from dirtgui.main_table import MainTable
+from models.match_set_index import MatchSetIndex
 import document_util.document_match_util as dmu
 
 
@@ -15,30 +16,50 @@ class MainLayout(QtGui.QWidget):
     def _setup_comparison_frames(self):
         self.f_frame = MainFrame(self, 'FOCUS')
         focus_doc_area = self.f_frame.grid.textEdit
+        self.f_frame.grid.navi_button.clicked.connect(self.prev_match)
+
+        # previous_button = QtGui.QPushButton()
+        # previous_button.setText('Previous')
+        # previous_button.setMinimumHeight(40)
+        # previous_button.clicked.connect(self.prev_match)
+        # self.f_frame.grid.addWidget(previous_button, 15, 0, 10, 0)
+
         self.m_frame = MainFrame(self, 'MATCH')
         match_doc_area = self.m_frame.grid.textEdit
+
+        # next_button = QtGui.QPushButton()
+        # next_button.setText('Next')
+        # next_button.clicked.connect(self.next_match)
+        # self.m_frame.grid.addWidget(next_button, 15, 0 , 10, 0)
+
+        self.m_frame.grid.navi_button.clicked.connect(self.prev_match)
 
     def _setup_result_table_frame(self):
         self.results_table = MainTable()
         self.results_table.cellDoubleClicked.connect(self.click_display)
+        self.results_table.sortByColumn(2)
+
         table_label = QtGui.QLabel('RESULTS TABLE')
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
 
-        navigation_bar = QtGui.QHBoxLayout()
+        # total_match = MatchSetIndex.get_matched_document_count(focus)
+        # total_match_label = QtGui.QLabel("Results Found: %d") % (total_match)
 
-        previous_button = QtGui.QPushButton()
-        previous_button.setText('Previous')
-        previous_button.clicked.connect(self.prev_match)
-        navigation_bar.addWidget(previous_button)
-
-        next_button = QtGui.QPushButton()
-        next_button.setText('Next')
-        next_button.clicked.connect(self.next_match)
-        navigation_bar.addWidget(next_button)
+        # navigation_bar = QtGui.QHBoxLayout()
+        #
+        # previous_button = QtGui.QPushButton()
+        # previous_button.setText('Previous')
+        # previous_button.clicked.connect(self.prev_match)
+        # navigation_bar.addWidget(previous_button)
+        #
+        # next_button = QtGui.QPushButton()
+        # next_button.setText('Next')
+        # next_button.clicked.connect(self.next_match)
+        # navigation_bar.addWidget(next_button)
 
         vbox = QtGui.QVBoxLayout()
-        vbox.addLayout(navigation_bar)
+        # vbox.addLayout(navigation_bar)
         vbox.addWidget(table_label)
         vbox.addWidget(self.results_table)
 
