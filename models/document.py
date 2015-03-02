@@ -1,4 +1,5 @@
 from collections import defaultdict
+from functools import wraps
 
 from utilities import file_ops
 
@@ -8,6 +9,7 @@ class InvalidDocumentException(BaseException):
 
 
 def error_handler(fn):
+    @wraps(fn)
     def wrapped(*args, **kwargs):
         try:
             val = fn(*args, **kwargs)

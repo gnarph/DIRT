@@ -1,4 +1,5 @@
 import codecs
+from functools import wraps
 import os
 
 import cjson
@@ -12,6 +13,7 @@ def unicode_error_handler(fn):
     """
     Capture and present unicode errors
     """
+    @wraps(fn)
     def wrapped(*args, **kwargs):
         try:
             val = fn(*args, **kwargs)
