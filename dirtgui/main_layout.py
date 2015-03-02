@@ -13,6 +13,8 @@ class MainLayout(QtGui.QWidget):
     Theme: 'cleanlooks'
     """
 
+    scroll_count = 1
+
     def _setup_comparison_frames(self):
         self.f_frame = MainFrame(self, 'FOCUS')
         focus_doc_area = self.f_frame.grid.textEdit
@@ -20,21 +22,20 @@ class MainLayout(QtGui.QWidget):
         self.m_frame = MainFrame(self, 'MATCH')
         match_doc_area = self.m_frame.grid.textEdit
 
-
     def _setup_result_table_frame(self):
         self.results_table = MainTable()
         self.results_table.cellDoubleClicked.connect(self.click_display)
         self.results_table.sortByColumn(2)
 
-        table_label = QtGui.QLabel('RESULTS TABLE')
+        # total_match = MatchSetIndex.get_matched_document_count(focus)
+        total_match = 13
+        table_label = QtGui.QLabel(('RESULTS FOUND' + ' (%d)') % (total_match))
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
 
-        # total_match = MatchSetIndex.get_matched_document_count(focus)
-        # total_match_label = QtGui.QLabel("Results Found: %d") % (total_match)
-
         vbox = QtGui.QVBoxLayout()
         vbox.addWidget(table_label)
+        vbox.addSpacing(5)
         vbox.addWidget(self.results_table)
 
         table_frame = QtGui.QFrame(self)
@@ -90,8 +91,8 @@ class MainLayout(QtGui.QWidget):
         splitter2 = QtGui.QSplitter(QtCore.Qt.Vertical)
         splitter2.addWidget(compare_frame)
         splitter2.addWidget(table_frame)
-        splitter2.setSizes([2,1])
         splitter2.setStretchFactor(0, 1)
+        # splitter2.setSizes([0,1])
 
         # Putting splitter layouts into horizontal layout
         hbox.addWidget(splitter2)
@@ -125,6 +126,16 @@ class MainLayout(QtGui.QWidget):
 
     def next_match(self):
         self.highlighter.highlight_match(1)
+        self.match_scroll(1)
 
     def prev_match(self):
         self.highlighter.highlight_match(-1)
+        self.match_scroll(-1)
+
+    def match_scroll(self, scroll):
+        global scroll_count
+        if scroll == 1:
+            scroll_count += 1
+        else:
+            scroll_count -= 1
+        return scroll_count
