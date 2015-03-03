@@ -12,6 +12,7 @@ class MainGrid(QtGui.QGridLayout):
     def __init__(self, parent, header, passage_type):
         super(MainGrid, self).__init__(parent)
 
+        self.highlighter = ''
         # ------------------------------------------------------
         # Widgets
 
@@ -59,6 +60,19 @@ class MainGrid(QtGui.QGridLayout):
         QtGui.QTableWidget.authorEdit.setReadOnly(True)
         QtGui.QTableWidget.textEdit.setReadOnly(True)
 
+        navigation_bar = QtGui.QHBoxLayout()
+
+        previous_button = QtGui.QPushButton()
+        previous_button.setText('Prev')
+        # previous_button.setMaximumSize(30,50)
+        previous_button.clicked.connect(self.prev_match)
+        navigation_bar.addWidget(previous_button)
+
+        next_button = QtGui.QPushButton()
+        next_button.setText('Next')
+        # next_button.setMaximumSize(30,50)
+        next_button.clicked.connect(self.next_match)
+        navigation_bar.addWidget(next_button)
         # Cursor
         #self.textEdit.setTextCursor(QtGui.QTextCursor())
 
@@ -82,9 +96,22 @@ class MainGrid(QtGui.QGridLayout):
         self.addWidget(author, 3, 0)
         self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
 
-        # Text
-        self.addWidget(QtGui.QTableWidget.textEdit, 4, 0, 10, -1)
-        self.setRowStretch(4, 2)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+
+        previous_button.setSizePolicy(sizePolicy)
+        previous_button.setMaximumWidth(35)
+        self.addWidget(previous_button, 4, 0, 1, 1, QtCore.Qt.AlignRight)
+
+        next_button.setSizePolicy(sizePolicy)
+        next_button.setMaximumWidth(35)
+        self.addWidget(next_button, 5, 0, 1, 1, QtCore.Qt.AlignRight)
+
+        # self.addWidget(text, 4, 0)
+        self.addWidget(QtGui.QTableWidget.textEdit, 4, 1, 3, 1)
+
+        self.setRowStretch(3, 5)
 
         self.file_path = ''
         self.match_file = ''
@@ -110,3 +137,9 @@ class MainGrid(QtGui.QGridLayout):
         text_area = self.textEdit
         cursor = text_area.textCursor()
         match_util.highlight_document(text_area, cursor, match_set, passage)
+
+    def next_match(self):
+        self.highlighter.highlight_match(1, self.passage_type)
+
+    def prev_match(self):
+        self.highlighter.highlight_match(-1, self.passage_type)

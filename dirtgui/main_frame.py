@@ -19,8 +19,3 @@ class MainFrame(QtGui.QFrame):
 
         self.setFrameShape(QtGui.QFrame.StyledPanel)
         self.setLayout(self.grid)
-
-        # Set Location, Title, Author to be displayed
-        # self.grid.locationEdit.setText('Here')
-        # self.grid.titleEdit.setText('Hi')
-        # self.grid.authorEdit.setText('Me')

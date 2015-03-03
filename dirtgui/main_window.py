@@ -144,7 +144,9 @@ class MainWindow(QtGui.QMainWindow):
         alpha = 'alpha'
         beta = 'beta'
         self.layout.f_frame.grid.highlight_document(ms, alpha)
+        self.layout.f_frame.grid.highlighter = self.layout.highlighter
         self.layout.m_frame.grid.highlight_document(ms, beta)
+        self.layout.m_frame.grid.highlighter = self.layout.highlighter
 
     def select_match_set(self):
         window_title = "Select match set"
