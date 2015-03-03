@@ -29,14 +29,28 @@ class GridLayout(QtGui.QWidget):
         # Create the form layout that manages the labeled controls
         self.form_layout = QFormLayout()
 
+        # Create the build button with its caption
         self.fileInputEdit = QLineEdit(self)
         self.form_layout.addRow('Input Files:',self.fileInputEdit)
+        self.Button1 = QPushButton('Input Files Location', self)
+        self.form_layout.addWidget(self.Button1)
+        self.blank_line = QLabel('', self)
+        self.form_layout.addRow('', self.blank_line)
+
 
         self.prepDirEdit = QLineEdit(self)
         self.form_layout.addRow('Preprocessed Directory:',self.prepDirEdit)
+        self.Button2 = QPushButton('Preprocessed Location', self)
+        self.form_layout.addWidget(self.Button2)
+        self.blank_line1 = QLabel('', self)
+        self.form_layout.addRow('', self.blank_line1)
 
         self.outDirEdit = QLineEdit(self)
         self.form_layout.addRow('Output Directory:',self.outDirEdit)
+        self.Button3 = QPushButton('Output Location', self)
+        self.form_layout.addWidget(self.Button3)
+        self.blank_line2 = QLabel('', self)
+        self.form_layout.addRow('', self.blank_line2)
 
         # Add the form layout to the main VBox layout
         self.layout.addLayout(self.form_layout)
@@ -74,7 +88,7 @@ class GridLayout(QtGui.QWidget):
         # Add stretch to push the button to the far right
         self.button_box.addStretch(1)
 
-       # Create the build button with its caption
+        # Create the build button with its caption
         self.startButton = QPushButton('DiRT Start', self)
  
         # Add it to the button box
@@ -85,10 +99,16 @@ class GridLayout(QtGui.QWidget):
 
         self.setLayout(self.layout)
 
-        # Link to the MainWindow
+        # Link to the DirtStart Button
         self.connect(self.startButton, SIGNAL('clicked()'), self.option_set)
 
+        # Link Location Buttons
+        self.connect(self.Button1, SIGNAL('clicked()'), self.location1)
+        self.connect(self.Button2, SIGNAL('clicked()'), self.location2)
+        self.connect(self.Button3, SIGNAL('clicked()'), self.location3)
 
+
+    # connect to the MainWindow
     def newWindow(self):
         self.other_window = MainWindow()
         self.other_window.show()
@@ -96,6 +116,18 @@ class GridLayout(QtGui.QWidget):
     def option_set(self):
         # Show the constructed option
         self.option.setText('%s, %s' %(self.gap_option[self.gap_length.currentIndex()],self.match_option[self.minimum_match_length.currentIndex()]))
+
+    def location1(self):
+        fileName = QFileDialog.getOpenFileName(self, "Open File")
+        self.fileInputEdit.setText(fileName) 
+        
+    def location2(self):
+        file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.prepDirEdit.setText(file)
+        
+    def location3(self):
+        file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.outDirEdit.setText(file)
 
         
 
