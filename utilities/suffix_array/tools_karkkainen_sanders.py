@@ -7,11 +7,13 @@ from array import array
 
 
 def radixpass(a, b, r, n, k):
-    """a : word to sort
-       b : sorted words
-       r : initial string
-       n : input size
-       k : alphabet size"""
+    """
+    :param a: word to sort
+    :param b: sorted words
+    :param r: initial string
+    :param n: input size
+    :param k: alphabet size
+    """
     c = array("i", [0] * (k + 1))
     for i in xrange(n):
         c[r[a[i]]] += 1

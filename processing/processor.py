@@ -34,6 +34,14 @@ class Processor(object):
 
     @staticmethod
     def _get_match(a, alpha, b, beta):
+        """
+        Get a single Match from Singlets
+        :param a: alpha MatchSinglet
+        :param alpha: alpha Document
+        :param b: beta MatchSinglet
+        :param beta: beta Document
+        :return: Match
+        """
         alpha_indices = a.get_match_bounds(alpha.pre_body)
         alpha_passage = a.passage
         beta_indices = b.get_match_bounds(beta.pre_body)
@@ -46,6 +54,12 @@ class Processor(object):
 
     @staticmethod
     def singlet_pairs_to_matches(alpha, beta, singlet_pairs):
+        """
+        Change singlet pairs into matches
+        :param alpha: document
+        :param beta: document
+        :param singlet_pairs: list of MatchSinglet pairs
+        """
         matches = []
         for a, b in singlet_pairs:
             m = Processor._get_match(a, alpha, b, beta)

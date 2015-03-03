@@ -25,6 +25,10 @@ class UnsupportedFunctionException(BaseException):
 
 
 def iter_files_in_file(filename):
+    """
+    Generator over the file names contained in filename
+    Expects each file to be on its own line
+    """
     with open(filename) as f:
         contents = f.read()
         lines = contents.split('\n')

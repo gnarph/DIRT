@@ -110,6 +110,9 @@ class Comparator(base_comparator.BaseComparator):
 
     @staticmethod
     def _pass_gen(strip_body, blocks):
+        """
+        Generator for passages
+        """
         for b in blocks:
             yield strip_body[b.tup]
 
