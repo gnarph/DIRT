@@ -110,10 +110,10 @@ class MainWindow(QtGui.QMainWindow):
                 # TODO: display first matchset
                 # allow others to be selected from the results table
                 self.display_match_set(to_view)
-                all_docs = msi.get_all_matched_documents(focus)
+                # all_docs = msi.get_all_matched_documents(focus)
                 results = self.layout.results_table
                 # TODO: should pass msi down instead
-                results.populate(all_docs, dir_name)
+                results.populate(focus, msi)
 
     def select_match_index(self):
         window_title = "Select match index"

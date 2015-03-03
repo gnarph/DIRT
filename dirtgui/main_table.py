@@ -47,12 +47,12 @@ class MainTable(QtGui.QTableWidget):
 
         self._set_fonts()
 
-    def populate(self, focus, output_dir):
+    def populate(self, focus_name, msi):
         """
         Populates the table with metadata
         """
 
-        match_set_list = self._get_matchset_list(focus, output_dir)
+        match_set_list = msi.get_all_match_sets(focus_name=focus_name)
         cols = len(COLUMNS)
         self.setRowCount(len(match_set_list))
         self.setColumnCount(cols)
