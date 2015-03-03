@@ -1,8 +1,10 @@
 from PyQt4 import QtGui, QtCore
 from dirtgui.main_frame import MainFrame
 from dirtgui.main_table import MainTable
-from models.match_set_index import MatchSetIndex
-import document_util.document_match_util as dmu
+
+from utilities import path
+
+RESULTS_HEADER = 'RESULTS'
 
 
 class MainLayout(QtGui.QWidget):
@@ -24,9 +26,9 @@ class MainLayout(QtGui.QWidget):
         self.results_table.cellDoubleClicked.connect(self.click_display)
         self.results_table.sortByColumn(2)
 
-        # total_match = MatchSetIndex.get_matched_document_count(focus)
-        total_match = 13
-        table_label = QtGui.QLabel(('RESULTS FOUND' + ' (%d)') % (total_match))
+        # TODO: consider delegation so the table can send the number
+        #       of results back here to update the header
+        table_label = QtGui.QLabel(RESULTS_HEADER)
         table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         table_label.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -81,15 +83,7 @@ class MainLayout(QtGui.QWidget):
         print("Row %d and Column %d was clicked" % (row, column))
         item = self.results_table.item(row, 0)
         self.path = unicode(item.text())
-        print self.path
-        from utilities import file_ops
-        from utilities import path
         doc_name = path.get_name(self.path, extension=False)
-
-
-
-        # TODO: bug - this path is to a document json file
-        #       it needs to be the path to a match set json file
         self.display_match_set(doc_name)
 
     def __init__(self, main_window):

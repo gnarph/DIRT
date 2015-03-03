@@ -12,6 +12,7 @@ from dirtgui.main_layout import MainLayout
 from dirtgui.select_from_list_dialog import SelectFromListDialog
 from models.match_set_index import MatchSetIndex
 from models import match_set_factory
+from utilities import path
 
 
 class RunningWindow(QMainWindow):
@@ -127,18 +128,20 @@ class MainWindow(QtGui.QMainWindow):
         self.display_match_index(str(dir_name))
 
     def display_match_set(self, file_name):
+        # Handle match set file itself
         if '.json' in file_name:
             ms = match_set_factory.from_json(file_name)
             if file_name not in ms.alpha_doc.raw_file_name:
                 ms.swap_alpha_beta()
         else:
+            # Or just the name of the file
             out_dir = self.match_set_index.out_dir
-            from utilities import path
             focus_name = path.get_name(self.focus, extension=False)
             ms = match_set_factory.find_in_dir(focus_name,
                                                file_name,
                                                out_dir)
 
+        # Set the document frames
         focus = ms.alpha_doc
         self.layout.f_frame.grid.set_document(focus.pre_file_name)
         self.layout.f_frame.grid.locationEdit.setText(focus.file_name)
