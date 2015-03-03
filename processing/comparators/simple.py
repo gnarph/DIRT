@@ -39,7 +39,10 @@ class Comparator(base_comparator.BaseComparator):
         return blocks
 
     def get_matching_passages(self):
-        # Still need to remove/re-add spaces
+        """
+        Get common passages between document
+        :return: set of common passages
+        """
         matching_passages = suffix_apps.acs_no_substrings(a=self.a_strip,
                                                           b=self.b_strip)
         return matching_passages

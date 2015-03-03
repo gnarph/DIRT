@@ -101,6 +101,11 @@ class MatchConcatenator(object):
         return self.combined
 
     def is_valid_block(self, first):
+        """
+        Check that a concatenated block is avlid
+        :param first: earlier blocks
+        :return: boolean
+        """
         return (self.a_cursor > first.a and
                 self.b_cursor > first.b)
 
