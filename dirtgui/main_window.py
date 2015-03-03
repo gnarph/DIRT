@@ -112,13 +112,14 @@ class MainWindow(QtGui.QMainWindow):
                 self.display_match_set(to_view)
                 all_docs = msi.get_all_matched_documents(focus)
                 results = self.layout.results_table
-                results.populate(all_docs)
+                # TODO: should pass msi down instead
+                results.populate(all_docs, dir_name)
 
     def select_match_index(self):
         window_title = "Select match index"
         dir_name = QtGui.QFileDialog.getExistingDirectory(self,
                                                           window_title)
-        self.display_match_index(dir_name)
+        self.display_match_index(str(dir_name))
 
     def display_match_set(self, file_name):
         ms = match_set_factory.from_json(file_name)
