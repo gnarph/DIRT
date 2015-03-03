@@ -2,18 +2,24 @@ import utilities.file_ops as file_ops
 import models.match_set_index as match_set_index
 
 from PyQt4 import QtCore, QtGui
+from operator import itemgetter
 
 colors = ['#ED1C24', '#F7941D', '#0000FF', '#39B54A', '#00AEEF', '#662D91']
 
 
 class Highlighter():
 
-    def __init__(self, focus, match, ms):
+    def __init__(self, focus, match, match_set):
         self.focus_text_area = focus
         self.match_text_area = match
-        self.ms = ms
-        self.number_of_matches = len(ms.get_indices())
-        self.match_idx = 0
+        self.ms = match_set
+        self.number_of_matches = len(match_set.get_indices())
+        self.match_idx = self.number_of_matches - 1
+        if self.number_of_matches > 0:
+            self.alpha_array = sorted(match_set.get_indices(),
+                                      key=itemgetter(0))
+            self.beta_array = sorted(match_set.get_indices(),
+                                     key=itemgetter(1))
 
     def next_match(self):
         """
@@ -31,21 +37,26 @@ class Highlighter():
         """
         self.highlight_match(-1)
 
-    def highlight_match(self, direction):
-        number_of_matches = len(self.ms.get_indices())
+    def highlight_match(self, direction, passage_type):
+        number_of_matches = len(self.alpha_array)
         if number_of_matches != 0:
-            array = self.ms.get_indices()
+            if passage_type == 'alpha_passage':
+                array = self.alpha_array
+            else:
+                array = self.beta_array
             prev_match_idx = self.match_idx
 
             focus_pair = array[prev_match_idx][0]
             focus_cursor_pos = focus_pair[0]
             length = focus_pair[1] - focus_pair[0]
-            remove_match_highlight(self.focus_text_area, focus_cursor_pos, length)
+            remove_match_highlight(self.focus_text_area, focus_cursor_pos,
+                                   length)
 
             match_pair = array[prev_match_idx][1]
             comp_cursor_pos = match_pair[0]
             length = match_pair[1] - match_pair[0]
-            remove_match_highlight(self.match_text_area, comp_cursor_pos, length)
+            remove_match_highlight(self.match_text_area, comp_cursor_pos,
+                                   length)
 
             self.match_idx = (self.match_idx + direction) % number_of_matches
             match_idx = self.match_idx
