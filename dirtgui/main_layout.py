@@ -79,13 +79,18 @@ class MainLayout(QtGui.QWidget):
         """
 
         print("Row %d and Column %d was clicked" % (row, column))
-        item = self.results_table.item(row, 4)
+        item = self.results_table.item(row, 0)
         self.path = unicode(item.text())
         print self.path
+        from utilities import file_ops
+        from utilities import path
+        doc_name = path.get_name(self.path, extension=False)
+
+
 
         # TODO: bug - this path is to a document json file
         #       it needs to be the path to a match set json file
-        self.display_match_set(self.path)
+        self.display_match_set(doc_name)
 
     def __init__(self, main_window):
         super(MainLayout, self).__init__(main_window)

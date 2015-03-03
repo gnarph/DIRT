@@ -98,12 +98,17 @@ class MainWindow(QtGui.QMainWindow):
         if index_dir:
             self.display_match_index(index_dir)
 
+        self.match_set_index = None
+        self.focus = None
+
     def display_match_index(self, dir_name):
-        msi = MatchSetIndex(str(dir_name))
+        self.match_set_index = MatchSetIndex(str(dir_name))
+        msi = self.match_set_index
         names = msi.get_all_file_names()
         focus, accepted = SelectFromListDialog.get_selected(names)
         if accepted:
             # chose a focus document
+            self.focus = focus
             ms_names = msi.set_names_for_focus(focus)
             to_view, accepted = SelectFromListDialog.get_selected(ms_names)
             if accepted:
@@ -122,9 +127,17 @@ class MainWindow(QtGui.QMainWindow):
         self.display_match_index(str(dir_name))
 
     def display_match_set(self, file_name):
-        ms = match_set_factory.from_json(file_name)
-        if file_name not in ms.alpha_doc.raw_file_name:
-            ms.swap_alpha_beta()
+        if '.json' in file_name:
+            ms = match_set_factory.from_json(file_name)
+            if file_name not in ms.alpha_doc.raw_file_name:
+                ms.swap_alpha_beta()
+        else:
+            out_dir = self.match_set_index.out_dir
+            from utilities import path
+            focus_name = path.get_name(self.focus, extension=False)
+            ms = match_set_factory.find_in_dir(focus_name,
+                                               file_name,
+                                               out_dir)
 
         focus = ms.alpha_doc
         self.layout.f_frame.grid.set_document(focus.pre_file_name)
