@@ -80,7 +80,7 @@ class MainLayout(QtGui.QWidget):
 
         print("Row %d and Column %d was clicked" % (row, column))
         item = self.results_table.item(row, 4)
-        self.path = item.text()
+        self.path = unicode(item.text())
         print self.path
 
         # TODO: bug - this path is to a document json file

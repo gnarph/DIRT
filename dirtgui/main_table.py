@@ -4,16 +4,16 @@ from PyQt4 import QtGui, QtCore
 from models.match_set_index import MatchSetIndex
 from models.match_set import MatchSet
 
-HEADER = ['Match Title',
+HEADER = ['Match Name',
           'Author(s)',
-          'Matches',
-          'Match %',
+          'Focus Common %',
+          'Match Common %',
           'Match Count']
 
-COLUMNS = ['title',
+COLUMNS = ['file_name',
            'edition',
-           'date',
-           'availability',
+           'alpha_match_pct',
+           'beta_match_pct',
            'match_count']
 
 
@@ -24,10 +24,10 @@ class MainTable(QtGui.QTableWidget):
 
     def _set_initial_column_widths(self):
         self.setColumnWidth(0, 200)
-        self.setColumnWidth(1, 200)
-        self.setColumnWidth(2, 80)
-        self.setColumnWidth(3, 80)
-        self.setColumnWidth(4, 80)
+        self.setColumnWidth(1, 100)
+        self.setColumnWidth(2, 130)
+        self.setColumnWidth(3, 130)
+        self.setColumnWidth(4, 100)
 
     def _set_fonts(self):
         # Header and cell fonts
@@ -42,7 +42,7 @@ class MainTable(QtGui.QTableWidget):
         self._set_initial_column_widths()
         self.horizontalHeader().setStretchLastSection(True)
         self.setAlternatingRowColors(True)
-        self.setHorizontalHeaderLabels(COLUMNS)
+        self.setHorizontalHeaderLabels(HEADER)
         self.setSortingEnabled(True)
 
         self._set_fonts()

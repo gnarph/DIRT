@@ -144,7 +144,11 @@ class MatchSet(object):
         Get metadata from a document
         """
         meta = doc.get_metadata()
-        meta['match_count'] = len(self.matches)
+        meta['match_count'] = self.get_match_count()
+        meta['file_name'] = doc.file_name
+        alpha_pct, beta_pct = self.get_match_percentage()
+        meta['alpha_match_pct'] = alpha_pct
+        meta['beta_match_pct'] = beta_pct
         return meta
 
     def get_alpha_metadata(self):
