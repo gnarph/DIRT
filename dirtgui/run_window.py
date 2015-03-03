@@ -60,6 +60,10 @@ class GridLayout(QtGui.QWidget):
 
         # Add it to the form layout with a label
         self.form_layout.addRow('Minimum Match Length:', self.minimum_match_length)
+
+        # Create and add the label to show the greeting text
+        self.option = QLabel('', self)
+        self.form_layout.addRow('Options', self.option)
  
         # Add stretch to separate the form layout from the button
         self.layout.addStretch(1)
@@ -79,15 +83,19 @@ class GridLayout(QtGui.QWidget):
         # Add the button box to the bottom of the main VBox layout
         self.layout.addLayout(self.button_box) 
 
-        
         self.setLayout(self.layout)
 
         # Link to the MainWindow
-        self.connect(self.startButton, SIGNAL('clicked()'), self.newWindow)
+        self.connect(self.startButton, SIGNAL('clicked()'), self.option_set)
+
 
     def newWindow(self):
         self.other_window = MainWindow()
         self.other_window.show()
+
+    def option_set(self):
+        # Show the constructed option
+        self.option.setText('%s, %s' %(self.gap_option[self.gap_length.currentIndex()],self.match_option[self.minimum_match_length.currentIndex()]))
 
         
 
