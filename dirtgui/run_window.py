@@ -1,21 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
+from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import *
 
-class RunningWindow(QtGui.QDialog):
+
+class RunningWindow(QDialog):
 
     def __init__(self, parent=None):
         super(RunningWindow, self).__init__(parent)
 
         self.layout = GridLayout(self)
-        self.setModal(True)
 
         # self.setGeometry(300, 300, 350, 350)
         self.setWindowTitle('DiRT Startup')
+        self.setModal(True)
+        self.setStyleSheet("background-color: rgb(245,247,255);")
 
 
 class GridLayout(QtGui.QWidget):
