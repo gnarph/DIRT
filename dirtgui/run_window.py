@@ -6,17 +6,16 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-class RunningWindow(QMainWindow):
+class RunningWindow(QtGui.QDialog):
 
-    def __init__(self):
-        QMainWindow.__init__(self)
+    def __init__(self, parent=None):
+        super(RunningWindow, self).__init__(parent)
 
         self.layout = GridLayout(self)
-        self.setCentralWidget(self.layout)
+        self.setModal(True)
 
-        self.setGeometry(300, 300, 350, 350)
-        self.setWindowTitle('DiRT Startup')    
-        self.show()
+        # self.setGeometry(300, 300, 350, 350)
+        self.setWindowTitle('DiRT Startup')
 
 
 class GridLayout(QtGui.QWidget):
@@ -107,11 +106,7 @@ class GridLayout(QtGui.QWidget):
         self.connect(self.Button2, SIGNAL('clicked()'), self.location2)
         self.connect(self.Button3, SIGNAL('clicked()'), self.location3)
 
-
-    # connect to the MainWindow
-    def newWindow(self):
-        self.other_window = MainWindow()
-        self.other_window.show()
+        self.adjustSize()
 
     def option_set(self):
         # Show the constructed option
@@ -128,16 +123,3 @@ class GridLayout(QtGui.QWidget):
     def location3(self):
         file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.outDirEdit.setText(file)
-
-        
-
-def main():
-    app = QtGui.QApplication(sys.argv)
-    rw = RunningWindow()
-    rw.show()
-    
-    sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main() 
-    
