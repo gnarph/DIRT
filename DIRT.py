@@ -112,6 +112,7 @@ def process_serial(args, alpha_files, beta_files):
             alpha = Document.from_json(a)
             beta = Document.from_json(b)
             pro.process(alpha_document=alpha, beta_document=beta)
+            compared.append(this_set)
     return len(compared)
 
 
