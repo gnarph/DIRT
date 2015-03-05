@@ -7,7 +7,12 @@ from collections import namedtuple
 import itertools
 import re
 
-import utilities.suffix_array.tools_karkkainen_sanders as tks
+try:
+    import pyximport
+    pyximport.install()
+    import utilities.suffix_array.tools_karkkainen_sandersx as tks
+except ImportError:
+    import utilities.suffix_array.tools_karkkainen_sanders as tks
 
 
 class InvalidCharacterException(Exception):

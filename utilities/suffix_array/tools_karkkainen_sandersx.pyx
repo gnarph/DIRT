@@ -3,10 +3,11 @@
 Originally from https://code.google.com/p/pysuffix/
 Used from  https://github.com/baiyubin/pysuffix
 """
+from cpython cimport array as c_array
 from array import array
 
 
-def radix_pass(a, b, r, n, k):
+cdef radix_pass(a, b, r, n, k):
     """
     :param a: word to sort
     :param b: sorted words
@@ -14,10 +15,11 @@ def radix_pass(a, b, r, n, k):
     :param n: input size
     :param k: alphabet size
     """
-    c = array("i", [0] * (k + 1))
+    cdef c_array.array c = array("i", [0] * (k + 1))
+    cdef int i
     for i in xrange(n):
         c[r[a[i]]] += 1
-    somme = 0
+    cdef int somme = 0
     for i in xrange(k + 1):
         freq, c[i] = c[i], somme
         somme += freq
@@ -26,28 +28,29 @@ def radix_pass(a, b, r, n, k):
         c[r[a[i]]] += 1
 
 
-def simple_kark_sort(s):
+cpdef simple_kark_sort(unicode s):
     alphabet = [None] + sorted(set(s))
-    k = len(alphabet)
+    cdef int k = len(alphabet)
+    cdef int i
     alphabet_indices = {c: i for i, c in enumerate(alphabet)}
-    n = len(s)
-    sa = array('i', [0] * (n + 3))
-    s = array('i', [alphabet_indices[c] for c in s] + [0] * 3)
-    kark_sort(s, sa, n, k)
+    cdef int n = len(s)
+    cdef c_array.array sa = array('i', [0] * (n + 3))
+    cdef c_array.array b = array('i', [alphabet_indices[c] for c in s] + [0] * 3)
+    kark_sort(b, sa, n, k)
     return sa
 
 
-def kark_sort(to_sort, result, n, alphabet_size):
+cdef kark_sort(c_array.array to_sort, c_array.array result, int n, int alphabet_size):
     """s  : word to sort
        SA : result
        n  : len of s
        K  : alphabet size"""
-    n0 = (n + 2) / 3
-    n1 = (n + 1) / 3
-    n2 = n / 3
-    n02 = n0 + n2
-    sa_12 = array('i', [0] * (n02 + 3))
-    sa_0 = array('i', [0] * n0)
+    cdef int n0 = (n + 2) / 3
+    cdef int n1 = (n + 1) / 3
+    cdef int n2 = n / 3
+    cdef int n02 = n0 + n2
+    cdef c_array.array sa_12 = array('i', [0] * (n02 + 3))
+    cdef c_array.array sa_0 = array('i', [0] * n0)
 
     s12 = [i for i in xrange(n + (n0 - n1)) if i % 3]
     s12.extend([0] * 3)
@@ -57,7 +60,8 @@ def kark_sort(to_sort, result, n, alphabet_size):
     radix_pass(sa_12, s12, to_sort[1:], n02, alphabet_size)
     radix_pass(s12, sa_12, to_sort, n02, alphabet_size)
 
-    name = 0
+    cdef int name = 0
+    cdef int c0, c1, c2, i
     c0, c1, c2 = -1, -1, -1
     for i in xrange(n02):
         if to_sort[sa_12[i]] != c0 or to_sort[sa_12[i] + 1] != c1 or to_sort[sa_12[i] + 2] != c2:
@@ -76,10 +80,11 @@ def kark_sort(to_sort, result, n, alphabet_size):
     else:
         for i in xrange(n02):
             sa_12[s12[i] - 1] = i
-    s0 = array('i', [sa_12[i] * 3 for i in xrange(n02) if sa_12[i] < n0])
+    cdef c_array.array s0 = array('i', [sa_12[i] * 3 for i in xrange(n02) if sa_12[i] < n0])
     radix_pass(s0, sa_0, to_sort, n0, alphabet_size)
+    cdef int p, j
     p = j = alphabet_size = 0
-    t = n0 - n1
+    cdef int t = n0 - n1
     while alphabet_size < n:
         if sa_12[t] < n0:
             i = sa_12[t] * 3 + 1
@@ -122,17 +127,19 @@ def kark_sort(to_sort, result, n, alphabet_size):
         alphabet_size += 1
 
 
-def longest_common_prefixes(s, suffix_array):
+cpdef c_array.array longest_common_prefixes(unicode s, c_array.array suffix_array):
     """
     return LCP array that LCP[i] is the longest common prefix
     between s[SA[i]] and s[SA[i+1]]
     """
-    n = len(s)
-    rank = array('i', [0] * n)
-    lcp = array('i', [0] * n)
+    cdef int n = len(s)
+    cdef c_array.array rank = array('i', [0] * n)
+    cdef c_array.array lcp = array('i', [0] * n)
+    cdef int i
     for i in xrange(n):
         rank[suffix_array[i]] = i
-    l = 0
+    cdef int l = 0
+    cdef int j
     for j in xrange(n):
         l = max(0, l - 1)
         i = rank[j]
