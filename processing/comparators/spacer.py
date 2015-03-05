@@ -15,8 +15,7 @@ def get_space_locations(s):
         if c == ' ':
             # index of i after the space is removed
             new_index = i - len(spaces)
-            j = array('i', [new_index])
-            spaces.extend(j)
+            spaces.append(new_index)
     return spaces
 
 

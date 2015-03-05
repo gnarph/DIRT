@@ -56,7 +56,7 @@ def acs_all(a, b, separator='$'):
         raise InvalidCharacterException('Separator in input strings')
     ab = u''.join([a, separator, b])
     sa = tks.simple_kark_sort(ab)
-    lcp = tks.LCP(ab, sa)
+    lcp = tks.longest_common_prefixes(ab, sa)
     all_subs = set()
 
     for i, v in enumerate(lcp):
@@ -123,7 +123,7 @@ def acs_no_substrings(a, b, separator='$'):
     sa = tks.simple_kark_sort(ab)
 
     # Longest common prefix array
-    lcp = tks.LCP(ab, sa)
+    lcp = tks.longest_common_prefixes(ab, sa)
     sep = ab.index(separator)
     all_subs = set()
 
