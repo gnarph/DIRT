@@ -28,13 +28,13 @@ class MatchConcatenator(object):
             self.b_cursor = first.b_end
             self.combined = []
 
-    def move_cursors_to_end(self, second):
+    def move_cursors_to_end(self, target_block):
         """
         Move cursors to end of target block
-        :param second: block to move cursors to end of
+        :param target_block: block to move cursors to end of
         """
-        self.a_cursor = second.a_end
-        self.b_cursor = second.b_end
+        self.a_cursor = target_block.a_end
+        self.b_cursor = target_block.b_end
 
     def _process_main(self):
         """
@@ -43,16 +43,22 @@ class MatchConcatenator(object):
                  rightmost block combining,
                  should we continue using process main
         """
+        # Cursors to blocks which may be combined
         first = self.match_list[self.i]
         second = self.match_list[self.j]
         if not self.can_combine(first, second):
             if first.a_end == self.a_cursor:
+                # Couldn't combine, just add first
+                # to the combined list
                 self.combined.append(first)
+                # Advance cursor
                 self.i = self.j
             elif self.is_valid_block(first):
-                # terminate
+                # Can't combine any more, so combine
+                # those that have just been past
                 self.combine_and_select_block(first)
                 self.i = self.j
+        # Advance second cursor
         self.j += 1
         cont = self.j < self.match_count
         if cont:
@@ -88,15 +94,19 @@ class MatchConcatenator(object):
         :return: list of concatenated blocks
         """
         if not self.match_count:
+            # No concatenating if there are no matches
             return []
         if self.match_count <= 1:
+            # Can't combine a single match
             return self.match_list
+        # Setup for iterating through
         cont = True
         first = self.match_list[self.i]
         second = self.match_list[self.j]
         while cont and self.match_count > 2:
             first, second, cont = self._process_main()
 
+        # Last block is a special case
         self._process_last(first, second)
         return self.combined
 
@@ -127,6 +137,8 @@ class MatchConcatenator(object):
         :param second: second block in list
         :return: boolean indicating if blocks can be combined
         """
+        # Need to check out of order issues as
+        # blocks are sorted by where they start in a
         mismatch_ab = (first.a_end <= second.a
                        and second.b_end <= first.b)
         mismatch_ba = (second.a_end <= first.a

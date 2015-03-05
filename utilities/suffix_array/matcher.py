@@ -114,8 +114,15 @@ def acs_no_substrings(a, b, separator='$'):
     if separator in a or separator in b:
         raise InvalidCharacterException('Separator in input strings')
 
+    # Need separator character to work with suffix array
+    # Separator character must not occur in either a or b
+    # Else a substring could cross the boundry between a and b
     ab = u''.join([a, separator, b])
+
+    # Suffix array
     sa = tks.simple_kark_sort(ab)
+
+    # Longest common prefix array
     lcp = tks.LCP(ab, sa)
     sep = ab.index(separator)
     all_subs = set()
@@ -131,17 +138,14 @@ def acs_no_substrings(a, b, separator='$'):
                 to_remove = set()
                 take = True
                 for s in all_subs:
-                    # Current strategy aims to keep memory use
-                    # lower, could go faster if this filtering
-                    # was done after the fact
                     if passage in s:
                         # If we p is a substring of s
                         # we don't want to take it so we can leave
                         take = False
                         break
                     elif s in passage:
-                        # We want to remove s if it is superseded
-                        # by p
+                        # We want to remove s if it is a
+                        # substring of by p
                         to_remove.add(s)
                 all_subs -= to_remove
                 if take:

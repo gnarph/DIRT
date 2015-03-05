@@ -13,6 +13,7 @@ def get_space_locations(s):
 
     for i, c in enumerate(s):
         if c == ' ':
+            # index of i after the space is removed
             new_index = i - len(spaces)
             j = array('i', [new_index])
             spaces.extend(j)
@@ -38,6 +39,7 @@ def add_spaces(space_locations, offset, target):
         # Avoid spaces at the start
         if started or last != point:
             started = True
+            # Add string between target and point
             chunks += [target[last:point]]
         last = point
     # Avoid a space at the end

@@ -77,15 +77,18 @@ class Comparator(base_comparator.BaseComparator):
     def _filter_blocks(self, combined_blocks):
         """
         Filter match blocks based on length
+        Blocks must be at least match_length long
+        in either a or b
         """
         filtered = []
         for block in combined_blocks:
             a_len = block.a_end - block.a
-            b_len = block.b_end - block.b
             if a_len >= self.match_length:
                 filtered.append(block)
-            elif b_len >= self.match_length:
-                filtered.append(block)
+            else:
+                b_len = block.b_end - block.b
+                if b_len >= self.match_length:
+                    filtered.append(block)
         return filtered
 
     def _tuples_to_passages(self, filtered_blocks):
@@ -99,11 +102,17 @@ class Comparator(base_comparator.BaseComparator):
         b_spaces = spacer.get_space_locations(self.b)
         passages = []
         for tup in filtered_blocks:
+            # Strings without spaces
             a = self.a_strip[tup.a:tup.a_end]
             b = self.b_strip[tup.b:tup.b_end]
 
-            a_passage = spacer.add_spaces(a_spaces, tup.a, a)
-            b_passage = spacer.add_spaces(b_spaces, tup.b, b)
+            # Replace spaces to get actual passages
+            a_passage = spacer.add_spaces(space_locations=a_spaces,
+                                          offset=tup.a,
+                                          target=a)
+            b_passage = spacer.add_spaces(space_locations=b_spaces,
+                                          offset=tup.b,
+                                          target=b)
             passage_tup = (a_passage, b_passage)
             passages.append(passage_tup)
         return passages
