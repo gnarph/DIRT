@@ -9,7 +9,7 @@ from utilities import path
 from utilities import file_ops
 from utilities import logger
 
-REPORT_NAME = '{}__{}__CMP.json'
+REPORT_NAME = u'{}__{}__CMP.json'
 
 
 class Processor(object):
@@ -68,37 +68,63 @@ class Processor(object):
 
     @staticmethod
     def _log_duration(alpha_name, beta_name, duration):
-        template = 'Processed {}, {} in {} seconds'
+        template = u'Processed {}, {} in {} seconds'
         message = template.format(alpha_name,
                                   beta_name,
                                   duration)
         logger.info(message)
 
-    def process(self, alpha_document, beta_document):
+    @staticmethod
+    def _get_report_name(alpha_document, beta_document):
         """
-        Process input files
+        Get the name of the report file
         """
-        start_time = time.time()
+        name_a = path.get_name(alpha_document.file_name, extension=False)
+        name_b = path.get_name(beta_document.file_name, extension=False)
+        out_name = REPORT_NAME.format(name_a,
+                                      name_b)
+        return out_name
+
+    def _get_matches(self, alpha_document, beta_document):
+        """
+        Get Matches between two documents
+        :param alpha_document: Document
+        :param beta_document: Document
+        :return: Matches
+        """
         comparator = self.comparator.Comparator(a=alpha_document.pre_body,
                                                 b=beta_document.pre_body,
                                                 name_a=alpha_document.file_name,
                                                 name_b=beta_document.file_name,
                                                 match_length=self.match_length,
                                                 gap_length=self.gap_length)
-        name_a = path.get_name(alpha_document.file_name, extension=False)
-        name_b = path.get_name(beta_document.file_name, extension=False)
-        out_name = REPORT_NAME.format(name_a,
-                                      name_b)
         singlet_pairs = comparator.compare()
         matches = self.singlet_pairs_to_matches(alpha=alpha_document,
                                                 beta=beta_document,
                                                 singlet_pairs=singlet_pairs)
+        return matches
+
+    def _process(self, alpha_document, beta_document):
+        """
+        Do processing itself
+        :param alpha_document: Document one to compare
+        :param beta_document: Document two to compare
+        """
+        out_name = self._get_report_name(alpha_document, beta_document)
+        matches = self._get_matches(alpha_document, beta_document)
         match_set = MatchSet(alpha_doc=alpha_document,
                              beta_doc=beta_document,
                              matches=matches)
         match_set_dict = match_set.to_dict()
         out_file = os.path.join(self.output_dir, out_name)
         file_ops.write_json_utf8(out_file, match_set_dict)
+
+    def process(self, alpha_document, beta_document):
+        """
+        Process input files
+        """
+        start_time = time.time()
+        self._process(alpha_document, beta_document)
 
         duration = time.time() - start_time
         self._log_duration(alpha_name=alpha_document.file_name,
