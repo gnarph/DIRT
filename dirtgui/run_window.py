@@ -8,6 +8,11 @@ from PyQt4.QtGui import *
 import DIRT
 
 
+class AttributeDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+
+
 class RunningWindow(QDialog):
 
     def __init__(self, parent=None):
@@ -107,10 +112,18 @@ class GridLayout(QtGui.QWidget):
         self.adjustSize()
 
     def run(self):
+        input_loc = unicode(self.input_file_field.text())
+        prep_loc = unicode(self.preprocessed_dir_field.text())
+        out_loc = unicode(self.output_dir_field.text())
         gap_length = int(self.gap_length.text())
         match_length = int(self.minimum_match_length.text())
-        print gap_length, match_length
-        args = None
+
+        args = AttributeDict()
+        args.input = input_loc
+        args.preprocessed_dir = prep_loc
+        args.output_dir = out_loc
+        args.gap_length = gap_length
+        args.match_length = match_length
         DIRT.main(args)
 
     def select_input_file(self):
