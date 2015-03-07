@@ -32,25 +32,24 @@ class GridLayout(QtGui.QWidget):
         self.form_layout = QFormLayout()
 
         # Create the build button with its caption
-        self.fileInputEdit = QLineEdit(self)
-        self.form_layout.addRow('Input Files:',self.fileInputEdit)
-        self.Button1 = QPushButton('Input Files Location', self)
-        self.form_layout.addWidget(self.Button1)
+        self.input_file_field = QLineEdit(self)
+        self.form_layout.addRow('Input Files:', self.input_file_field)
+        self.btn_input_file = QPushButton('Input Files Location', self)
+        self.form_layout.addWidget(self.btn_input_file)
         self.blank_line = QLabel('', self)
         self.form_layout.addRow('', self.blank_line)
 
-
-        self.prepDirEdit = QLineEdit(self)
-        self.form_layout.addRow('Preprocessed Directory:',self.prepDirEdit)
-        self.Button2 = QPushButton('Preprocessed Location', self)
-        self.form_layout.addWidget(self.Button2)
+        self.preprocessed_dir_field = QLineEdit(self)
+        self.form_layout.addRow('Preprocessed Directory:', self.preprocessed_dir_field)
+        self.btn_preprocessed_dir = QPushButton('Preprocessed Location', self)
+        self.form_layout.addWidget(self.btn_preprocessed_dir)
         self.blank_line1 = QLabel('', self)
         self.form_layout.addRow('', self.blank_line1)
 
-        self.outDirEdit = QLineEdit(self)
-        self.form_layout.addRow('Output Directory:',self.outDirEdit)
-        self.Button3 = QPushButton('Output Location', self)
-        self.form_layout.addWidget(self.Button3)
+        self.output_dir_field = QLineEdit(self)
+        self.form_layout.addRow('Output Directory:', self.output_dir_field)
+        self.btn_output_dir = QPushButton('Output Location', self)
+        self.form_layout.addWidget(self.btn_output_dir)
         self.blank_line2 = QLabel('', self)
         self.form_layout.addRow('', self.blank_line2)
 
@@ -83,23 +82,24 @@ class GridLayout(QtGui.QWidget):
         self.button_box.addStretch(1)
 
         # Create the build button with its caption
-        self.startButton = QPushButton('DiRT Start', self)
+        self.btn_run = QPushButton('DiRT Start', self)
 
         # Add it to the button box
-        self.button_box.addWidget(self.startButton)
+        self.button_box.addWidget(self.btn_run)
 
         # Add the button box to the bottom of the main VBox layout
         self.layout.addLayout(self.button_box)
 
         self.setLayout(self.layout)
 
+        on_click = SIGNAL('clicked()')
         # Link to the DirtStart Button
-        self.connect(self.startButton, SIGNAL('clicked()'), self.run)
+        self.connect(self.btn_run, on_click, self.run)
 
         # Link Location Buttons
-        self.connect(self.Button1, SIGNAL('clicked()'), self.select_input_file)
-        self.connect(self.Button2, SIGNAL('clicked()'), self.select_preprocessed_directory)
-        self.connect(self.Button3, SIGNAL('clicked()'), self.select_output_directory)
+        self.connect(self.btn_input_file, on_click, self.select_input_file)
+        self.connect(self.btn_preprocessed_dir, on_click, self.select_preprocessed_directory)
+        self.connect(self.btn_output_dir, on_click, self.select_output_directory)
 
         self.adjustSize()
 
@@ -111,13 +111,14 @@ class GridLayout(QtGui.QWidget):
         DIRT.main(args)
 
     def select_input_file(self):
-        fileName = QFileDialog.getOpenFileName(self, "Open File")
-        self.fileInputEdit.setText(fileName)
+        dialog = QFileDialog()
+        file_name = dialog.getOpenFileName(self, "Open")
+        self.input_file_field.setText(file_name)
 
     def select_preprocessed_directory(self):
-        file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.prepDirEdit.setText(file)
+        preprocessed_dir = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.preprocessed_dir_field.setText(preprocessed_dir)
 
     def select_output_directory(self):
-        file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.outDirEdit.setText(file)
+        output_dir = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.output_dir_field.setText(output_dir)
