@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import *
+
+import DIRT
 
 
 class RunningWindow(QDialog):
@@ -55,22 +57,14 @@ class GridLayout(QtGui.QWidget):
         # Add the form layout to the main VBox layout
         self.layout.addLayout(self.form_layout)
 
-        # The skipping character options
-        self.gap_option = ['0','1','2','3','4','5']
-
         # Create and fill the combo box to choose the skipping character
-        self.gap_length = QComboBox(self)
-        self.gap_length.addItems(self.gap_option)
+        self.gap_length = QLineEdit(self)
 
         # Add it to the form layout with a label
         self.form_layout.addRow('Gap Length:', self.gap_length)
 
-        # The mimimum match lengths option
-        self.match_option = ['1','2','3','4','5','6','7','8','9']
-
         # Create and fill the combo box to choose the skipping character
-        self.minimum_match_length = QComboBox(self)
-        self.minimum_match_length.addItems(self.match_option)
+        self.minimum_match_length = QLineEdit(self)
 
         # Add it to the form layout with a label
         self.form_layout.addRow('Minimum Match Length:', self.minimum_match_length)
@@ -78,7 +72,7 @@ class GridLayout(QtGui.QWidget):
         # Create and add the label to show the greeting text
         self.option = QLabel('', self)
         self.form_layout.addRow('Options', self.option)
- 
+
         # Add stretch to separate the form layout from the button
         self.layout.addStretch(1)
 
@@ -90,37 +84,40 @@ class GridLayout(QtGui.QWidget):
 
         # Create the build button with its caption
         self.startButton = QPushButton('DiRT Start', self)
- 
+
         # Add it to the button box
         self.button_box.addWidget(self.startButton)
- 
+
         # Add the button box to the bottom of the main VBox layout
-        self.layout.addLayout(self.button_box) 
+        self.layout.addLayout(self.button_box)
 
         self.setLayout(self.layout)
 
         # Link to the DirtStart Button
-        self.connect(self.startButton, SIGNAL('clicked()'), self.option_set)
+        self.connect(self.startButton, SIGNAL('clicked()'), self.run)
 
         # Link Location Buttons
-        self.connect(self.Button1, SIGNAL('clicked()'), self.location1)
-        self.connect(self.Button2, SIGNAL('clicked()'), self.location2)
-        self.connect(self.Button3, SIGNAL('clicked()'), self.location3)
+        self.connect(self.Button1, SIGNAL('clicked()'), self.select_input_file)
+        self.connect(self.Button2, SIGNAL('clicked()'), self.select_preprocessed_directory)
+        self.connect(self.Button3, SIGNAL('clicked()'), self.select_output_directory)
 
         self.adjustSize()
 
-    def option_set(self):
-        # Show the constructed option
-        self.option.setText('%s, %s' %(self.gap_option[self.gap_length.currentIndex()],self.match_option[self.minimum_match_length.currentIndex()]))
+    def run(self):
+        gap_length = int(self.gap_length.text())
+        match_length = int(self.minimum_match_length.text())
+        print gap_length, match_length
+        args = None
+        DIRT.main(args)
 
-    def location1(self):
+    def select_input_file(self):
         fileName = QFileDialog.getOpenFileName(self, "Open File")
-        self.fileInputEdit.setText(fileName) 
-        
-    def location2(self):
+        self.fileInputEdit.setText(fileName)
+
+    def select_preprocessed_directory(self):
         file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.prepDirEdit.setText(file)
-        
-    def location3(self):
+
+    def select_output_directory(self):
         file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.outDirEdit.setText(file)
