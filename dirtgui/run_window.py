@@ -75,10 +75,6 @@ class GridLayout(QtGui.QWidget):
         # Add it to the form layout with a label
         self.form_layout.addRow('Minimum Match Length:', self.minimum_match_length)
 
-        # Create and add the label to show the greeting text
-        self.option = QLabel('', self)
-        self.form_layout.addRow('Options', self.option)
-
         # Add stretch to separate the form layout from the button
         self.layout.addStretch(1)
 
@@ -99,6 +95,19 @@ class GridLayout(QtGui.QWidget):
 
         self.setLayout(self.layout)
 
+        supported_languages = ['zhi', 'eng']
+        self.language_select = QComboBox(self)
+        self.language_select.addItems(supported_languages)
+        self.form_layout.addRow('Language', self.language_select)
+
+        comparators = ['simple']
+        self.comparator_select = QComboBox(self)
+        self.comparator_select.addItems(comparators)
+        self.form_layout.addRow('Comparator', self.comparator_select)
+
+        self.parallel_toggle = QCheckBox(self)
+        self.form_layout.addRow('Run on multiple cores?', self.parallel_toggle)
+
         on_click = SIGNAL('clicked()')
         # Link to the DirtStart Button
         self.connect(self.btn_run, on_click, self.run)
@@ -115,16 +124,28 @@ class GridLayout(QtGui.QWidget):
         input_loc = unicode(self.input_file_field.text())
         prep_loc = unicode(self.preprocessed_dir_field.text())
         out_loc = unicode(self.output_dir_field.text())
+        language = unicode(self.language_select.currentText())
+        comparator = unicode(self.comparator_select.currentText())
         gap_length = int(self.gap_length.text())
         match_length = int(self.minimum_match_length.text())
+        parallel = self.parallel_toggle.isChecked()
 
         args = AttributeDict()
         args.input = input_loc
         args.preprocessed_dir = prep_loc
         args.output_dir = out_loc
+        args.language = language
+        args.comparator = comparator
         args.gap_length = gap_length
         args.match_length = match_length
+        args.verbose = False
+        args.gui = False
+        args.parallel = parallel
+
+        # TODO: run on different thread so we don't just hang
+        # probably want to open report after
         DIRT.main(args)
+        print 'Done!'
 
     def select_input_file(self):
         dialog = QFileDialog()
