@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import threading
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import *
@@ -11,6 +13,14 @@ import DIRT
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
+
+
+def dirt_worker(args):
+    # TODO: show progress window
+    print 'starting'
+    DIRT.main(args)
+    print 'done'
+    # TODO: hide progress window
 
 
 class RunningWindow(QDialog):
@@ -138,14 +148,12 @@ class GridLayout(QtGui.QWidget):
         args.comparator = comparator
         args.gap_length = gap_length
         args.match_length = match_length
-        args.verbose = False
+        args.verbose = True
         args.gui = False
         args.parallel = parallel
 
-        # TODO: run on different thread so we don't just hang
-        # probably want to open report after
-        DIRT.main(args)
-        print 'Done!'
+        worker = threading.Thread(target=dirt_worker, args=[args])
+        worker.start()
 
     def select_input_file(self):
         dialog = QFileDialog()
