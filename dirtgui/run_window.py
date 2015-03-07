@@ -33,9 +33,11 @@ class GridLayout(QtGui.QWidget):
 
         # Create the build button with its caption
         self.input_file_field = QLineEdit(self)
-        self.form_layout.addRow('Input Files:', self.input_file_field)
-        self.btn_input_file = QPushButton('Input Files Location', self)
+        self.form_layout.addRow('Input File/Directory:', self.input_file_field)
+        self.btn_input_file = QPushButton('Input File', self)
         self.form_layout.addWidget(self.btn_input_file)
+        self.btn_input_dir = QPushButton('Input Directory', self)
+        self.form_layout.addWidget(self.btn_input_dir)
         self.blank_line = QLabel('', self)
         self.form_layout.addRow('', self.blank_line)
 
@@ -98,6 +100,7 @@ class GridLayout(QtGui.QWidget):
 
         # Link Location Buttons
         self.connect(self.btn_input_file, on_click, self.select_input_file)
+        self.connect(self.btn_input_dir, on_click, self.select_input_dir)
         self.connect(self.btn_preprocessed_dir, on_click, self.select_preprocessed_directory)
         self.connect(self.btn_output_dir, on_click, self.select_output_directory)
 
@@ -114,6 +117,11 @@ class GridLayout(QtGui.QWidget):
         dialog = QFileDialog()
         file_name = dialog.getOpenFileName(self, "Open")
         self.input_file_field.setText(file_name)
+
+    def select_input_dir(self):
+        dialog = QFileDialog()
+        input_dir = dialog.getExistingDirectory(self, "Open")
+        self.input_file_field.setText(input_dir)
 
     def select_preprocessed_directory(self):
         preprocessed_dir = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
