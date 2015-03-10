@@ -8,7 +8,7 @@ Install Dependencies
 -------------------
 Dependencies can be installed with
 ```bash
-pip install -r requirements.txt
+pip install --allow-external jianfan --allow-unverified jianfan -r requirements.txt
 ```
 
 Running Tests
