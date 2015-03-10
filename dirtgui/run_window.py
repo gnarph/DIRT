@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import threading
+import multiprocessing
 
+import PyQt4
 from PyQt4 import QtGui
-from PyQt4.QtCore import SIGNAL
+from PyQt4.QtCore import SIGNAL, QThread, pyqtSignal
 from PyQt4.QtGui import *
 
 import DIRT
@@ -13,14 +14,6 @@ import DIRT
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
-
-
-def dirt_worker(args):
-    # TODO: show progress window
-    print 'starting'
-    DIRT.main(args)
-    print 'done'
-    # TODO: hide progress window
 
 
 class RunningWindow(QDialog):
@@ -128,6 +121,11 @@ class GridLayout(QtGui.QWidget):
         self.connect(self.btn_preprocessed_dir, on_click, self.select_preprocessed_directory)
         self.connect(self.btn_output_dir, on_click, self.select_output_directory)
 
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setRange(0, 1)
+        self.progress_bar.hide()
+        self.form_layout.addRow('Progress: ', self.progress_bar)
+
         self.adjustSize()
 
     def run(self):
@@ -152,8 +150,16 @@ class GridLayout(QtGui.QWidget):
         args.gui = False
         args.parallel = parallel
 
-        worker = threading.Thread(target=dirt_worker, args=[args])
+        worker = multiprocessing.Process(target=DIRT.main, args=[args])
+
+        self.progress_bar.setRange(0, 0)
+        self.progress_bar.show()
         worker.start()
+        # Joining is a problem because it blocks the ui thread
+        # Probably need to use QThread
+        worker.join()
+        self.progress_bar.setRange(0, 1)
+        self.progress_bar.setValue(1)
 
     def select_input_file(self):
         dialog = QFileDialog()

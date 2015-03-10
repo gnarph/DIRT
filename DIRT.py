@@ -102,7 +102,7 @@ def process_serial(args, alpha_files, beta_files):
                               comparator=comparator,
                               gap_length=args.gap_length,
                               match_length=args.match_length,
-                              percentage_match_length=args.percentage_match_length)
+                              percentage_match_length=None)
     compared = []
     for a, b in itertools.product(alpha_files, beta_files):
         this_set = sorted([a, b])
