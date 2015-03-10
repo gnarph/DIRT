@@ -114,8 +114,8 @@ class GridLayout(QtGui.QWidget):
         self.option.setText('%s, %s' %(self.gap_option[self.gap_length.currentIndex()],self.match_option[self.minimum_match_length.currentIndex()]))
 
     def location1(self):
-        fileName = QFileDialog.getOpenFileName(self, "Open File")
-        self.fileInputEdit.setText(fileName) 
+        file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.fileInputEdit.setText(file) 
         
     def location2(self):
         file = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
