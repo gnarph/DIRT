@@ -1,11 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import multiprocessing
-
-import PyQt4
-from PyQt4 import QtGui
-from PyQt4.QtCore import SIGNAL, QThread, pyqtSignal
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import *
 
 import DIRT
@@ -14,6 +11,18 @@ import DIRT
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
+
+
+class Worker(QtCore.QThread):
+    finished = QtCore.pyqtSignal()
+
+    def __init__(self, parsed_args=None):
+        super(Worker, self).__init__()
+        self.parsed_args = parsed_args
+
+    def run(self):
+        DIRT.main(self.parsed_args)
+        self.finished.emit()
 
 
 class RunningWindow(QDialog):
@@ -32,6 +41,7 @@ class RunningWindow(QDialog):
 class GridLayout(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
+        self.thread = None
 
         # Create the QVBoxLayout that lays out the whole form
         self.layout = QVBoxLayout()
@@ -150,16 +160,19 @@ class GridLayout(QtGui.QWidget):
         args.gui = False
         args.parallel = parallel
 
-        worker = multiprocessing.Process(target=DIRT.main, args=[args])
-
         self.progress_bar.setRange(0, 0)
         self.progress_bar.show()
-        worker.start()
-        # Joining is a problem because it blocks the ui thread
-        # Probably need to use QThread
-        worker.join()
+
+        self.thread = Worker(parsed_args=args)
+        self.thread.finished.connect(self.done)
+        self.thread.start()
+
+    def done(self):
         self.progress_bar.setRange(0, 1)
         self.progress_bar.setValue(1)
+        t = self.thread
+        self.thread = None
+        t.quit()
 
     def select_input_file(self):
         dialog = QFileDialog()
