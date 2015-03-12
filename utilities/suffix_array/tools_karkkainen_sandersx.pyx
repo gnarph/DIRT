@@ -5,8 +5,11 @@ Used from  https://github.com/baiyubin/pysuffix
 """
 from cpython cimport array as c_array
 from array import array
+import cython
 
-
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
 cdef radix_pass(int[:] a, int[:] b, int[:] r, int n, int k):
     """
     :param a: word to sort
@@ -29,6 +32,9 @@ cdef radix_pass(int[:] a, int[:] b, int[:] r, int n, int k):
         c[r[a[i]]] += 1
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
 cpdef c_array.array simple_kark_sort(unicode s):
     alphabet = [None] + sorted(set(s))
     cdef int k = len(alphabet)
@@ -42,6 +48,9 @@ cpdef c_array.array simple_kark_sort(unicode s):
     return sa
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
 cdef kark_sort(int[:] to_sort, int[:] result, int n, int alphabet_size):
     """s  : word to sort
        SA : result
@@ -131,6 +140,9 @@ cdef kark_sort(int[:] to_sort, int[:] result, int n, int alphabet_size):
         alphabet_size += 1
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
 cpdef c_array.array longest_common_prefixes(unicode s, c_array.array suffix_array):
     """
     return LCP array that LCP[i] is the longest common prefix
