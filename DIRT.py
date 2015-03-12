@@ -55,8 +55,7 @@ def preprocess(args):
         pre.process()
 
 
-def process_parallel_worker(a, output_dir, gap_length, match_length,
-                            percentage_match_length, b, comparator):
+def process_parallel_worker(a, output_dir, gap_length, match_length, b, comparator):
     """
     Worker for processing two files at a time in parallel
     """
@@ -66,7 +65,7 @@ def process_parallel_worker(a, output_dir, gap_length, match_length,
                               comparator=comparator,
                               gap_length=gap_length,
                               match_length=match_length,
-                              percentage_match_length=percentage_match_length)
+                              percentage_match_length=None)
     alpha = Document.from_json(a)
     beta = Document.from_json(b)
     pro.process(alpha_document=alpha, beta_document=beta)
@@ -85,7 +84,6 @@ def process_parallel(args, alpha_files, beta_files):
                                                     args.output_dir,
                                                     args.gap_length,
                                                     args.match_length,
-                                                    args.percentage_match_length,
                                                     b,
                                                     args.comparator))
             compared.append(this_set)
@@ -104,7 +102,7 @@ def process_serial(args, alpha_files, beta_files):
                               comparator=comparator,
                               gap_length=args.gap_length,
                               match_length=args.match_length,
-                              percentage_match_length=args.percentage_match_length)
+                              percentage_match_length=None)
     compared = []
     for a, b in itertools.product(alpha_files, beta_files):
         this_set = sorted([a, b])
@@ -134,6 +132,8 @@ def process(args):
 
 
 def main(parsed_args):
+    if parsed_args.verbose:
+        logger.show_info()
     preprocess(parsed_args)
     process(parsed_args)
 
@@ -192,8 +192,6 @@ if __name__ == '__main__':
                         const=True)
 
     parsed = parser.parse_args()
-    if parsed.verbose:
-        logger.show_info()
 
     if parsed.input:
         main(parsed)

@@ -5,34 +5,13 @@ import sys
 import document_util.document_match_util as dmu
 
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
 from dirtgui.main_layout import MainLayout
 from dirtgui.select_from_list_dialog import SelectFromListDialog
+from dirtgui.run_window import RunningWindow
 from models.match_set_index import MatchSetIndex
 from models import match_set_factory
 from utilities import path
-
-
-class RunningWindow(QMainWindow):
-    def __init__(self):
-        QMainWindow.__init__(self)
-        layout = QHBoxLayout()
-        button = QPushButton('Click me to start!', self)
-        layout.addWidget(button)
-
-        self.widget = QWidget()
-        self.widget.setLayout(layout)
-
-        self.setCentralWidget(self.widget)
-        self.setWindowTitle("Win1")
-
-        self.connect(button, SIGNAL('clicked()'), self.newWindow)
-
-    def newWindow(self):
-        self.other_window = MainWindow()
-        self.other_window.show()
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -58,7 +37,11 @@ class MainWindow(QtGui.QMainWindow):
         open_index.setShortcut('Ctrl+I')
         open_index.setStatusTip('Open matchindex')
         open_index.triggered.connect(self.select_match_index)
-        return open_file, open_index
+
+        run_dialog = QtGui.QAction('Run Dialog', self)
+        run_dialog.triggered.connect(self.run_dialog)
+
+        return open_file, open_index, run_dialog
 
     def _setup_exit_file_menu(self):
         # ------------------------------------------------------
@@ -87,12 +70,12 @@ class MainWindow(QtGui.QMainWindow):
         self._set_initial_window_size()
         self._fill_with_central_widget()
 
-        open_file, open_index = self._setup_open_file_menu()
+        open_file, open_index, run_dialog = self._setup_open_file_menu()
         ext = self._setup_exit_file_menu()
 
         self.statusBar()
 
-        self._attach_file_menu_items(ext, open_file, open_index)
+        self._attach_file_menu_items(ext, open_file, open_index, run_dialog)
         self._attach_toolbar_actions(ext)
 
         self.raise_()
@@ -101,6 +84,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.match_set_index = None
         self.focus = None
+        self.dialog = RunningWindow()
 
     def display_match_index(self, dir_name):
         self.match_set_index = MatchSetIndex(str(dir_name))
@@ -171,6 +155,9 @@ class MainWindow(QtGui.QMainWindow):
                                                       window_title,
                                                       '')
         self.display_match_set(str(file_name))
+
+    def run_dialog(self):
+        self.dialog.show()
 
     def closeEvent(self, event):
         #message box: prevent accidently shut down
