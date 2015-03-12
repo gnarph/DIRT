@@ -15,20 +15,25 @@ cdef radix_pass(a, b, r, n, k):
     :param n: input size
     :param k: alphabet size
     """
-    cdef c_array.array c = array("i", [0] * (k + 1))
+    cdef c_array.array x = array("i", [0] * (k + 1))
+    cdef int[:] c = x
+    cdef int[:] ax = a
+    cdef int[:] bx = b
+    cdef int[:] rx = r
     cdef int i
-    for i in xrange(n):
-        c[r[a[i]]] += 1
     cdef int somme = 0
+
+    for i in xrange(n):
+        c[rx[ax[i]]] += 1
     for i in xrange(k + 1):
         freq, c[i] = c[i], somme
         somme += freq
     for i in xrange(n):
-        b[c[r[a[i]]]] = a[i]
-        c[r[a[i]]] += 1
+        bx[c[rx[ax[i]]]] = ax[i]
+        c[rx[ax[i]]] += 1
 
 
-cpdef simple_kark_sort(unicode s):
+cpdef c_array.array simple_kark_sort(unicode s):
     alphabet = [None] + sorted(set(s))
     cdef int k = len(alphabet)
     cdef int i
@@ -52,16 +57,16 @@ cdef kark_sort(c_array.array to_sort, c_array.array result, int n, int alphabet_
     cdef c_array.array sa_12 = array('i', [0] * (n02 + 3))
     cdef c_array.array sa_0 = array('i', [0] * n0)
 
-    s12 = [i for i in xrange(n + (n0 - n1)) if i % 3]
-    s12.extend([0] * 3)
-    s12 = array('i', s12)
+    a = [i for i in xrange(n + (n0 - n1)) if i % 3]
+    a.extend([0] * 3)
+    cdef c_array.array s12 = array('i', a)
 
     radix_pass(s12, sa_12, to_sort[2:], n02, alphabet_size)
     radix_pass(sa_12, s12, to_sort[1:], n02, alphabet_size)
     radix_pass(s12, sa_12, to_sort, n02, alphabet_size)
 
     cdef int name = 0
-    cdef int c0, c1, c2, i
+    cdef int c0, c1, c2
     c0, c1, c2 = -1, -1, -1
     for i in xrange(n02):
         if to_sort[sa_12[i]] != c0 or to_sort[sa_12[i] + 1] != c1 or to_sort[sa_12[i] + 2] != c2:
