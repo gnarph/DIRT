@@ -7,6 +7,8 @@ from PyQt4.QtGui import *
 
 import DIRT
 
+MW = 300
+
 
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
@@ -32,8 +34,12 @@ class RunningWindow(QDialog):
 
         self.layout = GridLayout(self)
 
-        # self.setGeometry(300, 300, 350, 350)
-        self.setWindowTitle('DiRT Startup')
+        self.setMinimumWidth(500)
+        self.setMinimumHeight(700)
+        self.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                           QtGui.QSizePolicy.MinimumExpanding)
+        self.setSizeGripEnabled(True)
+        self.setWindowTitle('Run Processing')
         self.setModal(True)
         self.setStyleSheet("background-color: rgb(245,247,255);")
 
@@ -51,11 +57,16 @@ class GridLayout(QtGui.QWidget):
 
         # Create the build button with its caption
         self.input_file_field = QLineEdit(self)
+        self.input_file_field.setMinimumWidth(MW)
+        self.input_file_field.setSizePolicy(QtGui.QSizePolicy.Expanding,
+                                            QtGui.QSizePolicy.Expanding)
         self.form_layout.addRow('Input File/Directory:', self.input_file_field)
         self.btn_input_file = QPushButton('Input File', self)
         self.form_layout.addWidget(self.btn_input_file)
         self.btn_input_dir = QPushButton('Input Directory', self)
+        self.btn_input_dir.setMinimumWidth(MW)
         self.form_layout.addWidget(self.btn_input_dir)
+
         self.blank_line = QLabel('', self)
         self.form_layout.addRow('', self.blank_line)
 
@@ -118,9 +129,6 @@ class GridLayout(QtGui.QWidget):
         self.comparator_select.addItems(comparators)
         self.form_layout.addRow('Comparator', self.comparator_select)
 
-        self.parallel_toggle = QCheckBox(self)
-        self.form_layout.addRow('Run on multiple cores?', self.parallel_toggle)
-
         on_click = SIGNAL('clicked()')
         # Link to the DirtStart Button
         self.connect(self.btn_run, on_click, self.run)
@@ -146,7 +154,6 @@ class GridLayout(QtGui.QWidget):
         comparator = unicode(self.comparator_select.currentText())
         gap_length = int(self.gap_length.text())
         match_length = int(self.minimum_match_length.text())
-        parallel = self.parallel_toggle.isChecked()
 
         args = AttributeDict()
         args.input = input_loc
@@ -158,7 +165,7 @@ class GridLayout(QtGui.QWidget):
         args.match_length = match_length
         args.verbose = True
         args.gui = False
-        args.parallel = parallel
+        args.parallel = True
 
         self.progress_bar.setRange(0, 0)
         self.progress_bar.show()
