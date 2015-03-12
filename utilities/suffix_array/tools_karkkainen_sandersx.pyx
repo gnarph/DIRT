@@ -45,7 +45,7 @@ cpdef c_array.array simple_kark_sort(unicode s):
     return sa
 
 
-cdef kark_sort(c_array.array to_sort, c_array.array result, int n, int alphabet_size):
+cdef kark_sort(to_sort_, result_, int n, int alphabet_size):
     """s  : word to sort
        SA : result
        n  : len of s
@@ -54,12 +54,16 @@ cdef kark_sort(c_array.array to_sort, c_array.array result, int n, int alphabet_
     cdef int n1 = (n + 1) / 3
     cdef int n2 = n / 3
     cdef int n02 = n0 + n2
-    cdef c_array.array sa_12 = array('i', [0] * (n02 + 3))
+    cdef int[:] sa_12 = array('i', [0] * (n02 + 3))
     cdef c_array.array sa_0 = array('i', [0] * n0)
+    cdef int i
+
+    cdef int[:] to_sort = to_sort_
+    cdef int[:] result = result_
 
     a = [i for i in xrange(n + (n0 - n1)) if i % 3]
     a.extend([0] * 3)
-    cdef c_array.array s12 = array('i', a)
+    cdef int[:] s12 = array('i', a)
 
     radix_pass(s12, sa_12, to_sort[2:], n02, alphabet_size)
     radix_pass(sa_12, s12, to_sort[1:], n02, alphabet_size)
@@ -87,7 +91,7 @@ cdef kark_sort(c_array.array to_sort, c_array.array result, int n, int alphabet_
             sa_12[s12[i] - 1] = i
     cdef c_array.array s0 = array('i', [sa_12[i] * 3 for i in xrange(n02) if sa_12[i] < n0])
     radix_pass(s0, sa_0, to_sort, n0, alphabet_size)
-    cdef int p, j
+    cdef int p, j, test
     p = j = alphabet_size = 0
     cdef int t = n0 - n1
     while alphabet_size < n:
