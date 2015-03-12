@@ -9,6 +9,12 @@ import DIRT
 
 MW = 300
 
+INPUT_DIR_TT = u'Select directory containing corpus'
+INPUT_FILE_TT = u'Select file listing corpus files'
+PREP_DIR_TT = u'Select directory for storing preprocessed texts'
+OUTPUT_DIR_TT = u'Select directory for storing output files'
+GAP_LENGTH_TT = u'Number of consecutive non-matching characters to ignore'
+
 
 class AttributeDict(dict):
     __getattr__ = dict.__getitem__
@@ -62,9 +68,11 @@ class GridLayout(QtGui.QWidget):
                                             QtGui.QSizePolicy.Expanding)
         self.form_layout.addRow('Input File/Directory:', self.input_file_field)
         self.btn_input_file = QPushButton('Input File', self)
+        self.btn_input_file.setToolTip(INPUT_FILE_TT)
         self.form_layout.addWidget(self.btn_input_file)
         self.btn_input_dir = QPushButton('Input Directory', self)
         self.btn_input_dir.setMinimumWidth(MW)
+        self.btn_input_dir.setToolTip(INPUT_DIR_TT)
         self.form_layout.addWidget(self.btn_input_dir)
 
         self.blank_line = QLabel('', self)
@@ -73,6 +81,7 @@ class GridLayout(QtGui.QWidget):
         self.preprocessed_dir_field = QLineEdit(self)
         self.form_layout.addRow('Preprocessed Directory:', self.preprocessed_dir_field)
         self.btn_preprocessed_dir = QPushButton('Preprocessed Location', self)
+        self.btn_preprocessed_dir.setToolTip(PREP_DIR_TT)
         self.form_layout.addWidget(self.btn_preprocessed_dir)
         self.blank_line1 = QLabel('', self)
         self.form_layout.addRow('', self.blank_line1)
@@ -80,6 +89,7 @@ class GridLayout(QtGui.QWidget):
         self.output_dir_field = QLineEdit(self)
         self.form_layout.addRow('Output Directory:', self.output_dir_field)
         self.btn_output_dir = QPushButton('Output Location', self)
+        self.btn_output_dir.setToolTip(OUTPUT_DIR_TT)
         self.form_layout.addWidget(self.btn_output_dir)
         self.blank_line2 = QLabel('', self)
         self.form_layout.addRow('', self.blank_line2)
@@ -89,6 +99,7 @@ class GridLayout(QtGui.QWidget):
 
         # Create and fill the combo box to choose the skipping character
         self.gap_length = QLineEdit(self)
+        self.gap_length.setToolTip(GAP_LENGTH_TT)
 
         # Add it to the form layout with a label
         self.form_layout.addRow('Gap Length:', self.gap_length)
