@@ -7,7 +7,7 @@ from cpython cimport array as c_array
 from array import array
 
 
-cdef radix_pass(a, b, r, n, k):
+cdef radix_pass(int[:] a, int[:] b, int[:] r, int n, int k):
     """
     :param a: word to sort
     :param b: sorted words
@@ -15,22 +15,18 @@ cdef radix_pass(a, b, r, n, k):
     :param n: input size
     :param k: alphabet size
     """
-    cdef c_array.array x = array("i", [0] * (k + 1))
-    cdef int[:] c = x
-    cdef int[:] ax = a
-    cdef int[:] bx = b
-    cdef int[:] rx = r
+    cdef int[:] c = array("i", [0] * (k + 1))
     cdef int i
     cdef int somme = 0
 
     for i in xrange(n):
-        c[rx[ax[i]]] += 1
+        c[r[a[i]]] += 1
     for i in xrange(k + 1):
         freq, c[i] = c[i], somme
         somme += freq
     for i in xrange(n):
-        bx[c[rx[ax[i]]]] = ax[i]
-        c[rx[ax[i]]] += 1
+        b[c[r[a[i]]]] = a[i]
+        c[r[a[i]]] += 1
 
 
 cpdef c_array.array simple_kark_sort(unicode s):
@@ -40,12 +36,13 @@ cpdef c_array.array simple_kark_sort(unicode s):
     alphabet_indices = {c: i for i, c in enumerate(alphabet)}
     cdef int n = len(s)
     cdef c_array.array sa = array('i', [0] * (n + 3))
-    cdef c_array.array b = array('i', [alphabet_indices[c] for c in s] + [0] * 3)
-    kark_sort(b, sa, n, k)
+    cdef int[:] b = array('i', [alphabet_indices[c] for c in s] + [0] * 3)
+    cdef int[:] view_sa = sa
+    kark_sort(b, view_sa, n, k)
     return sa
 
 
-cdef kark_sort(to_sort_, result_, int n, int alphabet_size):
+cdef kark_sort(int[:] to_sort, int[:] result, int n, int alphabet_size):
     """s  : word to sort
        SA : result
        n  : len of s
@@ -55,15 +52,13 @@ cdef kark_sort(to_sort_, result_, int n, int alphabet_size):
     cdef int n2 = n / 3
     cdef int n02 = n0 + n2
     cdef int[:] sa_12 = array('i', [0] * (n02 + 3))
-    cdef c_array.array sa_0 = array('i', [0] * n0)
+    cdef int[:] sa_0 = array('i', [0] * n0)
     cdef int i
-
-    cdef int[:] to_sort = to_sort_
-    cdef int[:] result = result_
 
     a = [i for i in xrange(n + (n0 - n1)) if i % 3]
     a.extend([0] * 3)
     cdef int[:] s12 = array('i', a)
+    del a
 
     radix_pass(s12, sa_12, to_sort[2:], n02, alphabet_size)
     radix_pass(sa_12, s12, to_sort[1:], n02, alphabet_size)
@@ -142,21 +137,23 @@ cpdef c_array.array longest_common_prefixes(unicode s, c_array.array suffix_arra
     between s[SA[i]] and s[SA[i+1]]
     """
     cdef int n = len(s)
-    cdef c_array.array rank = array('i', [0] * n)
+    cdef int[:] rank = array('i', [0] * n)
     cdef c_array.array lcp = array('i', [0] * n)
+    cdef int[:] view_lcp = lcp
     cdef int i
+    cdef int[:] sa = suffix_array
     for i in xrange(n):
-        rank[suffix_array[i]] = i
+        rank[sa[i]] = i
     cdef int l = 0
     cdef int j
     for j in xrange(n):
         l = max(0, l - 1)
         i = rank[j]
-        j2 = suffix_array[i - 1]
+        j2 = sa[i - 1]
         if i:
             while l + j < n and l + j2 < n and s[j + l] == s[j2 + l]:
                 l += 1
-            lcp[i - 1] = l
+            view_lcp[i - 1] = l
         else:
             l = 0
     return lcp
