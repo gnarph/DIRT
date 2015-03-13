@@ -14,6 +14,9 @@ INPUT_FILE_TT = u'Select file listing corpus files'
 PREP_DIR_TT = u'Select directory for storing preprocessed texts'
 OUTPUT_DIR_TT = u'Select directory for storing output files'
 GAP_LENGTH_TT = u'Number of consecutive non-matching characters to ignore'
+MATCH_LENGTH_TT = u'Minimum length of match'
+RUN_TT = u'Run processing (may take a long time)'
+LANGUAGE_TT = u'3 character iso code of corpus language'
 
 
 class AttributeDict(dict):
@@ -41,7 +44,7 @@ class RunningWindow(QDialog):
         self.layout = GridLayout(self)
 
         self.setMinimumWidth(500)
-        self.setMinimumHeight(700)
+        self.setMinimumHeight(450)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding,
                            QtGui.QSizePolicy.MinimumExpanding)
         self.setSizeGripEnabled(True)
@@ -106,6 +109,7 @@ class GridLayout(QtGui.QWidget):
 
         # Create and fill the combo box to choose the skipping character
         self.minimum_match_length = QLineEdit(self)
+        self.minimum_match_length.setToolTip(MATCH_LENGTH_TT)
 
         # Add it to the form layout with a label
         self.form_layout.addRow('Minimum Match Length:', self.minimum_match_length)
@@ -121,6 +125,7 @@ class GridLayout(QtGui.QWidget):
 
         # Create the build button with its caption
         self.btn_run = QPushButton('DiRT Start', self)
+        self.btn_run.setToolTip(RUN_TT)
 
         # Add it to the button box
         self.button_box.addWidget(self.btn_run)
@@ -133,12 +138,8 @@ class GridLayout(QtGui.QWidget):
         supported_languages = ['zhi', 'eng']
         self.language_select = QComboBox(self)
         self.language_select.addItems(supported_languages)
-        self.form_layout.addRow('Language', self.language_select)
-
-        comparators = ['simple']
-        self.comparator_select = QComboBox(self)
-        self.comparator_select.addItems(comparators)
-        self.form_layout.addRow('Comparator', self.comparator_select)
+        self.language_select.setToolTip(LANGUAGE_TT)
+        self.form_layout.addRow('Language: ', self.language_select)
 
         on_click = SIGNAL('clicked()')
         # Link to the DirtStart Button
@@ -171,7 +172,7 @@ class GridLayout(QtGui.QWidget):
         args.preprocessed_dir = prep_loc
         args.output_dir = out_loc
         args.language = language
-        args.comparator = comparator
+        args.comparator = u'simple'
         args.gap_length = gap_length
         args.match_length = match_length
         args.verbose = True
