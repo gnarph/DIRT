@@ -16,11 +16,23 @@ COLUMNS = ['file_name',
            'beta_match_pct',
            'match_count']
 
+COLUMN_TT = [u'Name of file',
+             u'',
+             u'Percentage of focus that is a match',
+             u'Percentage of other document that is a match',
+             u'Number of matching passages']
+
 
 class MainTable(QtGui.QTableWidget):
     """
     Creates a table that self populates
     """
+
+    def _set_header_tooltips(self):
+        for i in xrange(len(COLUMN_TT)):
+            header_item = self.horizontalHeaderItem(i)
+            tool_tip = COLUMN_TT[i]
+            header_item.setToolTip(tool_tip)
 
     def _set_initial_column_widths(self):
         self.setColumnWidth(0, 200)
@@ -46,6 +58,7 @@ class MainTable(QtGui.QTableWidget):
         self.setSortingEnabled(True)
 
         self._set_fonts()
+        self._set_header_tooltips()
 
     def populate(self, focus_name, msi):
         """

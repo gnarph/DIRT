@@ -44,7 +44,7 @@ class RunningWindow(QDialog):
         self.layout = GridLayout(self)
 
         self.setMinimumWidth(500)
-        self.setMinimumHeight(450)
+        self.setMinimumHeight(700)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding,
                            QtGui.QSizePolicy.MinimumExpanding)
         self.setSizeGripEnabled(True)

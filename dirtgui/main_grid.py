@@ -4,6 +4,10 @@ from PyQt4 import QtGui, QtCore
 from dirtgui.document_util import document_match_util as match_util
 
 
+NEXT_TT = u'Move to next match within this document'
+PREV_TT = u'Move to prevous match within this document'
+
+
 class MainGrid(QtGui.QGridLayout):
     """
     Creates a grid with Location, Title, Author, and Text READ-only display
@@ -64,12 +68,14 @@ class MainGrid(QtGui.QGridLayout):
 
         previous_button = QtGui.QPushButton()
         previous_button.setText('Prev')
+        previous_button.setToolTip(PREV_TT)
         # previous_button.setMaximumSize(30,50)
         previous_button.clicked.connect(self.prev_match)
         navigation_bar.addWidget(previous_button)
 
         next_button = QtGui.QPushButton()
         next_button.setText('Next')
+        next_button.setToolTip(NEXT_TT)
         # next_button.setMaximumSize(30,50)
         next_button.clicked.connect(self.next_match)
         navigation_bar.addWidget(next_button)
