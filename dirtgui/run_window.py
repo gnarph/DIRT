@@ -163,7 +163,6 @@ class GridLayout(QtGui.QWidget):
         prep_loc = unicode(self.preprocessed_dir_field.text())
         out_loc = unicode(self.output_dir_field.text())
         language = unicode(self.language_select.currentText())
-        comparator = unicode(self.comparator_select.currentText())
         gap_length = int(self.gap_length.text())
         match_length = int(self.minimum_match_length.text())
 
