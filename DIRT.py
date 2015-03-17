@@ -21,6 +21,10 @@ COMPARATOR_PATH = 'processing.comparators.{}'
 
 
 class UnsupportedFunctionException(BaseException):
+    """
+    Exception for functions that are not supported
+    """
+    # TODO: is this actually used?
     pass
 
 
