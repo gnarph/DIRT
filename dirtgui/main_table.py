@@ -1,8 +1,5 @@
-import string
-
 from PyQt4 import QtGui, QtCore
 from models.match_set_index import MatchSetIndex
-from models.match_set import MatchSet
 
 HEADER = ['Match Name',
           'Author(s)',
@@ -21,6 +18,18 @@ COLUMN_TT = [u'Name of file',
              u'Percentage of focus that is a match',
              u'Percentage of other document that is a match',
              u'Number of matching passages']
+
+
+class NumericalTableWidgetItem(QtGui.QTableWidgetItem):
+    def __lt__(self, other):
+        if isinstance(other, QtGui.QTableWidgetItem):
+            my_value, my_ok = self.data(QtCore.Qt.EditRole).toFloat()
+            other_value, other_ok = other.data(QtCore.Qt.EditRole).toFloat()
+
+            if my_ok and other_ok:
+                return my_value < other_value
+
+        return super(NumericalTableWidgetItem, self).__lt__(other)
 
 
 class MainTable(QtGui.QTableWidget):
@@ -75,8 +84,14 @@ class MainTable(QtGui.QTableWidget):
         for i, match_set in enumerate(match_set_list):
             meta = match_set.get_beta_metadata()
             for j, col_name in enumerate(COLUMNS):
-                item = QtGui.QTableWidgetItem(j)
                 uni_val = unicode(meta[col_name])
+                if j >= 3:
+                    # Numerical columns
+                    # TODO HACK
+                    item = NumericalTableWidgetItem(j)
+                    item.setData(QtCore.Qt.EditRole, QtCore.QVariant(float(uni_val)))
+                else:
+                    item = QtGui.QTableWidgetItem(j)
                 item.setText(uni_val)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.setItem(i, j, item)
