@@ -35,7 +35,9 @@ def read_utf8(file_name):
     :param file_name: name of file
     :return: unicode string of file
     """
-    with codecs.open(file_name, encoding='utf8') as f:
+    # fn = unicode(file_name).encode('ascii')
+    fn = file_name
+    with codecs.open(fn, encoding='utf8') as f:
         raw_passage = f.read()
     return raw_passage
 

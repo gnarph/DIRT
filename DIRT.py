@@ -131,6 +131,8 @@ def process(args):
         cnt = process_serial(args, alpha_files, beta_files)
 
     duration = time.time() - start
+    if duration == 0:
+        duration = 1
     comparisons_per_sec = cnt/duration
     logger.info('Processed {} files per second'.format(comparisons_per_sec))
 

@@ -10,7 +10,9 @@ def iter_files_in(directory):
     :return: generator
     """
     for item_name in os.listdir(directory):
+
         full_name = os.path.join(directory, item_name)
+        print full_name, directory
         if should_use_file(full_name):
             yield full_name
 
