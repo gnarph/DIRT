@@ -111,12 +111,15 @@ class Processor(object):
         :param beta_document: Document two to compare
         """
         out_name = self._get_report_name(alpha_document, beta_document)
+        out_file = os.path.join(self.output_dir, out_name)
+        if file_ops.exists(out_file):
+            # Already processed
+            return
         matches = self._get_matches(alpha_document, beta_document)
         match_set = MatchSet(alpha_doc=alpha_document,
                              beta_doc=beta_document,
                              matches=matches)
         match_set_dict = match_set.to_dict()
-        out_file = os.path.join(self.output_dir, out_name)
         file_ops.write_json_utf8(out_file, match_set_dict)
 
     def process(self, alpha_document, beta_document):

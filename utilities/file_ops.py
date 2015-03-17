@@ -62,6 +62,15 @@ def write_json_utf8(file_name, serializable):
     write_utf8(file_name, unicode_json_rep)
 
 
+def exists(file_name):
+    """
+    Does file exist
+    :param file_name: full path to file
+    :return: boolean
+    """
+    return os.path.exists(file_name)
+
+
 def get_full_file_name(relative_file, magic_file):
     """
     Get fully quantified file name
