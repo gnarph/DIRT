@@ -51,6 +51,9 @@ class Preprocessor(object):
         output_name = name + PREPROCESS_SUFFIX
         in_file = self.file_name
         out_file = os.path.join(self.output_dir, output_name)
+        if file_ops.exists(out_file):
+            # Already preprocessed
+            return
 
         if in_file.endswith('.tei') or in_file.endswith('.xml'):
             reader = TEIReader(in_file)
