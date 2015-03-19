@@ -39,6 +39,7 @@ class MainWindow(QtGui.QMainWindow):
         open_index.triggered.connect(self.select_match_index)
 
         run_dialog = QtGui.QAction('Run Dialog', self)
+        run_dialog.setShortcut('Ctrl+R')
         run_dialog.triggered.connect(self.run_dialog)
 
         return open_file, open_index, run_dialog
@@ -75,7 +76,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.statusBar()
 
-        self._attach_file_menu_items(ext, open_file, open_index, run_dialog)
+        self._attach_file_menu_items(run_dialog, open_file, open_index, ext)
         # self._attach_toolbar_actions(ext)
 
         self.raise_()
@@ -164,7 +165,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dialog.show()
 
     def closeEvent(self, event):
-        #message box: prevent accidently shut down
+        #message box: prevent accidentally shut down
         reply = QtGui.QMessageBox.question(self,
                                            'Warning',
                                            "Are you sure you want to quit?",
