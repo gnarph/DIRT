@@ -94,14 +94,14 @@ class MatchSet(object):
             match_len_a += a
             b = match.beta_indices[1] - match.beta_indices[0]
             match_len_b += b
-        percentage_a = (match_len_a/len_a) * 100
-        percentage_b = (match_len_b/len_b) * 100
+        percentage_a = round((match_len_a/len_a) * 100, 1)
+        percentage_b = round((match_len_b/len_b) * 100, 1)
         return percentage_a, percentage_b
 
     def get_match_count(self):
         """
         Return total number of matches
-        could just use use len() instead
+        could just use len() instead
         """
         return len(self.matches)
 
