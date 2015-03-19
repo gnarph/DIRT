@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
     if parsed.input:
         main(parsed)
-    if parsed.gui:
+    else:
         from dirtgui import main_window
         if parsed.input:
             main_window.main(parsed.output_dir)
