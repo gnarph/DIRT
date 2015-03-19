@@ -72,8 +72,13 @@ def chunk_gen(text, sub=' '):
         if char == sub:
             yield char
         else:
-            # Only want Z-variants, as they indicate no change in
-            # meaning
-            variants = lookup.getCharacterVariants(char, 'Z')
-            variants.append(char)
-            yield min(variants)
+            # see https://github.com/cburgmer/cjklib/blob/3faf249e1416ed5dca4d7b9a3341400bf64a9e50/cjklib/characterlookup.py
+            # much faster - one db hit
+            # includes (specialized)semantic variants, traditional/simplified variants
+            # unicode compatibility variants, and Z variants
+            # Empty list if character not found
+            variants = lookup.getAllCharacterVariants(char)
+            variants.append((char, 'M'))
+            desired = min(v[0] for v in variants if v[1] in {'P', 'M'})
+
+            yield desired
