@@ -60,9 +60,9 @@ class MainWindow(QtGui.QMainWindow):
         for a in args:
             f.addAction(a)
 
-    def _attach_toolbar_actions(self, ext):
-        toolbar = self.addToolBar('Exit')
-        toolbar.addAction(ext)
+    # def _attach_toolbar_actions(self, ext):
+    #     toolbar = self.addToolBar('Exit')
+    #     toolbar.addAction(ext)
 
     def __init__(self, index_dir=None):
         QtGui.QMainWindow.__init__(self)
@@ -76,7 +76,7 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar()
 
         self._attach_file_menu_items(ext, open_file, open_index, run_dialog)
-        self._attach_toolbar_actions(ext)
+        # self._attach_toolbar_actions(ext)
 
         self.raise_()
         if index_dir:
@@ -102,8 +102,12 @@ class MainWindow(QtGui.QMainWindow):
                 self.display_match_set(to_view)
                 # all_docs = msi.get_all_matched_documents(focus)
                 results = self.layout.results_table
+                self.layout.results_table.setSortingEnabled(False)
                 # TODO: should pass msi down instead
                 results.populate(focus, msi)
+                self.layout.results_table.setSortingEnabled(True)
+                total_match = self.match_set_index.get_matched_document_count(focus)
+                self.layout.table_label.setText('Results (%d)' % total_match)
 
     def select_match_index(self):
         window_title = "Select match index"
