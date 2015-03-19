@@ -32,7 +32,7 @@ class ZhiTest(unittest.TestCase):
         """
         Test replacement of unwanted characters
         """
-        expected_result = u'hel lo          what s  yo1231薩達231 ur 盛大阿什頓name   '
+        expected_result = u'hel lo          what s  yo1231萨达231 ur 盛大啊什頓name   '
         testing = u"hel，lo! &^*&^*(&what：s 《yo1231薩達231。ur 盛大阿什頓name? &"
 
         remove_result = zhi.strip(testing)
