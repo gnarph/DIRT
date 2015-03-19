@@ -92,19 +92,19 @@ class SuffixArrayAllTest(unittest.TestCase):
 
 class SuffixArrayNoSubsTest(unittest.TestCase):
 
-    def test_acs_small(self):
+    def test_acs_small(self, cython=True):
         """
         Test on small strings
         """
         a = u'jeffisacoolguywhoiscool'
         b = u'whoiscooljeffisacoolguy'
-        acs = app.acs_no_substrings(a, b)
+        acs = app.acs_no_substrings(a, b, cython=cython)
         self.assertIn(u'jeffisacoolguy', acs)
         self.assertIn(u'whoiscool', acs)
 
         a = u'aabbccdefaabbcc'
         b = u'defabcc'
-        acs = app.acs_no_substrings(a, b)
+        acs = app.acs_no_substrings(a, b, cython=cython)
         self.assertIn(u'defa', acs)
         self.assertIn(u'bcc', acs)
         self.assertIn(u'ab', acs)
@@ -112,11 +112,17 @@ class SuffixArrayNoSubsTest(unittest.TestCase):
         a = u'sallyjohndeer'
         b = u'johnnyrobinpear'
         c = u'chairlairjohn'
-        ab = app.acs_no_substrings(a, b)
-        ac = app.acs_no_substrings(a, c)
-        bc = app.acs_no_substrings(b, c)
+        ab = app.acs_no_substrings(a, b, cython=cython)
+        ac = app.acs_no_substrings(a, c, cython=cython)
+        bc = app.acs_no_substrings(b, c, cython=cython)
         in_all = set(ab) & set(ac) & set(bc)
         self.assertIn(u'john', in_all)
+
+    def test_acs_small_pure_python(self):
+        """
+        Test on small strings, without cython
+        """
+        self.test_acs_small(cython=False)
 
     def test_acs_except(self):
         """
@@ -132,7 +138,7 @@ class SuffixArrayNoSubsTest(unittest.TestCase):
         a, b = b, a
         self.assertRaises(should_raise, to_call, a, b)
 
-    def test_acs_large(self):
+    def test_acs_large(self, cython=True):
         """
         Test on actual documents
         """
@@ -144,9 +150,9 @@ class SuffixArrayNoSubsTest(unittest.TestCase):
         two = file_ops.read_utf8(f_two)
         three = file_ops.read_utf8(f_three)
 
-        one_two = app.acs_no_substrings(one, two)
-        one_three = app.acs_no_substrings(one, three)
-        two_three = app.acs_no_substrings(two, three)
+        one_two = app.acs_no_substrings(one, two, cython=True)
+        one_three = app.acs_no_substrings(one, three, cython=True)
+        two_three = app.acs_no_substrings(two, three, cython=True)
 
         # TODO: replace with check for static string
         strip_a = strip_set(one_two)
@@ -155,3 +161,9 @@ class SuffixArrayNoSubsTest(unittest.TestCase):
 
         in_all = strip_a & strip_b & strip_c
         self.assertGreaterEqual(len(in_all), 1)
+
+    def test_acs_large_pure_python(self):
+        """
+        Test on actual documents, without cython
+        """
+        self.test_acs_large(cython=False)

@@ -111,11 +111,16 @@ def acs_all(a, b, separator='$'):
     return [x.passage for x in all_subs]
 
 
-def acs_no_substrings(a, b, separator='$'):
+def acs_no_substrings(a, b, separator='$', cython=True):
     """
     all substrings in both a and b
     such that no substring is a substring of another substring
     """
+    if cython:
+        tools_ks = tks
+    if not cython:
+        import utilities.suffix_array.tools_karkkainen_sanders as tools_ks
+
     if separator in a or separator in b:
         raise InvalidCharacterException('Separator in input strings')
 
@@ -125,10 +130,10 @@ def acs_no_substrings(a, b, separator='$'):
     ab = u''.join([a, separator, b])
 
     # Suffix array
-    sa = tks.simple_kark_sort(ab)
+    sa = tools_ks.simple_kark_sort(ab)
 
     # Longest common prefix array
-    lcp = tks.longest_common_prefixes(ab, sa)
+    lcp = tools_ks.longest_common_prefixes(ab, sa)
     sep = ab.index(separator)
     all_subs = set()
 
