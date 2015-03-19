@@ -3,8 +3,9 @@ from dirtgui.main_frame import MainFrame
 from dirtgui.main_table import MainTable
 
 from utilities import path
+from models.match_set import MatchSet
 
-RESULTS_HEADER = 'RESULTS'
+RESULTS_HEADER = 'Results'
 
 
 class MainLayout(QtGui.QWidget):
@@ -24,17 +25,17 @@ class MainLayout(QtGui.QWidget):
     def _setup_result_table_frame(self):
         self.results_table = MainTable()
         self.results_table.cellDoubleClicked.connect(self.click_display)
-        self.results_table.sortByColumn(2)
 
         # TODO: consider delegation so the table can send the number
         #       of results back here to update the header
-        table_label = QtGui.QLabel(RESULTS_HEADER)
-        table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
-        table_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.table_label = QtGui.QLabel('Results')
+
+        self.table_label.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
+        self.table_label.setAlignment(QtCore.Qt.AlignCenter)
 
         vbox = QtGui.QVBoxLayout()
         vbox.setContentsMargins(0, 15, 0, 0)
-        vbox.addWidget(table_label)
+        vbox.addWidget(self.table_label)
         vbox.addSpacing(5)
         vbox.addWidget(self.results_table)
 
