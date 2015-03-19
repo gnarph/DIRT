@@ -32,27 +32,30 @@ class ZhiTest(unittest.TestCase):
         """
         Test replacement of unwanted characters
         """
-        expected_result = u'hel lo          what s  yo1231萨达231 ur 盛大啊什頓name   '
+        expected_result = u'hel lo          what s  yo1231薩達231 ur 盛大啊什頓name   '
         testing = u"hel，lo! &^*&^*(&what：s 《yo1231薩達231。ur 盛大阿什頓name? &"
 
         remove_result = zhi.strip(testing)
         self.assertEqual(remove_result, expected_result)
 
-    @unittest.skip
     def test_unicode_sub(self):
         """
         Test unicode (specialized) semantic variant substitution
         """
-        # TODO: test more characters with variants
-        # these are z variants, not semantic variants
-        text = u'處部止'
-        desired = u'処卩只'
+        # TODO: test more characters with variants, semantic and otherwise
+        text = u'處部止薩達'
+        desired = u'䖏部止薩達'
 
-        actual = zhi.chunk_gen(text)
-        for actual_char, desired_char in izip(actual, desired):
-            self.assertEqual(actual_char, desired_char)
+        actual_gen = zhi.chunk_gen(text)
+        actual = u''.join(actual_gen)
+        self.assertEqual(actual, desired)
+
+        # Roundtrip should be the same
+        actual_roundtrip_gen = zhi.chunk_gen(actual)
+        actual_roundtrip = u''.join(actual_roundtrip_gen)
+        self.assertEqual(actual_roundtrip, actual)
 
         # Now try the other way
-        also_desired = zhi.chunk_gen(desired)
-        for ad_char, desired_char in izip(also_desired, desired):
-            self.assertEqual(ad_char, desired_char)
+        also_desired_gen = zhi.chunk_gen(desired)
+        also_desired = u''.join(also_desired_gen)
+        self.assertEqual(also_desired, desired)

@@ -76,7 +76,9 @@ def chunk_gen(text, sub=' '):
             # much faster - one db hit
             # includes (specialized)semantic variants, traditional/simplified variants
             # unicode compatibility variants, and Z variants
+            # Empty list if character not found
             variants = lookup.getAllCharacterVariants(char)
-            variants.append(char)
-            desired = min(v[0] for v in variants)
+            variants.append((char, 'M'))
+            desired = min(v[0] for v in variants if v[1] in {'P', 'M'})
+
             yield desired
