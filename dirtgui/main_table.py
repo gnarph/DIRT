@@ -3,8 +3,8 @@ from models.match_set_index import MatchSetIndex
 
 HEADER = ['Match Name',
           'Author(s)',
-          'Focus Common %',
-          'Match Common %',
+          'Focus %',
+          'Match %',
           'Match Count']
 
 COLUMNS = ['file_name',
@@ -85,7 +85,7 @@ class MainTable(QtGui.QTableWidget):
             meta = match_set.get_beta_metadata()
             for j, col_name in enumerate(COLUMNS):
                 uni_val = unicode(meta[col_name])
-                if j >= 3:
+                if j >= 2:
                     # Numerical columns
                     # TODO HACK
                     item = NumericalTableWidgetItem(j)
@@ -95,24 +95,3 @@ class MainTable(QtGui.QTableWidget):
                 item.setText(uni_val)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.setItem(i, j, item)
-
-    def _get_matchset_list(self, focus_doc, output_dir):
-        """
-        List of all matches found to the focus
-        :param match_file: the match file
-        :param entries: the list to append to
-        """
-        msi = MatchSetIndex(output_dir)
-        self.focus = str(focus_doc)
-        matchset_list = msi.get_all_match_sets(self.focus)
-        return matchset_list
-
-    def _get_sorted_metadata(self, metadata):
-        sorted_metadata = []
-        title = metadata.get('title')
-        author = metadata.get('author')
-        match_len = metadata.get('match_len')
-        match_percent = metadata.get('match_percent')
-        path = metadata.get('path')
-        sorted_metadata.extend([title, author, match_len, match_percent, path])
-        return sorted_metadata
