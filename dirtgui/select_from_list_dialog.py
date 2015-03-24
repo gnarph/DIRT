@@ -8,9 +8,10 @@ from PyQt4.QtCore import Qt
 
 
 class SelectFromListDialog(QDialog):
-    def __init__(self, options, parent=None):
+    def __init__(self, options, parent=None, title=''):
         super(SelectFromListDialog, self).__init__(parent)
         layout = QVBoxLayout(self)
+        self.setWindowTitle(title)
 
         self.setStyleSheet("background-color: rgb(245,247,255);")
 
@@ -34,8 +35,8 @@ class SelectFromListDialog(QDialog):
         return str(q_text)
 
     @staticmethod
-    def get_selected(options, parent=None):
-        dialog = SelectFromListDialog(options, parent)
+    def get_selected(options, parent=None, title=''):
+        dialog = SelectFromListDialog(options, parent, title)
         dialog.selector.setItemSelected(dialog.selector.item(0), True)
         result = dialog.exec_()
         focus = dialog.selected()

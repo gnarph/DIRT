@@ -8,13 +8,13 @@ NEXT_TT = u'Move to next match within this document'
 PREV_TT = u'Move to prevous match within this document'
 
 
-class MainGrid(QtGui.QGridLayout):
+class DocumentGrid(QtGui.QGridLayout):
     """
     Creates a grid with Location, Title, Author, and Text READ-only display
     Param: self, title of the layout
     """
     def __init__(self, parent, header, passage_type):
-        super(MainGrid, self).__init__(parent)
+        super(DocumentGrid, self).__init__(parent)
 
         self.highlighter = ''
         # ------------------------------------------------------
@@ -22,9 +22,9 @@ class MainGrid(QtGui.QGridLayout):
 
         # Labels
         header = QtGui.QLabel(header + ' DOCUMENT')
-        location = QtGui.QLabel('Path :')
+        location = QtGui.QLabel('Path')
         title = QtGui.QLabel('Title')
-        author = QtGui.QLabel('Author')
+        # author = QtGui.QLabel('Author')
         #text = QtGui.QLabel('Text :')
         self.passage_type = passage_type
 
@@ -37,15 +37,15 @@ class MainGrid(QtGui.QGridLayout):
         location.setAlignment(QtCore.Qt.AlignLeft)
         title.setFont(label_font)
         title.setAlignment(QtCore.Qt.AlignLeft)
-        author.setFont(label_font)
-        author.setAlignment(QtCore.Qt.AlignLeft)
+        # author.setFont(label_font)
+        # author.setAlignment(QtCore.Qt.AlignLeft)
         #text.setFont(label_font)
 
         # ------------------------------------------------------
         # Text displays
         self.locationEdit = QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
         self.titleEdit = QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
-        self.authorEdit = QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
+        # self.authorEdit = QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
         self.textEdit = QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
 
         self.textEdit.setStyleSheet("background-color: rgb(255,255,255);")
@@ -55,13 +55,13 @@ class MainGrid(QtGui.QGridLayout):
 
         self.locationEdit.setFont(display_font)
         self.titleEdit.setFont(display_font)
-        self.authorEdit.setFont(display_font)
+        # self.authorEdit.setFont(display_font)
         self.textEdit.setFont(display_font)
 
         # Set all text displays to READ-only
         QtGui.QTableWidget.locationEdit.setReadOnly(True)
         QtGui.QTableWidget.titleEdit.setReadOnly(True)
-        QtGui.QTableWidget.authorEdit.setReadOnly(True)
+        # QtGui.QTableWidget.authorEdit.setReadOnly(True)
         QtGui.QTableWidget.textEdit.setReadOnly(True)
 
         navigation_bar = QtGui.QHBoxLayout()
@@ -91,16 +91,16 @@ class MainGrid(QtGui.QGridLayout):
         self.verticalSpacing()
 
         # Path
-        # self.addWidget(location, 1, 0)
-        # self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
+        self.addWidget(location, 1, 0)
+        self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
 
         # Title
         self.addWidget(title, 2, 0)
         self.addWidget(QtGui.QTableWidget.titleEdit, 2, 1)
 
         # Author
-        self.addWidget(author, 3, 0)
-        self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
+        # self.addWidget(author, 3, 0)
+        # self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)

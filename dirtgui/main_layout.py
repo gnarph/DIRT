@@ -1,6 +1,6 @@
 from PyQt4 import QtGui, QtCore
 from dirtgui.main_frame import MainFrame
-from dirtgui.main_table import MainTable
+from dirtgui.results_table import ResultsTable
 
 from utilities import path
 from models.match_set import MatchSet
@@ -23,7 +23,7 @@ class MainLayout(QtGui.QWidget):
         self.m_frame = MainFrame(self, 'MATCH')
 
     def _setup_result_table_frame(self):
-        self.results_table = MainTable()
+        self.results_table = ResultsTable()
         self.results_table.cellDoubleClicked.connect(self.click_display)
 
         # TODO: consider delegation so the table can send the number

@@ -91,12 +91,14 @@ class MainWindow(QtGui.QMainWindow):
         self.match_set_index = MatchSetIndex(str(dir_name))
         msi = self.match_set_index
         names = msi.get_all_file_names()
-        focus, accepted = SelectFromListDialog.get_selected(names)
+        focus, accepted = SelectFromListDialog.get_selected(names,
+                                                            title='Select Focus Document')
         if accepted:
             # chose a focus document
             self.focus = focus
             ms_names = msi.set_names_for_focus(focus)
-            to_view, accepted = SelectFromListDialog.get_selected(ms_names)
+            to_view, accepted = SelectFromListDialog.get_selected(ms_names,
+                                                                  title='Select Document to Compare')
             if accepted:
                 # TODO: display first matchset
                 # allow others to be selected from the results table
@@ -130,14 +132,19 @@ class MainWindow(QtGui.QMainWindow):
                                                file_name,
                                                out_dir)
 
+        # TODO: most of this stuff should be in DocumentGrid
         # Set the document frames
         focus = ms.alpha_doc
         self.layout.f_frame.grid.set_document(focus.pre_file_name)
         self.layout.f_frame.grid.locationEdit.setText(focus.file_name)
+        focus_title = path.get_name(focus.file_name, False)
+        self.layout.f_frame.grid.titleEdit.setText(focus_title)
 
         match = ms.beta_doc
         self.layout.m_frame.grid.set_document(match.pre_file_name)
         self.layout.m_frame.grid.locationEdit.setText(match.file_name)
+        match_title = path.get_name(match.file_name, False)
+        self.layout.m_frame.grid.titleEdit.setText(match_title)
 
         # Load matches
         focus_text_area = self.layout.f_frame.grid.textEdit
@@ -157,8 +164,7 @@ class MainWindow(QtGui.QMainWindow):
     def select_match_set(self):
         window_title = "Select match set"
         file_name = QtGui.QFileDialog.getOpenFileName(self,
-                                                      window_title,
-                                                      '')
+                                                      window_title)
         self.display_match_set(str(file_name))
 
     def run_dialog(self):

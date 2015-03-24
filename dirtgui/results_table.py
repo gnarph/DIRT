@@ -32,7 +32,7 @@ class NumericalTableWidgetItem(QtGui.QTableWidgetItem):
         return super(NumericalTableWidgetItem, self).__lt__(other)
 
 
-class MainTable(QtGui.QTableWidget):
+class ResultsTable(QtGui.QTableWidget):
     """
     Creates a table that self populates
     """
@@ -58,7 +58,7 @@ class MainTable(QtGui.QTableWidget):
         self.setFont(cell_font)
 
     def __init__(self, parent=None):
-        super(MainTable, self).__init__(parent)
+        super(ResultsTable, self).__init__(parent)
         self.setColumnCount(5)
         self._set_initial_column_widths()
         self.horizontalHeader().setStretchLastSection(True)

@@ -1,5 +1,5 @@
 from PyQt4 import QtGui
-from dirtgui.main_grid import MainGrid
+from dirtgui.document_grid import DocumentGrid
 
 
 class MainFrame(QtGui.QFrame):
@@ -15,7 +15,7 @@ class MainFrame(QtGui.QFrame):
         elif header == 'MATCH':
             passage_type = 'beta_passage'
 
-        self.grid = MainGrid(self, header, passage_type)
+        self.grid = DocumentGrid(self, header, passage_type)
 
         self.setFrameShape(QtGui.QFrame.StyledPanel)
         self.setLayout(self.grid)
