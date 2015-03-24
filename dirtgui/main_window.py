@@ -136,15 +136,15 @@ class MainWindow(QtGui.QMainWindow):
         # Set the document frames
         focus = ms.alpha_doc
         self.layout.f_frame.grid.set_document(focus.pre_file_name)
-        self.layout.f_frame.grid.locationEdit.setText(focus.file_name)
+        self.layout.f_frame.grid.titleEdit.setText(focus.file_name)
         focus_title = path.get_name(focus.file_name, False)
-        self.layout.f_frame.grid.titleEdit.setText(focus_title)
+        self.layout.f_frame.grid.authorEdit.setText(focus_title)
 
         match = ms.beta_doc
         self.layout.m_frame.grid.set_document(match.pre_file_name)
-        self.layout.m_frame.grid.locationEdit.setText(match.file_name)
+        self.layout.m_frame.grid.titleEdit.setText(match.file_name)
         match_title = path.get_name(match.file_name, False)
-        self.layout.m_frame.grid.titleEdit.setText(match_title)
+        self.layout.m_frame.grid.authorEdit.setText(match_title)
 
         # Load matches
         focus_text_area = self.layout.f_frame.grid.textEdit
