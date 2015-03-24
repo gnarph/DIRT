@@ -23,9 +23,9 @@ class DocumentGrid(QtGui.QGridLayout):
         # Labels
         header = QtGui.QLabel(header + ' DOCUMENT')
         # HACK
-        location = QtGui.QLabel('Path')
-        title = QtGui.QLabel('Path')
-        author = QtGui.QLabel('Title')
+        dummy_location = QtGui.QLabel('Path')
+        doc_path = QtGui.QLabel('Path')
+        doc_title = QtGui.QLabel('Title')
         #text = QtGui.QLabel('Text :')
         self.passage_type = passage_type
 
@@ -34,19 +34,19 @@ class DocumentGrid(QtGui.QGridLayout):
 
         header.setFont(QtGui.QFont('', 11.5, QtGui.QFont.Bold))
         header.setAlignment(QtCore.Qt.AlignCenter)
-        location.setFont(label_font)
-        location.setAlignment(QtCore.Qt.AlignLeft)
-        title.setFont(label_font)
-        title.setAlignment(QtCore.Qt.AlignLeft)
-        author.setFont(label_font)
-        author.setAlignment(QtCore.Qt.AlignLeft)
+        dummy_location.setFont(label_font)
+        dummy_location.setAlignment(QtCore.Qt.AlignLeft)
+        doc_path.setFont(label_font)
+        doc_path.setAlignment(QtCore.Qt.AlignLeft)
+        doc_title.setFont(label_font)
+        doc_title.setAlignment(QtCore.Qt.AlignLeft)
         #text.setFont(label_font)
 
         # ------------------------------------------------------
         # Text displays
-        self.locationEdit = QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
-        self.titleEdit = QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
-        self.authorEdit = QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
+        self.dummyLocationEdit = QtGui.QTableWidget.locationEdit = QtGui.QLineEdit()
+        self.documentPathEdit = QtGui.QTableWidget.titleEdit = QtGui.QLineEdit()
+        self.documentTitleEdit = QtGui.QTableWidget.authorEdit = QtGui.QLineEdit()
         self.textEdit = QtGui.QTableWidget.textEdit = QtGui.QTextEdit()
 
         self.textEdit.setStyleSheet("background-color: rgb(255,255,255);")
@@ -54,9 +54,9 @@ class DocumentGrid(QtGui.QGridLayout):
         # Text display font
         display_font = QtGui.QFont('', 12)
 
-        self.locationEdit.setFont(display_font)
-        self.titleEdit.setFont(display_font)
-        self.authorEdit.setFont(display_font)
+        self.dummyLocationEdit.setFont(display_font)
+        self.documentPathEdit.setFont(display_font)
+        self.documentTitleEdit.setFont(display_font)
         self.textEdit.setFont(display_font)
 
         # Set all text displays to READ-only
@@ -92,15 +92,15 @@ class DocumentGrid(QtGui.QGridLayout):
         self.verticalSpacing()
 
         # Path
-        # self.addWidget(location, 1, 0)
-        # self.addWidget(QtGui.QTableWidget.locationEdit, 1, 1)
+        # self.addWidget(dummy_location, 1, 0)
+        # self.addWidget(QtGui.QTableWidget.dummyLocationEdit, 1, 1)
 
         # Title
-        self.addWidget(title, 2, 0)
+        self.addWidget(doc_path, 2, 0)
         self.addWidget(QtGui.QTableWidget.titleEdit, 2, 1)
 
         # Author
-        self.addWidget(author, 3, 0)
+        self.addWidget(doc_title, 3, 0)
         self.addWidget(QtGui.QTableWidget.authorEdit, 3, 1)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Expanding)
