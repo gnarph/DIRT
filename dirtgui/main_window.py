@@ -28,13 +28,8 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.layout)
 
     def _setup_open_file_menu(self):
-        open_file = QtGui.QAction(QtGui.QIcon('open.png'), 'Open MatchSet', self)
-        open_file.setShortcut('Ctrl+O')
-        open_file.setStatusTip('Open new File')
-        open_file.triggered.connect(self.select_match_set)
-
         open_index = QtGui.QAction(QtGui.QIcon('nope.png'), 'Open MatchIndex', self)
-        open_index.setShortcut('Ctrl+I')
+        open_index.setShortcut('Ctrl+O')
         open_index.setStatusTip('Open matchindex')
         open_index.triggered.connect(self.select_match_index)
 
@@ -42,7 +37,7 @@ class MainWindow(QtGui.QMainWindow):
         run_dialog.setShortcut('Ctrl+R')
         run_dialog.triggered.connect(self.run_dialog)
 
-        return open_file, open_index, run_dialog
+        return open_index, run_dialog
 
     def _setup_exit_file_menu(self):
         # ------------------------------------------------------
@@ -71,12 +66,12 @@ class MainWindow(QtGui.QMainWindow):
         self._set_initial_window_size()
         self._fill_with_central_widget()
 
-        open_file, open_index, run_dialog = self._setup_open_file_menu()
+        open_index, run_dialog = self._setup_open_file_menu()
         ext = self._setup_exit_file_menu()
 
         self.statusBar()
 
-        self._attach_file_menu_items(run_dialog, open_file, open_index, ext)
+        self._attach_file_menu_items(run_dialog, open_index, ext)
         # self._attach_toolbar_actions(ext)
 
         self.raise_()
