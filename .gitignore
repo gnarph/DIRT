@@ -62,3 +62,9 @@ test_output/
 
 # Profiling output
 profile_output*
+
+# Build py2app
+# not sure about setup.py, but will stay here for now
+setup.py
+dist/
+build/
