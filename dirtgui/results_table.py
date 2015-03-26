@@ -1,20 +1,16 @@
 from PyQt4 import QtGui, QtCore
-from models.match_set_index import MatchSetIndex
 
 HEADER = ['Match Name',
-          'Author(s)',
           'Focus %',
           'Match %',
           'Match Count']
 
 COLUMNS = ['file_name',
-           'edition',
            'alpha_match_pct',
            'beta_match_pct',
            'match_count']
 
 COLUMN_TT = [u'Name of file',
-             u'',
              u'Percentage of focus that is a match',
              u'Percentage of other document that is a match',
              u'Number of matching passages']
@@ -44,11 +40,10 @@ class ResultsTable(QtGui.QTableWidget):
             header_item.setToolTip(tool_tip)
 
     def _set_initial_column_widths(self):
-        self.setColumnWidth(0, 200)
-        self.setColumnWidth(1, 100)
+        self.setColumnWidth(0, 250)
+        self.setColumnWidth(1, 130)
         self.setColumnWidth(2, 130)
         self.setColumnWidth(3, 130)
-        self.setColumnWidth(4, 100)
 
     def _set_fonts(self):
         # Header and cell fonts
@@ -59,7 +54,7 @@ class ResultsTable(QtGui.QTableWidget):
 
     def __init__(self, parent=None):
         super(ResultsTable, self).__init__(parent)
-        self.setColumnCount(5)
+        self.setColumnCount(len(COLUMNS))
         self._set_initial_column_widths()
         self.horizontalHeader().setStretchLastSection(True)
         self.setAlternatingRowColors(True)
@@ -85,7 +80,7 @@ class ResultsTable(QtGui.QTableWidget):
             meta = match_set.get_beta_metadata()
             for j, col_name in enumerate(COLUMNS):
                 uni_val = unicode(meta[col_name])
-                if j >= 2:
+                if j >= 1:
                     # Numerical columns
                     # TODO HACK
                     item = NumericalTableWidgetItem(j)
