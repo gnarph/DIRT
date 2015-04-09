@@ -1,4 +1,4 @@
-[![https://github.com/gnarph/DIRT/wiki/images/DIRT_logo.png]]
+![DIRT](https://github.com/gnarph/DIRT/wiki/images/DIRT_logo.png)
 ====
 Master: [![Build Status](https://travis-ci.org/gnarph/DIRT.svg?branch=master)](https://travis-ci.org/gnarph/DIRT)
 
