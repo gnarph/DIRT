@@ -103,7 +103,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.layout.results_table.setSortingEnabled(True)
                 # TODO: should pass msi down instead
                 results.populate(focus, msi)
-                results.sortItems(2, QtCore.Qt.DescendingOrder)
+                results.sortItems(1, QtCore.Qt.DescendingOrder)
                 total_match = self.match_set_index.get_matched_document_count(focus)
                 self.layout.table_label.setText('Results (%d)' % total_match)
 
